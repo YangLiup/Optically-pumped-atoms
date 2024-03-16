@@ -3,14 +3,8 @@
 作者：DELL
 日期：2024年01月19日
 """
+import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.pyplot as plt
-from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
-from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
-from qutip import *
-from scipy.linalg import *
-import matplotlib.pyplot as plt
-import scienceplots
 
 P = np.linspace(0, 1, 100)
 q = 2 * (3 + P ** 2) / (1 + P ** 2)

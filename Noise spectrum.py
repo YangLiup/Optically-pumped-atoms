@@ -5,16 +5,11 @@
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
-from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
-from qutip import *
-from scipy.linalg import *
-import matplotlib.pyplot as plt
 import scienceplots
 
 omega = np.arange(-10, 10, 0.1)
 gammap = 2
-gamman = 10
+gamman = 15
 Omega = 5
 Lorentzianpp = 1 / (gammap + (omega - Omega) ** 2)
 Lorentzianpn = 1 / (gammap + (omega + Omega) ** 2)
@@ -43,10 +38,16 @@ with plt.style.context(['science']):
                , loc='upper left', prop={'size': 6})
 
     ax1.yaxis.set_major_formatter(plt.NullFormatter())
-    ax1.xaxis.set_major_formatter(plt.NullFormatter())
+    ax1.set_xticks([0])  # 设置刻度
+    ax2.set_xticks([0])  # 设置刻度
+    ax3.set_xticks([0])  # 设置刻度
     ax2.yaxis.set_major_formatter(plt.NullFormatter())
-    ax2.xaxis.set_major_formatter(plt.NullFormatter())
+    # ax2.xaxis.set_major_formatter(plt.NullFormatter())
     ax3.yaxis.set_major_formatter(plt.NullFormatter())
-    ax3.xaxis.set_major_formatter(plt.NullFormatter())
+    # ax3.xaxis.set_major_formatter(plt.NullFormatter())
     # plt.ylim(-0.5, 5.2)
+    ax1.set_xlabel('Frequency', fontsize=10)
+    ax1.set_ylabel('PSD', fontsize=10)
+
+
     plt.savefig('Noise spectrum.png', dpi=600)
