@@ -3,7 +3,6 @@
 作者：DELL
 日期：2023年12月17日
 """
-import brokenaxes
 import numpy as np
 import matplotlib.pyplot as plt
 from qutip import *

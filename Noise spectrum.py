@@ -7,47 +7,40 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scienceplots
 
-omega = np.arange(-10, 10, 0.1)
-gammap = 2
-gamman = 15
-Omega = 5
-Lorentzianpp = 1 / (gammap + (omega - Omega) ** 2)
-Lorentzianpn = 1 / (gammap + (omega + Omega) ** 2)
-Lorentziannp = 1 / (gamman + (omega - Omega) ** 2)
-Lorentziannn = 1 / (gamman + (omega + Omega) ** 2)
+omega = np.arange(-50, 50, 0.1)
+gammap = 10
+gamman = 500
+Omega = 10
+Fz = 0.9192388155425111
+Fx2 = 1.862499999999999
+Lorentzianpp = gammap / (gammap + (omega - Omega) ** 2)
+Lorentzianpn = gammap / (gammap + (omega + Omega) ** 2)
+Lorentziannp = gamman / (gamman + (omega - Omega) ** 2)
+Lorentziannn = gamman / (gamman + (omega + Omega) ** 2)
 
 plt.style.use(['science'])
 with plt.style.context(['science']):
-    fig = plt.figure()
-    ax1 = fig.add_subplot(2, 1, 2)
-    p1, = plt.plot(omega, 3 * Lorentzianpp + Lorentzianpn + 3 * Lorentziannp + Lorentziannn)
-    ax2 = fig.add_subplot(2, 2, 1)
-    p2, = plt.plot(omega, 2 * Lorentzianpp + 2 * Lorentzianpn)
-    p3, = plt.plot(omega, 2 * Lorentziannp + 2 * Lorentziannn)
-    ax3 = fig.add_subplot(2, 2, 2)
-    p4, = plt.plot(omega, Lorentzianpp - Lorentzianpn)
-    p5, = plt.plot(omega, +Lorentziannp - Lorentziannn)
-    plt.xticks(fontsize=10)
-    plt.yticks(fontsize=10)
-    ax1.set_title("Total spectrum", fontsize=8)
-    ax2.set_title("Symmetric part", fontsize=8)
-    ax3.set_title("Antisymmetric part", fontsize=8)
+    fig1 = plt.figure()
+    ax1 = fig1.add_subplot(1, 1, 1)
+    p1, = plt.plot(omega, Fx2*(Lorentzianpp + Lorentzianpn), color='brown')
+    ax1.set_title("Symmetric part", fontsize=8)
+    ax1.set_xlabel('Frequency(Hz)', fontsize=10)
+    ax1.set_ylabel(' PSD($n^2 l^2 \chi_a^2$)', fontsize=10)
+    plt.savefig('Noise spectrum1.png', dpi=600)
 
-    ax3.legend([p4, p5],
-               ["Narrow linewidth", "Broad linewidth"]
-               , loc='upper left', prop={'size': 6})
+    fig2 = plt.figure()
+    ax2 = fig2.add_subplot(1, 1, 1)
+    p2, = plt.plot(omega, Fz/2*(Lorentzianpp - Lorentzianpn), color='olive')
+    ax2.set_xlabel('Frequency(Hz)', fontsize=10)
+    # ax2.set_ylabel('PSD($n^2 l^2 \chi_a^2$)', fontsize=10)
+    ax2.set_title("Antisymmetric part", fontsize=8)
+    plt.savefig('Noise spectrum2.png', dpi=600)
 
-    ax1.yaxis.set_major_formatter(plt.NullFormatter())
-    ax1.set_xticks([0])  # 设置刻度
-    ax2.set_xticks([0])  # 设置刻度
-    ax3.set_xticks([0])  # 设置刻度
-    ax2.yaxis.set_major_formatter(plt.NullFormatter())
-    # ax2.xaxis.set_major_formatter(plt.NullFormatter())
-    ax3.yaxis.set_major_formatter(plt.NullFormatter())
-    # ax3.xaxis.set_major_formatter(plt.NullFormatter())
-    # plt.ylim(-0.5, 5.2)
-    ax1.set_xlabel('Frequency', fontsize=10)
-    ax1.set_ylabel('PSD', fontsize=10)
+    fig3 = plt.figure()
+    ax3 = fig3.add_subplot(1, 1, 1)
+    p4, = plt.plot(omega, Fx2*(Lorentzianpp + Lorentzianpn)+Fz/2*(Lorentzianpp - Lorentzianpn), color='purple')
+    ax3.set_xlabel('Frequency(Hz)', fontsize=10)
+    # ax3.set_ylabel('PSD($n^2 l^2 \chi_a^2$)', fontsize=10)
+    ax3.set_title("Total spectrum", fontsize=8)
+    plt.savefig('Noise spectrum3.png', dpi=600)
 
-
-    plt.savefig('Noise spectrum.png', dpi=600)
