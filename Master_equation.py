@@ -131,8 +131,8 @@ with plt.style.context(['science']):
     # plt.ylim(0, 18)
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
-    plt.legend([p1, p2, p3, p4], ["$P_z^{DM}$", "$P_x^{DM}$", "$P_z^{BE}$", "$P_x^{BE}$"], loc='upper right',
-               prop={'size': 8})
+    plt.legend([p1, p3, p2, p4], ["$P_z^{DM}$", "$P_z^{BE}$", "$P_x^{DM}$", "$P_x^{BE}$"], loc='upper right',
+               prop={'size': 10})
 
     plt.xlabel('Time $(1/R_{se})$', fontsize=12)
     plt.ylabel('Polarization', fontsize=12)

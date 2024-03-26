@@ -104,7 +104,7 @@ if N == 3:
     Pt23 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S2x @ S3x + S2y @ S3y + S2z @ S3z)
     Pe23 = Pt23 - Ps23
 
-T = 20
+T = 10
 dt = 0.01
 n = round(T / dt)
 te = np.arange(0, T, dt)
@@ -115,6 +115,12 @@ C_b1zb1z = [None] * n
 C_a1za2z = [None] * n
 C_a1zb2z = [None] * n
 C_b1zb2z = [None] * n
+
+C_a1za1z2 = [None] * n
+C_b1zb1z2 = [None] * n
+C_a1za2z2 = [None] * n
+C_a1zb2z2 = [None] * n
+C_b1zb2z2 = [None] * n
 # ----------------------Magnetic field----------------------#
 omega_0 = 10
 # H = omega_e * (ax-bx)              #一个原子
@@ -134,57 +140,51 @@ if N == 3:
 
 for t in np.arange(0, n, 1):
     C_1[t] = np.trace(Rho_atom @ Fz @ Fz) - np.trace(Rho_atom @ Fz) ** 2
-    C_a1za1z[t] = np.trace(Rho_atom @ a1z @ a1z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a2z)
-    C_b1zb1z[t] = np.trace(Rho_atom @ b1z @ b1z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b2z)
+    C_a1za1z[t] = np.trace(Rho_atom @ a1z @ a1z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a1z)
+    C_b1zb1z[t] = np.trace(Rho_atom @ b1z @ b1z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b1z)
     C_a1za2z[t] = np.trace(Rho_atom @ a1z @ a2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a2z)
     C_a1zb2z[t] = np.trace(Rho_atom @ a1z @ b2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ b2z)
     C_b1zb2z[t] = np.trace(Rho_atom @ b1z @ b2z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b2z)
-    r = np.random.uniform()
-    if r - 0.3 < 0.0001:
-        phi = np.random.normal(np.pi / 2, 2)
-        sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe12
-    elif r - 0.6 < 0.0001:
-        phi = np.random.normal(np.pi / 2, 2)
-        sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe13
-    else:
-        phi = np.random.normal(np.pi / 2, 2)
+    hh=np.random.uniform()
+    if hh<0.1:
+        r = np.random.uniform()
+        if r - 0.3 < 0.0001:
+            phi = np.random.normal(np.pi / 2, 2)
+            sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe12
+        elif r - 0.6 < 0.0001:
+            phi = np.random.normal(np.pi / 2, 2)
+            sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe13
+        else:
+            phi = np.random.normal(np.pi / 2, 2)
         sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe23
-
-    Rho_atom = sec @ Rho_atom @ sec.T.conjugate()
+        Rho_atom = sec @ Rho_atom @ sec.T.conjugate()
     # C_1z2z[t] = np.trace(ini_Rho_atom @ a1z @ a2z)
     Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
     Rho_atom = hyperfine * Rho_atom
 Rho_atom = Rho_atomi
 for t in np.arange(0, n, 1):
     C_2[t] = np.trace(Rho_atom @ Fz @ Fz) - np.trace(Rho_atom @ Fz) ** 2
-    # r = np.random.uniform()
-    # if r - 0.3 < 0.0001:
-    #     phi = np.random.normal(np.pi / 2, 2)
-    #     sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe12
-    # elif r - 0.6 < 0.0001:
-    #     phi = np.random.normal(np.pi / 2, 2)
-    #     sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe13
-    # else:
-    #     phi = np.random.normal(np.pi / 2, 2)
-    #     sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe23
-    #
-    # Rho_atom = sec @ Rho_atom @ sec.T.conjugate()
-    # C_1z2z[t] = np.trace(ini_Rho_atom @ a1z @ a2z)
+
+    C_a1za1z2[t] = np.trace(Rho_atom @ a1z @ a1z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a1z)
+    C_b1zb1z2[t] = np.trace(Rho_atom @ b1z @ b1z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b1z)
+    C_a1za2z2[t] = np.trace(Rho_atom @ a1z @ a2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a2z)
+    C_a1zb2z2[t] = np.trace(Rho_atom @ a1z @ b2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ b2z)
+    C_b1zb2z2[t] = np.trace(Rho_atom @ b1z @ b2z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b2z)
     Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
     Rho_atom = hyperfine * Rho_atom
 
-tt = np.arange(0, n, 1)
+tt = np.arange(0, n, 1)/10
 with plt.style.context(['science']):
     fig = plt.figure()
     ax1 = fig.add_subplot(1, 1, 1)
-    p1, = ax1.plot(tt, C_1, color='red')
-    p2, = ax1.plot(tt, C_2, color='purple')
-    ax1.legend([p1, p2],
-               ["With SEC", "Without SEC"]
-               , loc='upper right', prop={'size': 8})
-    ax1.set_xlabel('SEC times', fontsize=10)
-    ax1.set_ylabel('Variance', fontsize=10)
-    plt.xlim(0, 250)
+    p1, = ax1.plot(tt, C_1, )
+    p2, = ax1.plot(tt, C_2)
+    ax1.legend([p1,p2],
+               ["With SEC","Witout SEC"]
+               , loc='upper right', prop={'size': 10})
+    ax1.set_xlabel('t(T$_{se}$)', fontsize=12)
+    ax1.set_ylabel('Cov$(F_{x}F_{x})$', fontsize=12)
+    plt.xlim(0, 30)
 
     plt.savefig('graph1.png', dpi=600)
 
@@ -192,12 +192,14 @@ with plt.style.context(['science']):
     ax2 = fig.add_subplot(1, 1, 1)
     p3, = ax2.plot(tt, C_a1za1z, color='brown')
     p5, = ax2.plot(tt, C_a1za2z, color='olive')
+    p32, = ax2.plot(tt, C_a1za1z2, color='brown',linestyle='dashed')
+    p52, = ax2.plot(tt, C_a1za2z2, color='olive',linestyle='dashed')
     ax2.legend([p3, p5],
                ["Cov$(a_{1z}a_{1z})$", "Cov$(a_{1z}a_{2z})$"]
-               , loc='upper right', prop={'size': 8})
-    ax2.set_ylabel('Correlations', fontsize=10)
-    ax2.set_xlabel('SEC times', fontsize=10)
-    plt.xlim(0, 250)
+               , loc='upper right', prop={'size': 10})
+    ax2.set_ylabel('Correlations', fontsize=12)
+    ax2.set_xlabel('SEC times', fontsize=12)
+    plt.xlim(0, 18)
     plt.savefig('graph2.png', dpi=600)
 
 
@@ -206,13 +208,16 @@ with plt.style.context(['science']):
     p4, = ax3.plot(tt, C_b1zb1z)
     p6, = ax3.plot(tt, C_a1zb2z)
     p7, = ax3.plot(tt, C_b1zb2z)
-    ax3.set_xlabel('SEC times', fontsize=10)
-    ax3.set_ylabel('Correlations', fontsize=10)
+    p42, = ax3.plot(tt, C_b1zb1z2,linestyle='dashed')
+    p62, = ax3.plot(tt, C_a1zb2z2,linestyle='dashed')
+    p72, = ax3.plot(tt, C_b1zb2z2,linestyle='dashed')
+    ax3.set_xlabel('SEC times', fontsize=12)
+    ax3.set_ylabel('Correlations', fontsize=12)
     ax3.legend([p4, p6, p7],
                ["Cov$(b_{1z}b_{1z})$", "Cov$(a_{1z}b_{2z})$",
                 "Cov$(b_{1z}b_{2z})$", ]
-               , loc='upper right', prop={'size': 8})
-    plt.xlim(0, 250)
+               , loc='upper right', prop={'size': 10})
+    plt.xlim(0, 18)
 
     plt.savefig('graph3.png', dpi=600)
 
