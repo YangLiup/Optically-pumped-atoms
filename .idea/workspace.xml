@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c9aa01e0-57d7-4674-bce6-0a4e5dfc9682" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/Optically-pumped-atoms.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/squeezing.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Master_equation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Master_equation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Noise spectrum.py" beforeDir="false" afterPath="$PROJECT_DIR$/Noise spectrum.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Study of the squeezed state.py" beforeDir="false" afterPath="$PROJECT_DIR$/Study of the squeezed state.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/picture of q Q.py" beforeDir="false" afterPath="$PROJECT_DIR$/picture of q Q.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Evolution3.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
