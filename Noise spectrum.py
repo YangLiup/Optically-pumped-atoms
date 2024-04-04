@@ -25,8 +25,8 @@ plt.style.use(['science'])
 with plt.style.context(['science']):
     fig1 = plt.figure()
     p1, = plt.plot(omega, Fx2*(Lorentzianpp + Lorentzianpn))
-    p2, = plt.plot(omega, Fz/2*(Lorentzianpp - Lorentzianpn))
-    p3, = plt.plot(omega, Fx2*(Lorentzianpp + Lorentzianpn)+Fz/2*(Lorentzianpp - Lorentzianpn))
+    p2, = plt.plot(omega, -Fz/2*(Lorentzianpp - Lorentzianpn))
+    p3, = plt.plot(omega, Fx2*(Lorentzianpp + Lorentzianpn)-Fz/2*(Lorentzianpp - Lorentzianpn))
 
 
     plt.legend([p1, p2, p3], ["Symmetric part", "Antisymmetric part", "Total"], loc='upper left',

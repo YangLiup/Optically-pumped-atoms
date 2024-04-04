@@ -6,6 +6,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import scienceplots
+
 P = np.linspace(0, 1, 100)
 q = 2 * (3 + P ** 2) / (1 + P ** 2)
 Q = 2 * (3 + P ** 4) / (1 + P ** 2) ** 2

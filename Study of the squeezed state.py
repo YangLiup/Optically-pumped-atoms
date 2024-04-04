@@ -68,20 +68,20 @@ for i in np.arange(0, n, 1):
     Rhot = dt * (H @ Rhot - Rhot @ H) / 1j + Rhot
     Rhot_sample = Rhot
     read = np.array(
-        tensor(tensor(qeye(2 * (a + b + 1)), qeye(2 * (a + b + 1)), vy[5] * vy[5].dag())))
+        tensor(tensor(qeye(2 * (a + b + 1)), qeye(2 * (a + b + 1)), vy[1] * vy[1].dag())))
     Rho_r = read @ Rhot_sample @ read.T.conjugate()
     Rho_r = Rho_r / Rho_r.trace()
     Rho_atom = ptr(Rho_r, 2 * s + 1, (2 * (a + b + 1)) ** N)
-    C_1z1z[i] = 1 - np.trace(Rho_atom @ Fz @ Fz) / Vz0
-    C_1z2z[i] = 1 - np.trace(Rho_atom @ Fx) / 4
+    # C_1z1z[i] = 1 - np.trace(Rho_atom @ Fz @ Fz) / Vz0
+    C_1z2z[i] = np.trace(Rho_atom @ Fy)
 
 tt = np.arange(0, T, dt)
 plt.style.use(['science'])
 with plt.style.context(['science']):
     plt.figure()
-    plt.plot(C_1z1z, C_1z2z)
-    plt.xlim(0, 1)
-    plt.ylim(0, 0.4)
+    plt.plot(tt, C_1z2z)
+    # plt.xlim(0, 1)
+    # plt.ylim(0, 0.4)
     plt.xlabel('Noise reduction', fontsize=12)
     plt.ylabel('Polarization reduction', fontsize=12)
     plt.xticks(fontsize=10)
