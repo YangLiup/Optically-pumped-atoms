@@ -1,131 +1,44 @@
 # -*- coding:utf-8 -*-
 """
 作者：DELL
-日期：2023年12月20日
+日期：2024年01月19日
 """
+import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.pyplot as plt
-from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
-from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
-from qutip import *
-from scipy.linalg import *
-import matplotlib.pyplot as plt
 import scienceplots
 
-N = 2
-I = 3 / 2
-a = round(I + 1 / 2)
-b = round(I - 1 / 2)
+P = np.linspace(0, 1, 1000)
+q = 2 * (3 + P ** 2) / (1 + P ** 2)
+Gammaq = (q**2-16)/(2*q**3)
 
-U = alkali_atom_uncoupled_to_coupled(round(2 * I))
-
-a1x, a2x, a1y, a2y, a1z, a2z, b1x, b2x, b1y, b2y, b1z, b2z, Fx, Fy, Fz = spin_operators_of_2or1_alkali_metal_atoms(N, I)
-
-corrxx = Fx @ Fx
-corrxy = Fx @ Fy
-corrxz = Fx @ Fz
-
-corryx = Fy @ Fx
-corryy = Fy @ Fy
-corryz = Fy @ Fz
-
-corrzx = Fz @ Fx
-corrzy = Fz @ Fy
-corrzz = Fz @ Fz
-
-# ----------------------electron spin----------------------#
-Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax()))
-Sx = U.T.conjugate() @ Sx @ U
-Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay()))
-Sy = U.T.conjugate() @ Sy @ U
-Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz()))
-Sz = U.T.conjugate() @ Sz @ U
-
-S1x = np.kron(Sx, np.eye(2 * (a + b + 1)))
-S2x = np.kron(np.eye(2 * (a + b + 1)), Sx)
-S1y = np.kron(Sy, np.eye(2 * (a + b + 1)))
-S2y = np.kron(np.eye(2 * (a + b + 1)), Sy)
-S1z = np.kron(Sz, np.eye(2 * (a + b + 1)))
-S2z = np.kron(np.eye(2 * (a + b + 1)), Sz)
-Ps = 1 / 4 * np.eye(round((2 * (2 * I + 1)) ** 2)) - (S1x @ S2x + S1y @ S2y + S1z @ S2z)
-Pt = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** 2)) + (S1x @ S2x + S1y @ S2y + S1z @ S2z)
-Pe = Pt - Ps
-# ----------------------state--------------------#
-# Xi_ini = 1 / np.sqrt(3) * (
-#         np.kron([0, 1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0]) + np.kron([0, 0, 1, 0, 0, 0, 0, 0],
-#                                                                               [0, 0, 0, 0, 0, 0, 1, 0]) + np.kron(
-#     [0, 0, 0, 1, 0, 0, 0, 0],
-#     [0, 0, 0, 0, 0, 0, 0, 1]))
-# Xi_ini= 1 / np.sqrt(2  ) * (
-#         np.kron([0, 1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0])  + np.kron(
-#     [0, 0, 0, 1, 0, 0, 0, 0],
-#     [0, 0, 0, 0, 0, 0, 0, 1]))
-
-Xi_ini =np.kron([0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0])
-Rho_ini = np.outer(Xi_ini, Xi_ini)
-Rhot = Rho_ini
-dt = 0.01
-T = 10
-t = np.arange(0, round(T / dt), 1)
-# ----------------------correlations--------------------#
-
-C_1 = [None] * round(T / dt)
-C_2 = [None] * round(T / dt)
-C_3 = [None] * round(T / dt)
-C_4 = [None] * round(T / dt)
-C_5 = [None] * round(T / dt)
-C_6 = [None] * round(T / dt)
-C_7 = [None] * round(T / dt)
-C_8 = [None] * round(T / dt)
-C_9 = [None] * round(T / dt)
-C_12 = [None] * round(T / dt)
-C_22 = [None] * round(T / dt)
-C_32 = [None] * round(T / dt)
-C_42 = [None] * round(T / dt)
-C_52 = [None] * round(T / dt)
-C_62 = [None] * round(T / dt)
-C_72 = [None] * round(T / dt)
-C_82 = [None] * round(T / dt)
-C_92 = [None] * round(T / dt)
-# C_8 = [None] * round(T / dt)
-# ----------------------Hyperfine interaction--------------------#
-hyperfine = block_diag(np.ones((5, 5)), np.ones((3, 3)))  # 一个原子
-hyperfine = np.kron(hyperfine, hyperfine) # 两个原子
-
-# ----------------------With magnetic field--------------------#
-omega_0 = 6
-# H = omega_0 * (S1z + S2z)  # 非投影定理
-H = omega_0 * (a1z + a2z  - b1z - b2z)  # 投影定理
-
-q, v = np.linalg.eig(H)
-evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
-
-for i in t:
-    Rhot = evolving_B @ Rhot @ evolving_B.T.conjugate()  # Zeeman effect
-
-    Rhot = hyperfine * Rhot  # Hyperfine effect
-    hh = np.random.uniform()
-    r = np.random.uniform()
-    phi = np.random.uniform() * 2 * np.pi
-    sec = np.cos(phi) * np.eye(round((2 * (2 * I + 1)) ** 2)) - 1j * np.sin(phi) * Pe
-    Rhot = sec @ Rhot @ sec.T.conjugate()  # spin exchange collision
-    C_6[i] = np.trace(Rhot @ a1x @ b2x) - np.trace(Rhot @ a1x) * np.trace(Rhot @ b2x)
-    C_62[i] = np.trace(Rhot @ a1y @ b2y) - np.trace(Rhot @ a1y) * np.trace(Rhot @ b2y)
+qq = 2 * (19 + 26 * P ** 2 + 3 * P ** 4) / (3 + 10 * P ** 2 + 3 * P ** 4)
+Gammaqq = (qq**2-36)/(2*qq**3)
+qqq = 2 * (11 + 35 * P ** 2 + 17 * P ** 4 + P ** 6) / (1 + 7 * P ** 2 + 7 * P ** 4 + P ** 6)
+Gammaqqq = (qqq**2-64)/(2*qqq**3)
 
 
-t = t / 100
-plt.style.use(['science'])
+plt.style.use(['science' ])
 with plt.style.context(['science']):
-    fig1 = plt.figure(dpi=600)
-ax1 = fig1.add_subplot(1, 1, 1)
-p6, = ax1.plot(t, C_6, linewidth='0.5')
-p62, = ax1.plot(t, C_62, linewidth='0.5')
+    plt.figure()
+    p1, = plt.plot(P, Gammaq)
+    p2, = plt.plot(P, Gammaqq)
+    p3, = plt.plot(P, Gammaqqq)
+    # p4, = plt.plot(P, q,color='dodgerblue', linestyle='dashdot')
+    # p5, = plt.plot(P, qq,color='black', linestyle='dashdot')
+    # p6, = plt.plot(P, qqq,color='olive', linestyle='dashdot')
+    plt.legend([p1, p2, p3], ["$I={3/2}$", "$I={5/2}$", "$I={7/2}$"],
+               loc='upper right', prop={'size': 10})
+    plt.xticks(fontsize=10)
+    plt.yticks(fontsize=10)
+    plt.xlabel('P', fontsize=12)
+    plt.ylabel('$\Gamma^+(\omega_e^2/R_{se})$', fontsize=12)
+    # my_y_ticks = np.arange(0, 1, 0.2)
+    # plt.yticks(my_y_ticks)
+    plt.savefig('linewidth.png', dpi=600)
 
-ax1.legend([p6],
-           ["$<a_{1x} b_{2x}>$"]
-           , loc='upper right', prop={'size': 10})
-ax1.set_ylabel('Correlations', fontsize=12)
-ax1.set_xlabel('t(T$_{se}$)', fontsize=12)
-ax1.tick_params(axis='x', labelsize=10)
-ax1.tick_params(axis='y', labelsize=10)
-plt.savefig('spin exchange relaxation of correlations_increase.png', dpi=600)
+# plt.figure()
+# plt.plot(t, C_1x2x)
+# plt.figure()
+# plt.plot(t, (np.array(C_1x2x)+np.array(C_1x1x)))
+
+plt.show()
