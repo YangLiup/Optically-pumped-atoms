@@ -30,9 +30,9 @@ Sz = U.T.conjugate() @ Sz @ U
 
 # --------------------------------Characterize interactions envolved-----------------------------------#
 Rse = 1
-omega_0 = 1
+omega_0 = 0.01
 Rop = 0.1
-Rsd = 0.001
+Rsd = 0.0005
 sx=1/np.sqrt(2)
 sz=1/np.sqrt(2)
 # --------------------------------Define the initial state-----------------------------------#
@@ -62,7 +62,7 @@ Rho_ini = Rho_ini / np.trace(Rho_ini)
 # --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
 Rhot = Rho_ini
 dt = 0.01
-T = 600
+T = 20000
 t = np.arange(0, T, dt)
 hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
 MSx = np.zeros(round(T / dt))
@@ -74,7 +74,7 @@ q, v = np.linalg.eig(H)
 evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
 for n in np.arange(0, round(T / dt), 1):
     # -----------------Evolution-----------------#
-    if n==round(T / dt)/2:
+    if n==round(T / dt)/10:
         Rop = 0.0
     x1 = Rhot @ Sx
     x2 = Rhot @ Sy
@@ -105,7 +105,7 @@ Px = P * np.sin(theta)
 Pz = P * np.cos(theta)
 Py = 0
 for n in np.arange(0, round(T / dt), 1):
-    if n==round(T / dt)/2:
+    if n==round(T / dt)/10:
         Rop = 0.0
     transverse[n] = Px
     longitude[n] = Pz
@@ -147,7 +147,7 @@ with plt.style.context(['science']):
     # plt.ylim(0, 18)
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
-    plt.legend([p1, p3, p2, p4], ["$P_x^{\mathrm{DM}}$", "$P_x^{\mathrm{NB}}$", "$P_z^{\mathrm{DM}}$", "$P_z^{\mathrm{NB}}$"], loc='center right',
+    plt.legend([p1, p3, p2, p4], ["$P_x^{\mathrm{DM}}$", "$P_x^{\mathrm{NB}}$", "$P_z^{\mathrm{DM}}$", "$P_z^{\mathrm{NB}}$"], loc='upper right',
                prop={'size': 10})
 
     plt.xlabel('Time $(1/R_{se})$', fontsize=12)
