@@ -31,10 +31,10 @@ Sz = U.T.conjugate() @ Sz @ U
 # --------------------------------Characterize interactions envolved-----------------------------------#
 Rse = 1
 omega_0 = 0.01
-Rop = 0.1
-Rsd = 0.0005
-sx=1/np.sqrt(2)
-sz=1/np.sqrt(2)
+Rop = 0.0
+Rsd = 0
+sx=np.sqrt(3)/(2)
+sz=np.sqrt(1)/(2)
 # --------------------------------Define the initial state-----------------------------------#
 theta = np.pi / 2
 phi = 0
@@ -49,7 +49,7 @@ q = np.hstack((qa, qb))
 Rho_ini = np.zeros(2 * (a + b + 1))
 
 # # -----------------spin temperature state-----------------#
-P = 0.000001
+P = 0.99
 beta = np.log((1 + P) / (1 - P))
 for i in np.arange(0, 2 * (a + b + 1), 1):
     Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] * v[:, [i]].T.conjugate()
@@ -61,8 +61,8 @@ Rho_ini = Rho_ini / np.trace(Rho_ini)
 
 # --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
 Rhot = Rho_ini
-dt = 0.01
-T = 20000
+dt = 0.005
+T = 100
 t = np.arange(0, T, dt)
 hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
 MSx = np.zeros(round(T / dt))
@@ -74,8 +74,8 @@ q, v = np.linalg.eig(H)
 evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
 for n in np.arange(0, round(T / dt), 1):
     # -----------------Evolution-----------------#
-    if n==round(T / dt)/10:
-        Rop = 0.0
+    # if n==round(T / dt)/10:
+    #     Rop = 0.0
     x1 = Rhot @ Sx
     x2 = Rhot @ Sy
     x3 = Rhot @ Sz
@@ -98,26 +98,33 @@ for n in np.arange(0, round(T / dt), 1):
     # V[n] = Vx
 
 # ---------------------------Bloch Equation-----------------------------------
-Rop = 0.1
+Rop = 0.
 transverse = np.zeros(round(T / dt))
 longitude = np.zeros(round(T / dt))
 Px = P * np.sin(theta)
 Pz = P * np.cos(theta)
 Py = 0
 for n in np.arange(0, round(T / dt), 1):
-    if n==round(T / dt)/10:
-        Rop = 0.0
+    # if n==round(T / dt)/10:
+    #     Rop = 0.0
     transverse[n] = Px
     longitude[n] = Pz
     qnm = 2 * (3 + P ** 2) / (1 + P ** 2)
     Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
     Gamma = 8 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / qnm ** 3 * qnm / Qnm
-    # Gamma = 0
-    # T1 = (1 - qnm / Qnm) * (1 - Pz ** 2 / P ** 2) * Gamma
-    T1 = ((qnm - Qnm) / qnm) * (1 - Pz ** 2 / P ** 2) * Gamma
-    # T2 = (1 - (1 - qnm / Qnm) * (1 - Pz ** 2 / P ** 2)) * Gamma
-    T2 = (1 - ((qnm - Qnm) / qnm) * Pz ** 2 / P ** 2) * Gamma
 
+    # qnm = 2*(19+26*P**2+3*P**4)/(3+10*P**2+3*P**4)
+    # Qnm = 2 * (57 +44* P ** 2+134*P**4+12*P**6+9*P**8) / ((3 +10* P ** 2+3*P**4 )**2)
+    # Gamma = 18 * (-6 + qnm) * (6 + qnm) * omega_0 ** 2 / qnm ** 3 * qnm / Qnm
+
+    # qnm = 2 * (11 +35* P ** 2+17*P**4+P**6) / (1 +7* P ** 2+7*P**4+P**6) 
+    # Qnm = 2 * (11 +28* P ** 2+99*P**4+64*P**6+49*P**8+4*P**10+P**12) / ((1 +7* P ** 2+7*P**4+P**6)**2 )
+    # Gamma = 32 * (-8 + qnm) * (8 + qnm) * omega_0 ** 2 / qnm ** 3 * qnm / Qnm
+
+ 
+   
+    T2 = (1 - ((qnm - Qnm) / qnm) * Pz ** 2 / P ** 2) * Gamma
+    T1 = T2-Gamma/qnm*Qnm
     # Pz = Pz + (-1 / Qnm * (Rsd + Rop) * Pz + Rop * (
     #         1 / Qnm * Pz ** 2 / P ** 2 + 1 / qnm * (1 - Pz ** 2 / P ** 2)) - Pz * T1) * dt
     # Px = Px + (-1 / Qnm * (Rsd + Rop) * Px + Rop * (
@@ -152,4 +159,5 @@ with plt.style.context(['science']):
 
     plt.xlabel('Time $(1/R_{se})$', fontsize=12)
     plt.ylabel('Polarization', fontsize=12)
-    plt.savefig('Evolution3.png', dpi=600)
+    plt.savefig('Evolution2.png', dpi=600)
+plt.show()

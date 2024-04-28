@@ -25,8 +25,8 @@ GammaNqqq = 2/3+4/3/64-4*L
 
 
 
-plt.style.use(['science' ])
-with plt.style.context(['science']):
+plt.style.use(['science','nature' ])
+with plt.style.context(['science','nature']):
     plt.figure()
     # p1, = plt.plot(P, Gammaq)
     # p2, = plt.plot(P, Gammaqq)
@@ -45,24 +45,27 @@ with plt.style.context(['science']):
 
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
-    ax1.plot(P, Gammaq)
-    ax1.plot(P, Gammaqq)
-    ax1.plot(P, Gammaqqq)
-    ax1.set_ylabel('$\Gamma^+\;(\omega_e^2/R_{se})$')
+    ax1.plot(P, GammaNq,linestyle='solid')
+    ax1.plot(P, GammaNqq,linestyle='dashed' )
+    ax1.plot(P, GammaNqqq,linestyle='dashdot')
+    # ax1.plot(P, Gammaq,linestyle='solid')
+    # ax1.plot(P, Gammaqq,linestyle='dashed')
+    # ax1.plot(P, Gammaqqq,linestyle='dashdot')
+    # ax1.set_ylabel('$\Gamma^+\;(\omega_e^2/R_{\\rm{se}})$',fontsize='12')
+    ax1.set_ylabel('$\Gamma^-\;(R_{\\rm{se}})$',fontsize='12')
+    ax1.set_xlabel('$P$',fontsize='12')
     plt.legend( ["$I={3/2}$", "$I={5/2}$", "$I={7/2}$"],
                loc='upper right', prop={'size': 10})
-    ax2 = ax1.twinx()  # this is the important function
-    ax2.plot(P, GammaNq,linestyle='dashed')
-    ax2.plot(P, GammaNqq,linestyle='dashed')
-    ax2.plot(P, GammaNqqq,linestyle='dashed')
-    ax2.set_ylabel('$\Gamma^-\;(R_{se})$')
-    # my_y_ticks = np.arange(0, 1, 0.2)
-    # plt.yticks(my_y_ticks)
-    plt.savefig('linewidth.png', dpi=600)
+
+    plt.xticks(fontsize=10)
+    plt.yticks(fontsize=10)
+
+    plt.ylim([0,0.8])
+    plt.savefig('linewidth-.png', dpi=600)
 
 # plt.figure()
 # plt.plot(t, C_1x2x)
 # plt.figure()
 # plt.plot(t, (np.array(C_1x2x)+np.array(C_1x1x)))
 
-plt.show()
+
