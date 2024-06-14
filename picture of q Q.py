@@ -19,22 +19,24 @@ QQQ = 2 * (11 + 28 * P ** 2 + 99 * P ** 4 + 64 * P ** 6 + 49 * P ** 8 + 4 * P **
 plt.style.use(['science','nature' ])
 with plt.style.context(['science','nature']):
     plt.figure()
-    p1, = plt.plot(P, Q,linestyle='solid')
-    p2, = plt.plot(P, QQ,linestyle='dashed' )
-    p3, = plt.plot(P,QQQ,linestyle='dashdot')
-    # p4, = plt.plot(P, q,color='purple',linestyle='solid')
-    # p5, = plt.plot(P, qq,color='brown',linestyle='dashed')
-    # p6, = plt.plot(P, qqq,color='olive',linestyle='dashdot')
+    p1, = plt.plot(P, q,color='#2166AC',linestyle='solid')
+    p2, = plt.plot(P, qq,color='#F19903',linestyle='solid' )
+    p3, = plt.plot(P,qqq,color='#117733',linestyle='solid')
+    p4, = plt.plot(P, Q,color='#2166AC',linestyle='dashed')
+    p5, = plt.plot(P, QQ,color='#F19903',linestyle='dashed')
+    p6, = plt.plot(P, QQQ,color='#117733',linestyle='dashed')
     plt.legend([p1,p2,p3], ["$I={3/2}$",  "$I={5/2}$", "$I={7/2}$"],
                loc='upper right', prop={'size': 10})
 
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
-    plt.xlabel('$P$', fontsize=12)
-    plt.ylabel('$Q(P)$', fontsize=12)
+    plt.xlabel('$P$', fontsize=11)
+    plt.ylabel('$q$, $Q$', fontsize=11)
     # my_y_ticks = np.arange(0, 1, 0.2)
     # plt.yticks(my_y_ticks)
     plt.ylim([0,23])
+    plt.xlim([0,1])
+
     plt.savefig('qq.png', dpi=600)
 
 

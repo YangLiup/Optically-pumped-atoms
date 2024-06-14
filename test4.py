@@ -1,93 +1,110 @@
-# -*- coding:utf-8 -*-
-"""
-作者：DELL
-日期：2023年12月24日
-"""
-import numpy as np
 import matplotlib.pyplot as plt
 from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
 from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
 from qutip import *
 from sympy.physics.quantum.spin import Rotation
 from sympy import pi
+from test5 import master_equation
 from scipy.linalg import *
+import numpy as np
 import scienceplots
+T1=20000
+dt=0.01
+T2=1000
+T3=1000
+T4=1000
+tp1=10
+tp2=2
+tp3=2
+tp4=2
+transverse1, longitude1, Pz1, Px1=master_equation(T1, dt, tp1,0.01)
+transverse2, longitude2, Pz2, Px2=master_equation(T2, dt, tp2,0.1)
+transverse3, longitude3, Pz3, Px3=master_equation(T3, dt, tp3,0.2)
+transverse4, longitude4, Pz4, Px4=master_equation(T4, dt, tp4,1)
+plt.style.use(['science','nature'])
+with plt.style.context(['science','nature']):
+    fig = plt.figure(figsize=(3.2,8))
+    ax1 = fig.add_subplot(411)
+    ax1.plot(np.arange(0,T1,dt), Px1 )
+    ax1.plot(np.arange(0,T1,dt), Pz1  )
+    ax1.plot(np.arange(0,T1,dt), transverse1)
+    ax1.plot(np.arange(0,T1,dt), longitude1)
+    ax1.set_ylabel('Polarization', fontsize=11)
+    ax1.tick_params(axis='x', labelsize='10' )
+    ax1.tick_params(axis='y', labelsize='10' )
 
-# --------------------------------Properties of the alkali metal atom-----------------------------------#
-I = 3 / 2
-a = round(I + 1 / 2)
-b = round(I - 1 / 2)
+    # ax1.set_ylabel('$\Gamma^+\;(R_{\\rm{se}})$',fontsize='12')
+    # ax1.set_ylim([0,0.05])
+    ax1.set_xlim([0,20000])
+    # ax1.set_xticklabels([])
+    ax2 = fig.add_subplot(412)
+    ax2.plot(np.arange(0,T2,dt), Px2 )
+    ax2.plot(np.arange(0,T2,dt), Pz2  )
+    ax2.plot(np.arange(0,T2,dt), transverse2)
+    ax2.plot(np.arange(0,T2,dt), longitude2)
+    ax2.set_ylabel('Polarization', fontsize=11)
+    ax2.tick_params(axis='x', labelsize='10' )
+    ax2.tick_params(axis='y', labelsize='10' )
+    ax2.set_xlim([0,1000])
+    ax3 = fig.add_subplot(413)
+    ax3.plot(np.arange(0,T2,dt), Px3 )
+    ax3.plot(np.arange(0,T2,dt), Pz3  )
+    ax3.plot(np.arange(0,T2,dt), transverse3)
+    ax3.plot(np.arange(0,T2,dt), longitude3)
+    ax3.set_ylabel('Polarization', fontsize=11)
+    ax3.tick_params(axis='x', labelsize='10' )
+    ax3.tick_params(axis='y', labelsize='10' )
+    ax3.set_xlim([0,1000])
+    tt=np.arange(0,T2,dt)
+    ax4 = fig.add_subplot(414)
+    ax4.plot(np.arange(0,T2,dt), Px4 )
+    ax4.plot(np.arange(0,T2,dt), Pz4  )
+    ax4.plot(np.arange(0,T2,dt), transverse4)
+    ax4.plot(np.arange(0,T2,dt), longitude4)
+    ax4.set_ylabel('Polarization', fontsize=11)
+    ax4.set_xlabel('Time $(1/R_{\\rm{se}})$', fontsize=11)
+    ax4.tick_params(axis='x', labelsize='10' )
+    ax4.tick_params(axis='y', labelsize='10' )
+    ax4.set_xlim([0,1000])
+    ax4.legend( ["$P_x^{\\rm{NB}}$", "$P_z^{\\rm{NB}}$", "$P_x^{\\rm{DM}}$","$P_z^{\\rm{DM}}$"],
+               loc='center right', prop={'size': 10})
+    
+    axins = ax4.inset_axes((0.2, 0.2, 0.4, 0.3))
+    axins.plot(tt,  Px4)
+    axins.plot([], [])
+    axins.plot(tt, transverse4)
+    # 设置放大区间
+    zone_left = 10*100*45
+    zone_right = 10*100*55
 
-# --------------------------------Generate the angular momentum operators-----------------------------------#
-U = alkali_atom_uncoupled_to_coupled(round(2 * I))
-ax, ay, az, bx, by, bz = spin_operators_of_2or1_alkali_metal_atoms(1, I)
-Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax()))
-Sx = U.T.conjugate() @ Sx @ U
-Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay()))
-Sy = U.T.conjugate() @ Sy @ U
-Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz()))
-Sz = U.T.conjugate() @ Sz @ U
+    # 坐标轴的扩展比例（根据实际数据调整）
+    x_ratio = 0.5 # x轴显示范围的扩展比例
+    y_ratio = 0.2 # y轴显示范围的扩展比例
 
-# --------------------------------Characterize interactions envolved-----------------------------------#
-Rse = 1
+    # X轴的显示范围
+    xlim0 = tt[zone_left]-(tt[zone_right]-tt[zone_left])*x_ratio
+    xlim1 = tt[zone_right]+(tt[zone_right]-tt[zone_left])*x_ratio
 
+    # Y轴的显示范围
+    y = np.hstack((Pz4[zone_left:zone_right], transverse4[zone_left:zone_right]))
+    ylim0 = np.min(y)-(np.max(y)-np.min(y))*y_ratio
+    ylim1 = np.max(y)+(np.max(y)-np.min(y))*y_ratio
 
+    # 调整子坐标系的显示范围
+    axins.set_xlim(xlim0, xlim1)
+    axins.set_ylim(-0.025, 0.025)
+ 
+    # ax2.set_ylim([0,0.8])
+    # ax2.set_xlim([0,1])
+    # ax1.xticks(fontsize=10)
+    # ax1.yticks(fontsize=10)
+    # ax2.xticks(fontsize=10)
+    # ax2.yticks(fontsize=10)
+    
 
-# -----------------eigenstates-----------------#
-
-Rho_ini = (np.outer(np.array([1, 0, 0, 0, 0, 0, 0, 0]), np.array([1, 0, 0, 0, 0, 0, 0, 0]))+np.outer(np.array([0, 0, 0, 0, 1, 0, 0, 0]), np.array([0, 0, 0, 0, 1, 0, 0, 0])))/2
-
-# --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
-Rhot = Rho_ini
-dt = 0.01
-T = 200
-t = np.arange(0, T, dt)
-hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
-clear = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.zeros((2 * b + 1, 2 * b + 1)))  # 一个原子
-
-MSx = np.zeros(round(T / dt))
-MSz = np.zeros(round(T / dt))
-V = np.zeros(round(T / dt))
-for n in np.arange(0, round(T / dt), 1):
-    # -----------------Evolution-----------------#
-    if n==round(T / dt)/2:
-        Rop = 0.0
-    x1 = Rhot @ Sx
-    x2 = Rhot @ Sy
-    x3 = Rhot @ Sz
-    AS = 3 / 4 * Rhot - (Sx @ x1 + Sy @ x2 + Sz @ x3)
-    alpha = Rhot - AS
-    mSx = np.trace(x1)
-    mSy = np.trace(x2)
-    mSz = np.trace(x3)
-    mSS = mSx * Sx + mSy * Sy + mSz * Sz
-    Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt + Rhot
-    for j in np.arange(0,1,1):
-        Rhott=Rhot
-        Rhot = clear * Rhot
-        Rhot[0,0]=Rhott[5,5]*1/6+Rhot[0,0]
-        Rhot[1,1]=Rhott[5,5]*1/12+Rhott[6,6]/4+Rhot[1,1]
-        Rhot[2,2]=Rhott[5,5]*1/4+Rhott[7,7]/4+Rhot[2,2]
-        Rhot[3,3]=Rhott[7,7]*1/12+Rhott[6,6]/4+Rhot[3,3]
-        Rhot[4,4]=Rhott[7,7]*1/6+Rhot[4,4]
-        Rhot[5,5]=1/4*Rhott[5,5]+1/12*Rhott[6,6]+Rhot[5,5]
-        Rhot[6,6]=1/3*Rhott[6,6]+1/4*Rhott[5,5]+1/4*Rhott[7,7]+Rhot[6,6]
-        Rhot[7,7]=1/12*Rhott[6,6]+1/4*Rhott[7,7]+Rhot[7,7]
-    Rhot = hyperfine * Rhot
-    # -----------------Observables-----------------#
-    MSz[n] = mSz
-    MSx[n] = mSx
-    # Vx = np.trace(Rhot @ ((ax + bx) @ (ax + bx) + (ay + by) @ (ay + by) + (az + bz) @ (az + bz)))
-    # V[n] = Vx
-plt.style.use(['science'])
-with plt.style.context(['science']):
-    plt.figure()
-    plt.bar(np.array([1,2,3,4,5,6,7,8]), np.diag(Rhot))
     # plt.xlim(0, 200)
     # plt.ylim(0, 18)
-    plt.xticks(fontsize=10)
-    plt.yticks(fontsize=10)
-    # plt.legend([p1, p3, p2, p4], ["$P_x^{\mathrm{DM}}$", "$P_x^{\mathrm{NB}}$", "$P_z^{\mathrm{DM}}$", "$P_z^{\mathrm{NB}}$"], loc='upper right',
-    #            prop={'size': 10})
 
-    plt.show()
+
+    plt.savefig('imag/Evolution1.png', dpi=600)
+plt.show()

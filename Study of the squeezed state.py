@@ -73,7 +73,7 @@ for i in np.arange(0, n, 1):
     Rho_r = Rho_r / Rho_r.trace()
     Rho_atom = ptr(Rho_r, 2 * s + 1, (2 * (a + b + 1)) ** N)
     # C_1z1z[i] = 1 - np.trace(Rho_atom @ Fz @ Fz) / Vz0
-    C_1z2z[i] = np.trace(Rho_atom @ Fy)
+    C_1z2z[i] = np.trace(Rho_atom @ Fy@Fy)
 
 tt = np.arange(0, T, dt)
 plt.style.use(['science'])
@@ -86,7 +86,7 @@ with plt.style.context(['science']):
     plt.ylabel('Polarization reduction', fontsize=12)
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
-    plt.savefig('squeezing.png', dpi=600)
+    plt.savefig('imag\squeezing.png', dpi=600)
 
 # plt.figure()
 # plt.plot(t, C_1x2x)

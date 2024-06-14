@@ -32,16 +32,19 @@ plt.style.use(['science','nature'])
 with plt.style.context(['science','nature']):
     fig1 = plt.figure()
     plt.plot(P, 10*Fp2)
+    plt.plot(P, 10*Fn2)
+    plt.plot(P, 10*Fp2+10*Fn2)
     plt.xlabel('$P$', fontsize=12)
-    plt.ylabel('$ \\varPhi_+$, $ \\varPhi_-$ (arb.units) ',fontsize='12')
-    plt.plot(P, 10*Fn2,'olive')
-    plt.ylim([0, 10])
+    plt.ylabel('Power (arb.units) ',fontsize='12')
+    plt.legend( ["$ \\varPhi_+$", "$ \\varPhi_-$", "$ \\varPhi_+$+$ \\varPhi_-$"],
+               loc='upper left', prop={'size': 10})
+    plt.ylim([0, 15.2])
     plt.xlim([0, 1])
     # plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
     # plt.xlabel('Frequency (Hz)', fontsize=12)
     # plt.ylabel(' PSD ($N \chi_a^2/$Hz)', fontsize=12)
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
-    plt.savefig('Power.png', dpi=600)
+    plt.savefig('imag/Power.png', dpi=600)
 
 

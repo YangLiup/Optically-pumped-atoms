@@ -23,7 +23,7 @@ import random
 # ----------------------Squeezing----------------------------#
 # N is the number of atoms, T is the squeezing time, F is the spin of atom, s is the spin of light and alpha is the coupling constant
 T = 10
-F= 10
+F= 2
 s = 10
 alpha = 0.1
 dt = 0.01
@@ -34,6 +34,7 @@ sy = np.array(spin_Jy(s))
 sz = np.array(spin_Jz(s))
 qy, vy = np.linalg.eig(sy)
 Fx = np.array(spin_Jx(F))
+qF, vF = np.linalg.eig(Fx)
 Fy = np.array(spin_Jy(F))
 Fz = np.array(spin_Jz(F))
 # initiation
@@ -43,8 +44,9 @@ H = alpha * np.kron(Fz, sz)
 plt.style.use(['science','nature'])
 with plt.style.context(['science','nature']):
     plt.figure()
-    for j in np.arange(0, 10, 1):
-        XiF_ini = np.array(spin_coherent(F, np.pi / 2, 0))
+    for j in np.arange(0, 1, 1):
+        # XiF_ini = np.array(spin_coherent(F, np.pi / 2, 0))
+        XiF_ini = vF[:,3]
         ini_Rho_atom = np.outer(XiF_ini, XiF_ini)
         Xis_ini = np.array(spin_coherent(s, np.pi / 2, 0))
         Rhos_ini = np.outer(Xis_ini, Xis_ini)
@@ -60,11 +62,9 @@ with plt.style.context(['science','nature']):
             Rho_r = read @ Rhot @ read.T.conjugate()
             Rho_r = Rho_r / Rho_r.trace()
             Rho_atom = ptr(Rho_r, 2 * s + 1, (2*F+1) )
-            Rhot = np.kron(Rho_atom, Rhos_ini)
-
-            # C_1z1z[i] = 1 - np.trace(Rho_atom @ Fz @ Fz) / Vz0
-            C_1z1z[i] = np.trace(Rho_atom @ Fz)
-            # C_1z2z[i] = np.trace(Rho_atom @ Fz@Fz)-np.trace(Rho_atom @ Fz)**2
+            Rhot = np.kron(Rho_atom, Rhos_ini)    
+            # C_1z1z[i] = np.trace(Rho_atom @ Fz )
+            C_1z1z[i] = np.trace(Rho_atom @ Fy@Fy)-np.trace(Rho_atom @ Fy)**2
 
         tt = np.arange(0, T, dt)
         plt.plot(tt, C_1z1z)
@@ -77,7 +77,7 @@ with plt.style.context(['science','nature']):
     plt.ylabel('$\langle F_x \\rangle$', fontsize=12)
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
-    plt.savefig('squeezing.png', dpi=600)
+    plt.savefig('imag\squeezing.png', dpi=600)
 
     # plt.figure()
     # plt.plot(t, C_1x2x)
