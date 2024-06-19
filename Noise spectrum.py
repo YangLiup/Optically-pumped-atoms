@@ -10,8 +10,8 @@ import scienceplots
 omega = np.arange(0,100000, 0.01)
 P=2/3
 q=2*(3+P**2)/(1-P**2)
-Omega = 300/q*4/2/np.pi
-gammap = 2*300/q/2/np.pi
+Omega = 400/q*4/2/np.pi
+gammap = 2*100/q/2/np.pi
 gamman = 10000*(2/3+4/3/16-P**2/(1+P**2))/2/np.pi
 eta=(3*P**2+5)/(1-P**2)
 Fz = 1/2 *q*P
