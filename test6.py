@@ -75,7 +75,7 @@ V = np.zeros(round(T / dt))
 H = omega_0 * (az - bz)  # 投影定理
 q, v = np.linalg.eig(H)
 evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
-for P in np.arange(0, round(T / dt), 1):
+for n in np.arange(0, round(T / dt), 1):
     # -----------------Evolution-----------------#
     x1 = Rhot @ Sx
     x2 = Rhot @ Sy
@@ -88,8 +88,8 @@ for P in np.arange(0, round(T / dt), 1):
     P=2*np.sqrt(mSx**2+mSy**2)
     eta=(5+3*P**2)/(1-P**2)
     PP[n]=P
-    Fx = np.trace((ax+bx)@Rhot)
-    Fy = np.trace((ay+by)@Rhot)
+    Fx = np.trace((ax)@Rhot)
+    Fy = np.trace((ay)@Rhot)
     Fxm = np.trace((ax-eta*bx)@Rhot)
     Fym = np.trace((ay-eta*by)@Rhot)
     Fp[n]=np.sqrt(Fx**2+Fy**2)
@@ -101,12 +101,9 @@ for P in np.arange(0, round(T / dt), 1):
     Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt + (
             ER + OP) * dt + Rhot
     Rhot = hyperfine * Rhot
-    # -----------------Observables-----------------#
-    MSz[n] = mSz
-    MSx[n] = mSx
     # Vx = np.trace(Rhot @ ((ax + bx) @ (ax + bx) + (ay + by) @ (ay + by) + (az + bz) @ (az + bz)))
     # V[n] = Vx
-h=dt
+
 # slopep = np.gradient(Fp,h)
 # slopem = np.gradient(Fm,h)
 # Gammam=-slopem/Fm
@@ -114,7 +111,7 @@ plt.style.use(['science'])
 with plt.style.context(['science']):
     plt.figure()
     # p1, = plt.plot(PP, -slopep/Fp)
-    p1, = plt.plot(PP, Fm)
+    p1, = plt.plot(PP, Fm*Fp)
     # plt.xlim(0,0.93)
     # plt.ylim(0, 0.0001)
     plt.xticks(fontsize=10)

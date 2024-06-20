@@ -12,7 +12,7 @@ from sympy.physics.quantum.spin import Rotation
 from sympy import pi
 from scipy.linalg import *
 import scienceplots
-def gammam(I, g1, g2): 
+def gammam(I,bound): 
 
     # --------------------------------Properties of the alkali metal atom-----------------------------------#
     # I = 5 / 2
@@ -31,13 +31,12 @@ def gammam(I, g1, g2):
 
     # --------------------------------Characterize interactions envolved-----------------------------------#
     Rse = 1
-    Rop = 0
-    Rsd = 0
-    sx=np.sqrt(1)/(2)
-    sz=np.sqrt(1)/(2)
+    H = (az+0.5*ax - bz-0.5*bx)  # 投影定理
+    q, v = np.linalg.eig(H)
+    evolving_B = v @ np.diag(np.exp(-1j * q *0.1)) @ np.linalg.inv(v)
     # --------------------------------Define the initial state-----------------------------------#
-    theta = 0
-    phi = 0
+    theta = np.pi/2
+    phi = np.pi/4
     a_theta = spin_Jx(a) * np.sin(theta) * np.cos(phi) + spin_Jy(a) * np.sin(theta) * np.sin(phi) + spin_Jz(a) * np.cos(
         theta)
     b_theta = spin_Jx(b) * np.sin(theta) * np.cos(phi) + spin_Jy(b) * np.sin(theta) * np.sin(phi) + spin_Jz(b) * np.cos(
@@ -46,8 +45,6 @@ def gammam(I, g1, g2):
     qb, vb = np.linalg.eig(b_theta)
     v = block_diag(va, vb)
     q = np.hstack((qa, qb))
-    Rho_ini = np.zeros(2 * (a + b + 1))
-
     # # -----------------spin temperature state-----------------#
 
 
@@ -59,9 +56,10 @@ def gammam(I, g1, g2):
 
     dt = 0.001
     hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
-    Fm = np.zeros(1001)
+    Fmmt = np.zeros(bound)
+    Fmmz = np.zeros(bound)
 
-    for n in np.arange(0, 1001, 1):
+    for n in np.arange(0,bound, 1):
         # -----------------Evolution-----------------#
         Rho_ini = np.zeros(2 * (a + b + 1))
         P = n/1000
@@ -77,11 +75,14 @@ def gammam(I, g1, g2):
         for i in np.arange(0, 2 * (a + b + 1), 1):
             Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] @ v[:, [i]].T.conjugate()
         Rho_ini = Rho_ini / np.trace(Rho_ini)
-        Rho_ini[[g1,g1]]=Rho_ini[[g1,g1]]*0.9
-        Rho_ini[[g2,g2]]=Rho_ini[[g2,g2]]+Rho_ini[[g1,g1]]*0.1
+        Rho_ini = evolving_B @Rho_ini @ evolving_B.T.conjugate()  # Zeeman effect
         Rhot = Rho_ini
-        Fzm0 = np.sqrt(np.trace((az-eta*bz)@Rhot)**2)
-        for tt in np.arange(0,20,1):
+        Fxm0 = np.trace((ax-eta*bx)@Rhot)
+        Fym0 = np.trace((ay-eta*by)@Rhot)
+        Fm0=np.sqrt(Fxm0**2+Fym0**2)
+        Fmz0=np.sqrt(np.trace((az-eta*bz)@Rhot)**2)
+        for k in np.arange(0,2,1):
+            Rhot = hyperfine * Rhot
             x1 = Rhot @ Sx
             x2 = Rhot @ Sy
             x3 = Rhot @ Sz
@@ -92,8 +93,14 @@ def gammam(I, g1, g2):
             mSz = np.trace(x3)
             mSS = mSx * Sx + mSy * Sy + mSz * Sz
             Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt  + Rhot
-            Rhot = hyperfine * Rhot
-        Fzm =np.sqrt(np.trace((az-eta*bz)@Rhot)**2)
-        Fm[n]=(Fzm-Fzm0)/(dt*(20))/Fzm0
-    return Fm
+  
+        Fxm = np.trace((ax-eta*bx)@Rhot)
+        Fym = np.trace((ay-eta*by)@Rhot)
+        Fm=np.sqrt(Fxm**2+Fym**2)
+        Fmz=np.sqrt(np.trace((az-eta*bz)@Rhot)**2)
+
+        Fmmt[n]=(Fm-Fm0)/(2*dt)/Fm0
+        Fmmz[n]=(Fmz-Fmz0)/(2*dt)/Fmz0
+
+    return Fmmt, Fmmz
     

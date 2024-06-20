@@ -16,15 +16,15 @@ qqq = 2 * (11 + 35 * P ** 2 + 17 * P ** 4 + P ** 6) / (1 + 7 * P ** 2 + 7 * P **
 QQQ = 2 * (11 + 28 * P ** 2 + 99 * P ** 4 + 64 * P ** 6 + 49 * P ** 8 + 4 * P ** 10 +
            P ** 12) / (1 + 7 * P ** 2 + 7 * P ** 4 + P ** 6) ** 2
 
-plt.style.use(['science' ,'nature'])
-with plt.style.context(['science','nature']):
-    plt.figure()
-    p1, = plt.plot(P, q,linestyle='solid',color='black')
-    p2, = plt.plot(P, qq,linestyle='dashed',color='black' )
-    p3, = plt.plot(P,qqq,linestyle='dotted',color='black')
-    p4, = plt.plot(P, Q,linestyle='solid',color='tomato')
-    p5, = plt.plot(P, QQ,linestyle='dashed',color='tomato')
-    p6, = plt.plot(P, QQQ,linestyle='dotted',color='tomato')
+plt.style.use(['science' ,'ieee'])
+with plt.style.context(['science','ieee']):
+    plt.figure(figsize=(2.8, 2.5))
+    p1, = plt.plot(P, q,linestyle='solid',color='black',linewidth='1')
+    p2, = plt.plot(P, qq,linestyle='dashed',color='black',linewidth='1' )
+    p3, = plt.plot(P,qqq,linestyle='dotted',color='black',linewidth='1')
+    p4, = plt.plot(P, Q,linestyle='solid',color='red',linewidth='1')
+    p5, = plt.plot(P, QQ,linestyle='dashed',color='red',linewidth='1')
+    p6, = plt.plot(P, QQQ,linestyle='dotted',color='red',linewidth='1')
     plt.legend([p1,p2,p3], ["$I={3/2}$",  "$I={5/2}$", "$I={7/2}$"],
                loc='upper right', prop={'size': 10})
 

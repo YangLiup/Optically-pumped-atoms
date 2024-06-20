@@ -12,7 +12,7 @@ from sympy.physics.quantum.spin import Rotation
 from sympy import pi
 from scipy.linalg import *
 import scienceplots
-def gammam(I, g1, g2): 
+def gammam(P,I, g1, g2,deviation): 
 
     # --------------------------------Properties of the alkali metal atom-----------------------------------#
     # I = 5 / 2
@@ -56,44 +56,33 @@ def gammam(I, g1, g2):
     # Rho_ini = np.outer(np.array([0, 1, 0, 0, 0, 0, 0, 0]), np.array([0, 1, 0, 0, 0, 0, 0, 0]))
 
     # --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
-
+    qq=2*(19+26*P**2+3*P**4)/(3+10*P**2+3*P**4)
+    eta=(qq+6)/(qq-6)
     dt = 0.001
     hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
-    Fm = np.zeros(1001)
-
-    for n in np.arange(0, 1001, 1):
+    Fm = np.zeros(10001)
+    Rho_ini = np.zeros(2 * (a + b + 1))
+    beta = np.log((1 + P) / (1 - P))
+    for i in np.arange(0, 2 * (a + b + 1), 1):
+        Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] *v[:, [i]].T.conjugate()
+    Rho_ini = Rho_ini / np.trace(Rho_ini)
+    Rho_ini[[g1,g1]]=Rho_ini[[g1,g1]]*deviation
+    Rho_ini[[g2,g2]]=Rho_ini[[g2,g2]]+Rho_ini[[g1,g1]]*(1-deviation)
+    Rhot = Rho_ini
+    for n in np.arange(0, 10001, 1):
         # -----------------Evolution-----------------#
-        Rho_ini = np.zeros(2 * (a + b + 1))
-        P = n/1000
-        if a==2:
-            eta=(5+3*P**2)/(1-P**2)
-        if a==3:
-            qq=2*(19+26*P**2+3*P**4)/(3+10*P**2+3*P**4)
-            eta=(qq+6)/(qq-6)
-        if a==4:
-            qq=2*(11+35*P**2+17*P**4+P**6)/(1+7*P**2+7*P**4+P**6)
-            eta=(qq+8)/(qq-8)
-        beta = np.log((1 + P) / (1 - P))
-        for i in np.arange(0, 2 * (a + b + 1), 1):
-            Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] @ v[:, [i]].T.conjugate()
-        Rho_ini = Rho_ini / np.trace(Rho_ini)
-        Rho_ini[[g1,g1]]=Rho_ini[[g1,g1]]*0.9
-        Rho_ini[[g2,g2]]=Rho_ini[[g2,g2]]+Rho_ini[[g1,g1]]*0.1
-        Rhot = Rho_ini
-        Fzm0 = np.sqrt(np.trace((az-eta*bz)@Rhot)**2)
-        for tt in np.arange(0,20,1):
-            x1 = Rhot @ Sx
-            x2 = Rhot @ Sy
-            x3 = Rhot @ Sz
-            AS = 3 / 4 * Rhot - (Sx @ x1 + Sy @ x2 + Sz @ x3)
-            alpha = Rhot - AS
-            mSx = np.trace(x1)
-            mSy = np.trace(x2)
-            mSz = np.trace(x3)
-            mSS = mSx * Sx + mSy * Sy + mSz * Sz
-            Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt  + Rhot
-            Rhot = hyperfine * Rhot
+        x1 = Rhot @ Sx
+        x2 = Rhot @ Sy
+        x3 = Rhot @ Sz
+        AS = 3 / 4 * Rhot - (Sx @ x1 + Sy @ x2 + Sz @ x3)
+        alpha = Rhot - AS
+        mSx = np.trace(x1)
+        mSy = np.trace(x2)
+        mSz = np.trace(x3)
+        mSS = mSx * Sx + mSy * Sy + mSz * Sz
+        Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt  + Rhot
+        Rhot = hyperfine * Rhot
         Fzm =np.sqrt(np.trace((az-eta*bz)@Rhot)**2)
-        Fm[n]=(Fzm-Fzm0)/(dt*(20))/Fzm0
+        Fm[n]=Fzm
     return Fm
     
