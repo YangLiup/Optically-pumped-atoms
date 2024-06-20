@@ -19,16 +19,12 @@ QQQ = 2 * (11 + 28 * P ** 2 + 99 * P ** 4 + 64 * P ** 6 + 49 * P ** 8 + 4 * P **
 plt.style.use(['science' ,'nature'])
 with plt.style.context(['science','nature']):
     plt.figure()
-    p1, = plt.plot(P, q,linestyle='solid')
-    p2, = plt.plot(P, qq,linestyle='solid' )
-    p3, = plt.plot(P,qqq,linestyle='solid')
-    plt.plot([],[])
-    plt.plot([],[])
-    plt.plot([],[])
-    plt.plot([],[])
-    p4, = plt.plot(P, Q,linestyle='dashed')
-    p5, = plt.plot(P, QQ,linestyle='dashed')
-    p6, = plt.plot(P, QQQ,linestyle='dashed')
+    p1, = plt.plot(P, q,linestyle='solid',color='black')
+    p2, = plt.plot(P, qq,linestyle='dashed',color='black' )
+    p3, = plt.plot(P,qqq,linestyle='dotted',color='black')
+    p4, = plt.plot(P, Q,linestyle='solid',color='tomato')
+    p5, = plt.plot(P, QQ,linestyle='dashed',color='tomato')
+    p6, = plt.plot(P, QQQ,linestyle='dotted',color='tomato')
     plt.legend([p1,p2,p3], ["$I={3/2}$",  "$I={5/2}$", "$I={7/2}$"],
                loc='upper right', prop={'size': 10})
 
@@ -39,7 +35,7 @@ with plt.style.context(['science','nature']):
     # my_y_ticks = np.arange(0, 1, 0.2)
     # plt.yticks(my_y_ticks)
     plt.ylim([0,23])
-    plt.xlim([0,1])
+    # plt.xlim([0,1])
 
     plt.savefig('qq.png', dpi=600)
 
