@@ -9,8 +9,9 @@ from test9 import gammam
 from scipy.linalg import *
 import numpy as np
 
-Fm1=gammam(0.5,5/2,7, 1,0.95)
-Fm2=gammam(0.5,5/2,7, 1,0.95)
+P=0.99
+Fm1=gammam(P,5/2,7, 1, 0.001)
+Fm2=gammam(P,5/2,8, 2,0.002)
 tt=np.arange(0, 10001, 1)
 plt.style.use(['science','ieee'])
 with plt.style.context(['science','ieee']):

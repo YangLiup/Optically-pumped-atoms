@@ -10,7 +10,7 @@ from scipy.linalg import *
 import numpy as np
 
 bound=1001
-Fm1=gammam(3/2, 5,1)
+Fm1=gammam(3/2,5,1,0.0001)
 
 h=3/4
 qq0=2*(19)/(3)

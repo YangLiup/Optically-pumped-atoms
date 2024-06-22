@@ -12,7 +12,7 @@ from sympy.physics.quantum.spin import Rotation
 from sympy import pi
 from scipy.linalg import *
 import scienceplots
-def gammam(I, g1, g2): 
+def gammam(I, g1, g2,deviation): 
 
     # --------------------------------Properties of the alkali metal atom-----------------------------------#
     # I = 5 / 2
@@ -60,7 +60,7 @@ def gammam(I, g1, g2):
     dt = 0.001
     hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
     Fm = np.zeros(1001)
-
+    m=50000
     for n in np.arange(0, 1001, 1):
         # -----------------Evolution-----------------#
         Rho_ini = np.zeros(2 * (a + b + 1))
@@ -77,11 +77,11 @@ def gammam(I, g1, g2):
         for i in np.arange(0, 2 * (a + b + 1), 1):
             Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] @ v[:, [i]].T.conjugate()
         Rho_ini = Rho_ini / np.trace(Rho_ini)
-        Rho_ini[[g1,g1]]=Rho_ini[[g1,g1]]*0.9
-        Rho_ini[[g2,g2]]=Rho_ini[[g2,g2]]+Rho_ini[[g1,g1]]*0.1
+        Rho_ini[[g1,g1]]=Rho_ini[[g1,g1]]-deviation
+        Rho_ini[[g2,g2]]=Rho_ini[[g2,g2]]+deviation
         Rhot = Rho_ini
         Fzm0 = np.sqrt(np.trace((az-eta*bz)@Rhot)**2)
-        for tt in np.arange(0,20,1):
+        for tt in np.arange(0,500,1):
             x1 = Rhot @ Sx
             x2 = Rhot @ Sy
             x3 = Rhot @ Sz
@@ -93,7 +93,11 @@ def gammam(I, g1, g2):
             mSS = mSx * Sx + mSy * Sy + mSz * Sz
             Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt  + Rhot
             Rhot = hyperfine * Rhot
+            Fzm =np.sqrt(np.trace((az-eta*bz)@Rhot)**2)
+            if Fzm<1e-4:
+                break
+
         Fzm =np.sqrt(np.trace((az-eta*bz)@Rhot)**2)
-        Fm[n]=(Fzm-Fzm0)/(dt*(20))/Fzm0
+        Fm[n]=(Fzm-Fzm0)/(dt*(500))/Fzm0
     return Fm
     

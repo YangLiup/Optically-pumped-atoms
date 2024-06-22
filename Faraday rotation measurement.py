@@ -23,9 +23,9 @@ import random
 # ----------------------Squeezing----------------------------#
 # N is the number of atoms, T is the squeezing time, F is the spin of atom, s is the spin of light and alpha is the coupling constant
 T = 10
-F= 2
+F= 10
 s = 10
-alpha = 0.1
+alpha = 0.25
 dt = 0.01
 # ----------------------squeezing----------------------#
 
@@ -43,10 +43,11 @@ H = alpha * np.kron(Fz, sz)
 
 plt.style.use(['science','nature'])
 with plt.style.context(['science','nature']):
+    plt.rc('font',family='Times New Roman')
     plt.figure()
     for j in np.arange(0, 1, 1):
-        # XiF_ini = np.array(spin_coherent(F, np.pi / 2, 0))
-        XiF_ini = vF[:,3]
+        XiF_ini = np.array(spin_coherent(F, np.pi / 2, 0))
+        # XiF_ini = vF[:,3]
         ini_Rho_atom = np.outer(XiF_ini, XiF_ini)
         Xis_ini = np.array(spin_coherent(s, np.pi / 2, 0))
         Rhos_ini = np.outer(Xis_ini, Xis_ini)
@@ -63,21 +64,30 @@ with plt.style.context(['science','nature']):
             Rho_r = Rho_r / Rho_r.trace()
             Rho_atom = ptr(Rho_r, 2 * s + 1, (2*F+1) )
             Rhot = np.kron(Rho_atom, Rhos_ini)    
-            # C_1z1z[i] = np.trace(Rho_atom @ Fz )
-            C_1z1z[i] = np.trace(Rho_atom @ Fy@Fy)-np.trace(Rho_atom @ Fy)**2
-
-        tt = np.arange(0, T, dt)
-        plt.plot(tt, C_1z1z)
+            C_1z2z[i] = np.trace(Rho_atom @ Fz@Fz )-np.trace(Rho_atom @ Fz )**2
+            C_1z1z[i] = np.trace(Rho_atom @ Fz)
+        C_1z2z=np.array(C_1z2z)
+        C_1z1z=np.array(C_1z1z)
+    tt = np.arange(0, T, dt)
+    plt.plot(tt, C_1z1z)
         # plt.plot(tt, C_1z2z)
+    down=C_1z1z-np.sqrt(C_1z2z)/2
+    up=C_1z1z+np.sqrt(C_1z2z)/2
+    plt.fill_between(tt, down,up,facecolor = 'red', alpha = 0.5)
 
         # plt.xlim(0, 1)
         # plt.ylim(0, 0.4)
-    
-    plt.xlabel('t (arb. units)', fontsize=12)
-    plt.ylabel('$\langle F_x \\rangle$', fontsize=12)
+
+    plt.text(8.5, 0.1, '$ \mathbb{E}[\langle { J}_x \\rangle_c]$',fontsize=8)
+    plt.annotate('$ \sqrt{\langle \Delta { J}_x^2 \\rangle_c}$', xy=(0.5, 1), xytext=(2, 1.5),
+            arrowprops=dict(arrowstyle='->', color='red'),fontsize=8)
+
+    plt.plot(tt, np.zeros(n),color='black',linestyle='dotted')
+    plt.xlabel('t (arb. units)', fontsize=10)
+    plt.ylabel('$\langle { J}_x \\rangle_c$', fontsize=10)
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
-    plt.savefig('imag\squeezing.png', dpi=600)
+    plt.savefig('imag\squeezing.png', dpi=1000)
 
     # plt.figure()
     # plt.plot(t, C_1x2x)

@@ -66,8 +66,8 @@ def gammam(P,I, g1, g2,deviation):
     for i in np.arange(0, 2 * (a + b + 1), 1):
         Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] *v[:, [i]].T.conjugate()
     Rho_ini = Rho_ini / np.trace(Rho_ini)
-    Rho_ini[[g1,g1]]=Rho_ini[[g1,g1]]*deviation
-    Rho_ini[[g2,g2]]=Rho_ini[[g2,g2]]+Rho_ini[[g1,g1]]*(1-deviation)
+    Rho_ini[[g1,g1]]=Rho_ini[[g1,g1]]-deviation
+    Rho_ini[[g2,g2]]=Rho_ini[[g2,g2]]+deviation
     Rhot = Rho_ini
     for n in np.arange(0, 10001, 1):
         # -----------------Evolution-----------------#

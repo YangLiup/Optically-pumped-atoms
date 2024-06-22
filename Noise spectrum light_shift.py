@@ -34,6 +34,7 @@ chip2=(eta-1)**2/(eta+1)**2
 chin2=4/(eta+1)**2
 plt.style.use(['science','nature'])
 with plt.style.context(['science','nature']):
+    plt.rc('font',family='Times New Roman')
     fig1 = plt.figure()
     # p3, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn)-10*Fz/2*(Lorentzianpp - Lorentzianpn))
     # p1, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn))
@@ -49,12 +50,12 @@ with plt.style.context(['science','nature']):
     # plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
 
     plt.legend([p1, p2, p3], ["Total", "Absorptive", "Dispersive"], loc='upper right',
-               prop={'size': 10})
+               prop={'size': 9})
 
-    plt.xlabel('$\\nu$ (Hz)', fontsize=11)
-    plt.ylabel(' $S(\\nu)$ (arb. units)', fontsize=11)
+    plt.xlabel('$\\nu$ (Hz)', fontsize=10)
+    plt.ylabel(' $S(\\nu)$ (arb. units)', fontsize=10)
     plt.xlim([0,100])
     # plt.ylim([-2,6])
-    plt.savefig('imag/Noise spectrum_lightshift.png', dpi=600)
+    plt.savefig('imag/Noise spectrum_lightshift.png', dpi=1000)
 
 

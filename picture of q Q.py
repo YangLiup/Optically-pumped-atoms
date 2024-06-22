@@ -6,7 +6,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import scienceplots
-
+from pylab import mpl
+import beautifulplots as bp
+import pandas as pd
 P = np.linspace(0, 1, 100)
 q = 2 * (3 + P ** 2) / (1 + P ** 2)
 Q = 2 * (3 + P ** 4) / (1 + P ** 2) ** 2
@@ -16,26 +18,46 @@ qqq = 2 * (11 + 35 * P ** 2 + 17 * P ** 4 + P ** 6) / (1 + 7 * P ** 2 + 7 * P **
 QQQ = 2 * (11 + 28 * P ** 2 + 99 * P ** 4 + 64 * P ** 6 + 49 * P ** 8 + 4 * P ** 10 +
            P ** 12) / (1 + 7 * P ** 2 + 7 * P ** 4 + P ** 6) ** 2
 
-plt.style.use(['science' ,'ieee'])
-with plt.style.context(['science','ieee']):
-    plt.figure(figsize=(2.8, 2.5))
-    p1, = plt.plot(P, q,linestyle='solid',color='black',linewidth='1')
-    p2, = plt.plot(P, qq,linestyle='dashed',color='black',linewidth='1' )
-    p3, = plt.plot(P,qqq,linestyle='dotted',color='black',linewidth='1')
-    p4, = plt.plot(P, Q,linestyle='solid',color='red',linewidth='1')
-    p5, = plt.plot(P, QQ,linestyle='dashed',color='red',linewidth='1')
-    p6, = plt.plot(P, QQQ,linestyle='dotted',color='red',linewidth='1')
+plt.style.use(['science' ,'nature'])
+with plt.style.context(['science','nature']):
+    plt.figure()
+    # p1, = plt.plot(P, q,linestyle='solid',color='black',linewidth='1')
+    # p2, = plt.plot(P, qq,linestyle='dashed',color='black',linewidth='1' )
+    # p3, = plt.plot(P,qqq,linestyle='dotted',color='black',linewidth='1')
+    # p4, = plt.plot(P, Q,linestyle='solid',color='#d1ae45',linewidth='1')
+    # p5, = plt.plot(P, QQ,linestyle='dashed',color='#d1ae45',linewidth='1')
+    # p6, = plt.plot(P, QQQ,linestyle='dotted',color='#d1ae45',linewidth='1')
+    p1, = plt.plot(P, q)
+    p2, = plt.plot(P, qq)
+    p3, = plt.plot(P,qqq)
+    plt.plot([],[])
+    plt.plot([],[])
+    plt.plot([],[])
+    plt.plot([],[])
+    p4, = plt.plot(P, Q,linestyle='dotted')
+    p5, = plt.plot(P, QQ,linestyle='dotted')
+    p6, = plt.plot(P, QQQ,linestyle='dotted')
+    # plt.text(P[90], q[90], '$q({\\frac 3 2})$')
+    # plt.text(P[90], qq[90], '$q({\\frac 5 2})$')
+    # plt.text(P[90], qqq[90], '$q({\\frac 7 2})$')
+
+    # plt.text(P[1], Q[40], '$Q({\\frac 3 2})$')
+    # plt.text(P[1], QQ[18], '$Q({\\frac 5 2})$')
+    # plt.text(P[1], QQQ[12], '$Q({\\frac 7 2})$')
+
+
+
     plt.legend([p1,p2,p3], ["$I={3/2}$",  "$I={5/2}$", "$I={7/2}$"],
-               loc='upper right', prop={'size': 10})
+               loc='upper right', prop={'size': 9})
 
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
-    plt.xlabel('$P$', fontsize=11)
-    plt.ylabel('$q$, $Q$', fontsize=11)
+    plt.xlabel('$P$', fontsize=10)
+    plt.ylabel('$q$, $Q$', fontsize=10)
     # my_y_ticks = np.arange(0, 1, 0.2)
     # plt.yticks(my_y_ticks)
     plt.ylim([0,23])
-    # plt.xlim([0,1])
+    plt.xlim([0,1])
 
     plt.savefig('qq.png', dpi=600)
 

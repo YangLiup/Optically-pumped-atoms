@@ -45,6 +45,7 @@ chip2=(eta-1)**2/(eta+1)**2
 chin2=4/(eta+1)**2
 plt.style.use(['science','nature'])
 with plt.style.context(['science','nature']):
+    plt.rc('font',family='Times New Roman')
     fig1 = plt.figure()
     # p3, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn)-10*Fz/2*(Lorentzianpp - Lorentzianpn))
     # p1, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn))
@@ -58,13 +59,13 @@ with plt.style.context(['science','nature']):
     # plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
 
     plt.legend([p1, p2, p3], ["$\chi_b=-\chi_a$", "$\chi_b=\chi_a$", "$\chi_b=-\eta \chi_a$"], loc='center left',
-               prop={'size': 10})
+               prop={'size':9})
     # plt.xlabel('Frequency (Hz)', fontsize=12)
     # plt.ylabel(' PSD ($ N \chi_+^2$/Hz)', fontsize=12)
-    plt.xlabel('$\\nu$ (Hz)', fontsize=11)
-    plt.ylabel(' $S(\\nu)$ (arb. units)', fontsize=11)
+    plt.xlabel('$\\nu$ (Hz)', fontsize=10)
+    plt.ylabel(' $S(\\nu)$ (arb. units)', fontsize=10)
     plt.xlim([0,100000])
     # plt.ylim([-2,6])
-    plt.savefig('imag/Noise spectrum.png', dpi=600)
+    plt.savefig('imag/Noise spectrum.png', dpi=1000)
 
 

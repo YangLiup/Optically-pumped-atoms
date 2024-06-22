@@ -33,7 +33,7 @@ def gammam(I,bound):
     Rse = 1
     H = (az+0.5*ax - bz-0.5*bx)  # 投影定理
     q, v = np.linalg.eig(H)
-    evolving_B = v @ np.diag(np.exp(-1j * q *0.1)) @ np.linalg.inv(v)
+    evolving_B = v @ np.diag(np.exp(-1j * q *0.01)) @ np.linalg.inv(v)
     # --------------------------------Define the initial state-----------------------------------#
     theta = np.pi/2
     phi = np.pi/4
@@ -81,7 +81,7 @@ def gammam(I,bound):
         Fym0 = np.trace((ay-eta*by)@Rhot)
         Fm0=np.sqrt(Fxm0**2+Fym0**2)
         Fmz0=np.sqrt(np.trace((az-eta*bz)@Rhot)**2)
-        for k in np.arange(0,2,1):
+        for k in np.arange(0,1,1):
             Rhot = hyperfine * Rhot
             x1 = Rhot @ Sx
             x2 = Rhot @ Sy
@@ -99,8 +99,8 @@ def gammam(I,bound):
         Fm=np.sqrt(Fxm**2+Fym**2)
         Fmz=np.sqrt(np.trace((az-eta*bz)@Rhot)**2)
 
-        Fmmt[n]=(Fm-Fm0)/(2*dt)/Fm0
-        Fmmz[n]=(Fmz-Fmz0)/(2*dt)/Fmz0
+        Fmmt[n]=(Fm-Fm0)/(1*dt)/Fm0
+        Fmmz[n]=(Fmz-Fmz0)/(1*dt)/Fmz0
 
     return Fmmt, Fmmz
     
