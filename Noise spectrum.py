@@ -10,8 +10,8 @@ import scienceplots
 omega = np.arange(0,100000, 0.01)
 P=2/3
 q=2*(3+P**2)/(1-P**2)
-Omega = 400/q*4/2/np.pi
-gammap = 2*100/q/2/np.pi
+Omega = 300/q*4/2/np.pi
+gammap = 3*100/q/2/np.pi
 gamman = 10000*(2/3+4/3/16-P**2/(1+P**2))/2/np.pi
 eta=(3*P**2+5)/(1-P**2)
 Fz = 1/2 *q*P
@@ -36,10 +36,6 @@ Lorentzianpn = gammap / (gammap**2 + (omega + Omega) ** 2)/2/np.pi
 Lorentziannp = gamman / (gamman**2 + (omega - Omega) ** 2)/2/np.pi
 Lorentziannn = gamman / (gamman**2 + (omega + Omega) ** 2)/2/np.pi
 
-Lorentzianpp0 = gammap / (gammap**2 )/2/np.pi
-Lorentzianpn0 = gammap / (gammap**2 + (2*Omega) ** 2)/2/np.pi
-Lorentziannp0 = gamman / (gamman**2 )/2/np.pi
-Lorentziannn0 = gamman / (gamman**2 + (2* Omega) ** 2)/2/np.pi
 
 chip2=(eta-1)**2/(eta+1)**2
 chin2=4/(eta+1)**2
@@ -50,9 +46,9 @@ with plt.style.context(['science','nature']):
     # p3, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn)-10*Fz/2*(Lorentzianpp - Lorentzianpn))
     # p1, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn))
     # p2, = plt.plot(omega, -10*Fz/2*(Lorentzianpp - Lorentzianpn))
-    p1, = plt.loglog(omega, 100*(chin2**Fxn2*(Lorentziannp + Lorentziannn)+chip2*Fx2*(Lorentzianpp + Lorentzianpn)))
-    p2, = plt.loglog(omega, 100*(Fx2*(Lorentzianpp + Lorentzianpn)))
-    p3, = plt.loglog(omega, 100*(Fxn2*(Lorentziannp + Lorentziannn)))
+    p1, = plt.loglog(omega, (chin2*Fxn2*(Lorentziannp + Lorentziannn)+chip2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chin2*Fxn2*(Lorentziannp + Lorentziannn)+chip2*Fx2*(Lorentzianpp + Lorentzianpn))))
+    p2, = plt.loglog(omega, (chip2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chip2*Fx2*(Lorentzianpp + Lorentzianpn))))
+    p3, = plt.loglog(omega, (chin2*Fxn2*(Lorentziannp + Lorentziannn))/np.max( (chin2*Fxn2*(Lorentziannp + Lorentziannn))))
 
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)

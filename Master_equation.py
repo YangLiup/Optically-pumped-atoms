@@ -30,9 +30,9 @@ Sz = U.T.conjugate() @ Sz @ U
 
 # --------------------------------Characterize interactions envolved-----------------------------------#
 Rse = 1
-omega_0 = 0.2
-Rop = 0.1
-Rsd = 0.0005
+omega_0 = 0.05
+Rop = 0.
+Rsd = 0.
 sx=np.sqrt(1)/(2)
 sz=np.sqrt(1)/(2)
 # --------------------------------Define the initial state-----------------------------------#
@@ -49,7 +49,7 @@ q = np.hstack((qa, qb))
 Rho_ini = np.zeros(2 * (a + b + 1))
 
 # # -----------------spin temperature state-----------------#
-P = 0.000001
+P = 0.95
 beta = np.log((1 + P) / (1 - P))
 for i in np.arange(0, 2 * (a + b + 1), 1):
     Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] * v[:, [i]].T.conjugate()
@@ -62,7 +62,7 @@ Rho_ini = Rho_ini / np.trace(Rho_ini)
 # --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
 Rhot = Rho_ini
 dt = 0.01
-T = 1000
+T = 5000
 t = np.arange(0, T, dt)
 hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
 MSx = np.zeros(round(T / dt))
@@ -98,7 +98,7 @@ for n in np.arange(0, round(T / dt), 1):
     # V[n] = Vx
 
 # ---------------------------Bloch Equation-----------------------------------
-Rop = 0.1
+Rop = 0.
 transverse = np.zeros(round(T / dt))
 longitude = np.zeros(round(T / dt))
 Px = P * np.sin(theta)
@@ -109,36 +109,27 @@ for n in np.arange(0, round(T / dt), 1):
         Rop = 0.0
     transverse[n] = Px
     longitude[n] = Pz
+    #xiao
     qnm = 2 * (3 + P ** 2) / (1 + P ** 2)
     Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
-    Gamma = 8 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / qnm ** 3 * qnm / Qnm
+    Gamma = 4 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / 3 / qnm ** 2 * qnm / Qnm
 
-    # qnm = 2*(19+26*P**2+3*P**4)/(3+10*P**2+3*P**4)
-    # Qnm = 2 * (57 +44* P ** 2+134*P**4+12*P**6+9*P**8) / ((3 +10* P ** 2+3*P**4 )**2)
-    # Gamma = 18 * (-6 + qnm) * (6 + qnm) * omega_0 ** 2 / qnm ** 3 * qnm / Qnm
+    #Mr Zhao
+    # qnm = 2 * (3 + P ** 2) / (1 + P ** 2)
+    # Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
+    # Gamma = 4 * (-4 + qnm) * (4 + qnm)**2 * omega_0 ** 2 / qnm ** 3 /5* qnm / Qnm
 
-    # qnm = 2 * (11 +35* P ** 2+17*P**4+P**6) / (1 +7* P ** 2+7*P**4+P**6) 
-    # Qnm = 2 * (11 +28* P ** 2+99*P**4+64*P**6+49*P**8+4*P**10+P**12) / ((1 +7* P ** 2+7*P**4+P**6)**2 )
-    # Gamma = 32 * (-8 + qnm) * (8 + qnm) * omega_0 ** 2 / qnm ** 3 * qnm / Qnm
-
- 
-   
     T2 = (1 - ((qnm - Qnm) / qnm) * Pz ** 2 / P ** 2) * Gamma
     T1 = T2-Gamma/qnm*Qnm
-    # Pz = Pz + (-1 / Qnm * (Rsd + Rop) * Pz + Rop * (
-    #         1 / Qnm * Pz ** 2 / P ** 2 + 1 / qnm * (1 - Pz ** 2 / P ** 2)) - Pz * T1) * dt
-    # Px = Px + (-1 / Qnm * (Rsd + Rop) * Px + Rop * (
-    #         1 / Qnm - 1 / qnm) * Pz / P ** 2 * Px - 1 / qnm * omega_0 * 4 * Py - Px * T2) * dt
-    # Py = Py + (-1 / Qnm * (Rsd + Rop) * Py + Rop * (
-    #         1 / Qnm - 1 / qnm) * Pz / P ** 2 * Py + 1 / qnm * omega_0 * 4 * Px - Py * T2) * dt
+
     Pz = Pz + (-1 / Qnm * (Rsd + Rop) * Pz + Rop *
-               ((1 / Qnm - 1 / qnm) * (Px *sx+Pz*sz)*(Pz-Px *sx*sz-Pz*sz*sz) / P ** 2)+Rop *sz*
-               ((1 / Qnm  * (Px *sx+Pz*sz)**2/ P ** 2)+(1 / qnm  * (1-(Px *sx+Pz*sz)**2/ P ** 2)))
-               - Pz * T1) * dt
+            ((1 / Qnm - 1 / qnm) * (Px *sx+Pz*sz)*(Pz-Px *sx*sz-Pz*sz*sz) / P ** 2)+Rop *sz*
+            ((1 / Qnm  * (Px *sx+Pz*sz)**2/ P ** 2)+(1 / qnm  * (1-(Px *sx+Pz*sz)**2/ P ** 2)))
+            - Pz * T1) * dt
     Px = Px + (-1 / Qnm * (Rsd + Rop) * Px +Rop *
-               ((1 / Qnm - 1 / qnm) * (Px *sx+Pz*sz)*(Px-Px *sx*sx-Pz*sz*sx) / P ** 2)+Rop *sx*
-               ((1 / Qnm  * (Px *sx+Pz*sz)**2/ P ** 2)+(1 / qnm  * (1-(Px *sx+Pz*sz)**2/ P ** 2)))
-               - 1 / qnm * omega_0 * 4 * Py - Px * T2) * dt
+            ((1 / Qnm - 1 / qnm) * (Px *sx+Pz*sz)*(Px-Px *sx*sx-Pz*sz*sx) / P ** 2)+Rop *sx*
+            ((1 / Qnm  * (Px *sx+Pz*sz)**2/ P ** 2)+(1 / qnm  * (1-(Px *sx+Pz*sz)**2/ P ** 2)))
+            - 1 / qnm * omega_0 * 4 * Py - Px * T2) * dt
     Py = Py + (-1 / Qnm * (Rsd + Rop) * Py + Rop * (
             1 / Qnm - 1 / qnm) * (Px*sx+Pz*sz) / P ** 2 * Py + 1 / qnm * omega_0 * 4 * Px - Py * T2) * dt
     P = np.sqrt(Px ** 2 + Py ** 2 + Pz ** 2)
