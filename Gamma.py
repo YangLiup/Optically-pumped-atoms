@@ -4,7 +4,7 @@ from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_
 from qutip import *
 from sympy.physics.quantum.spin import Rotation
 from sympy import pi
-from test5 import masterequation
+from my_functions.master_relaxationrate import masterequation
 from scipy.linalg import *
 import numpy as np
 from my_functions.test7_copy import gammam
@@ -28,7 +28,7 @@ P3,Gamma3,PP3,DD3=masterequation(7/2)
 
 plt.style.use(['science','nature'])
 with plt.style.context(['science','nature']):
-    fig = plt.figure()
+    fig = plt.figure(figsize=(3, 4))
     ax1 = fig.add_subplot(211)
     ax1.plot(PP1, DD1)
     ax1.plot(PP2, DD2)
@@ -40,23 +40,19 @@ with plt.style.context(['science','nature']):
     ax1.plot(P1, Gamma1,linestyle='dotted')
     ax1.plot(P2, Gamma2,linestyle='dotted')
     ax1.plot(P3, Gamma3,linestyle='dotted')
+    ax1.set_xlim([0.01,1])
 
-    ax1.set_ylabel('$\Gamma^+_t(R_{\\rm{se}})$', fontsize=11)
+    ax1.set_ylabel('$\Gamma^+_t$ $(\omega_e^2/R_{\\rm{se}})$', fontsize=10)
     ax1.tick_params(axis='x', labelsize='10' )
     ax1.tick_params(axis='y', labelsize='10' )
     ax1.axes.xaxis.set_ticklabels([])
 
-    # ax1.set_ylabel('$\Gamma^+\;(R_{\\rm{se}})$',fontsize='12')
-    # ax1.set_ylim([0,0.05])
-    # ax1.set_xlim([0,20000])
-    # ax1.set_xticklabels([])
     ax2 = fig.add_subplot(212)
     p21=ax2.plot(PP, -z)
     p22=ax2.plot(PP, -zz)
     p23=ax2.plot(PP, -zzz)
-    # plt.text(PP[850], -z[790], '${I=\\frac 3 2}$')
-    # plt.text(PP[850], -zz[800], '${I=\\frac 5 2}$')
-    # plt.text(PP[850], -zzz[950], '${I=\\frac 7 2}$')
+    ax2.legend(["$ I=3/2$", "$ I=5/2$", "$ I=7/2$"],
+               loc='upper left', prop={'size': 9})
     ax2.plot([],[])
     ax2.plot([],[])
     ax2.plot([],[])
@@ -64,9 +60,8 @@ with plt.style.context(['science','nature']):
     p24=ax2.plot(PP, h*np.ones(bound),linestyle='dotted')
     p25=ax2.plot(PP, hh*np.ones(bound),linestyle='dotted')
     p26=ax2.plot(PP, hhh*np.ones(bound),linestyle='dotted')
+    ax2.set_xlim([0,1])
 
-    ax2.legend( [p21,p22,p23],["$ I=3/2$", "$ I=5/2$", "$ I=7/2$"],
-               loc='upper left', prop={'size': 9})
     # plt.ylim([0.65, 1])
     # plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
     # plt.xlabel('Frequency (Hz)', fontsize=12)

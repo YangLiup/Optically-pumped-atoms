@@ -7,8 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scienceplots
 from pylab import mpl
-import beautifulplots as bp
-import pandas as pd
+
 P = np.linspace(0, 1, 100)
 q = 2 * (3 + P ** 2) / (1 + P ** 2)
 Q = 2 * (3 + P ** 4) / (1 + P ** 2) ** 2
@@ -34,9 +33,9 @@ with plt.style.context(['science','nature']):
     plt.plot([],[])
     plt.plot([],[])
     plt.plot([],[])
-    p4, = plt.plot(P, Q,linestyle='dotted')
-    p5, = plt.plot(P, QQ,linestyle='dotted')
-    p6, = plt.plot(P, QQQ,linestyle='dotted')
+    p4, = plt.plot(P, Q,linestyle='dashed')
+    p5, = plt.plot(P, QQ,linestyle='dashed')
+    p6, = plt.plot(P, QQQ,linestyle='dashed')
     # plt.text(P[90], q[90], '$q({\\frac 3 2})$')
     # plt.text(P[90], qq[90], '$q({\\frac 5 2})$')
     # plt.text(P[90], qqq[90], '$q({\\frac 7 2})$')
@@ -57,9 +56,9 @@ with plt.style.context(['science','nature']):
     # my_y_ticks = np.arange(0, 1, 0.2)
     # plt.yticks(my_y_ticks)
     plt.ylim([0,23])
-    plt.xlim([0,1])
+    # plt.xlim([0,1])
 
-    plt.savefig('qq.png', dpi=600)
+    plt.savefig('imag/qq.png', dpi=600)
 
 
 # plt.figure()

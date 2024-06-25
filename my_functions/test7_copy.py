@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
 from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
 from qutip import *
-from sympy.physics.quantum.spin import Rotation
 from sympy import pi
 from scipy.linalg import *
 import scienceplots
@@ -22,16 +21,19 @@ def gammam(I,bound):
     # --------------------------------Generate the angular momentum operators-----------------------------------#
     U = alkali_atom_uncoupled_to_coupled(round(2 * I))
     ax, ay, az, bx, by, bz = spin_operators_of_2or1_alkali_metal_atoms(1, I)
-    Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax()))
+    sx=np.array([[0,0.5],[0.5,0]])
+    sy=np.array([[0,1j],[-1j,0]])*0.5
+    sz=np.array([[0.5,0],[0,-0.5]])
+    Sx = np.kron(np.eye(round(2 * I + 1)), np.array(sx))
     Sx = U.T.conjugate() @ Sx @ U
-    Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay()))
+    Sy = np.kron(np.eye(round(2 * I + 1)), np.array(sy))
     Sy = U.T.conjugate() @ Sy @ U
-    Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz()))
+    Sz = np.kron(np.eye(round(2 * I + 1)), np.array(sz))
     Sz = U.T.conjugate() @ Sz @ U
 
     # --------------------------------Characterize interactions envolved-----------------------------------#
     Rse = 1
-    H = (az+0.5*ax - bz-0.5*bx)  # 投影定理
+    H = ((az+0.5*ax - bz-0.5*bx) ) # 投影定理
     q, v = np.linalg.eig(H)
     evolving_B = v @ np.diag(np.exp(-1j * q *0.01)) @ np.linalg.inv(v)
     # --------------------------------Define the initial state-----------------------------------#
@@ -41,8 +43,8 @@ def gammam(I,bound):
         theta)
     b_theta = spin_Jx(b) * np.sin(theta) * np.cos(phi) + spin_Jy(b) * np.sin(theta) * np.sin(phi) + spin_Jz(b) * np.cos(
         theta)
-    qa, va = np.linalg.eig(a_theta)
-    qb, vb = np.linalg.eig(b_theta)
+    qa, va = np.linalg.eig(np.array((a_theta.full())))
+    qb, vb = np.linalg.eig(np.array((b_theta).full()))
     v = block_diag(va, vb)
     q = np.hstack((qa, qb))
     # # -----------------spin temperature state-----------------#

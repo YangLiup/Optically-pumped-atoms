@@ -14,25 +14,23 @@ from scipy.linalg import *
 import scienceplots
 def masterequation(I):
     # --------------------------------Properties of the alkali metal atom-----------------------------------#
-    T=5000
+    T=1000
     dt=0.01
-    omega_0=0.05
+    omega_0=0.1
     a = round(I + 1 / 2)
     b = round(I - 1 / 2)
     # --------------------------------Generate the angular momentum operators-----------------------------------#
     U = alkali_atom_uncoupled_to_coupled(round(2 * I))
     ax, ay, az, bx, by, bz = spin_operators_of_2or1_alkali_metal_atoms(1, I)
-    Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax()))
+    Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax().full()))
     Sx = U.T.conjugate() @ Sx @ U
-    Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay()))
+    Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay().full()))
     Sy = U.T.conjugate() @ Sy @ U
-    Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz()))
+    Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz().full()))
     Sz = U.T.conjugate() @ Sz @ U
 
     # --------------------------------Characterize interactions envolved-----------------------------------#
     Rse = 1
-    Rop = 0
-    Rsd = 0
     sx=np.sqrt(1)/(2)
     sz=np.sqrt(1)/(2)
     # --------------------------------Define the initial state-----------------------------------#
@@ -42,13 +40,13 @@ def masterequation(I):
         theta)
     b_theta = spin_Jx(b) * np.sin(theta) * np.cos(phi) + spin_Jy(b) * np.sin(theta) * np.sin(phi) + spin_Jz(b) * np.cos(
         theta)
-    qa, va = np.linalg.eig(a_theta)
-    qb, vb = np.linalg.eig(b_theta)
+    qa, va = np.linalg.eig(a_theta.full())
+    qb, vb = np.linalg.eig(b_theta.full())
     v = block_diag(va, vb)
     q = np.hstack((qa, qb))
     Rho_ini = np.zeros(2 * (a + b + 1))
     # # -----------------spin temperature state-----------------#
-    P = 0.99
+    P = 0.999
     beta = np.log((1 + P) / (1 - P))
     for i in np.arange(0, 2 * (a + b + 1), 1):
         Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] * v[:, [i]].T.conjugate()
@@ -93,7 +91,7 @@ def masterequation(I):
     PP=np.sqrt(MPy**2+MPx**2)
     D = np.zeros(round(T / dt))
     for n in np.arange(0, round(T / dt)-1, 1):
-        D[n+1]=(FF[n+1]-FF[n])/dt
+        D[n]=(FF[n+1]-FF[n])/dt
     DD=-D/FF/omega_0**2/(2*I+1)**2 
 
     P=np.arange(0,1,0.01)
