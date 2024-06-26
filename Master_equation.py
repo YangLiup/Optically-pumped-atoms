@@ -30,7 +30,7 @@ Sz = U.T.conjugate() @ Sz @ U
 
 # --------------------------------Characterize interactions envolved-----------------------------------#
 Rse = 1
-omega_0 = 0.02
+omega_0 = 0.01
 Rop = 0.
 Rsd = 0.
 sx=np.sqrt(1)/(2)
@@ -62,7 +62,7 @@ Rho_ini = Rho_ini / np.trace(Rho_ini)
 # --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
 Rhot = Rho_ini
 dt = 0.01
-T = 10000
+T = 50000
 t = np.arange(0, T, dt)
 hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
 MSx = np.zeros(round(T / dt))
@@ -115,11 +115,11 @@ for n in np.arange(0, round(T / dt), 1):
     Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
     Gamma = (4 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / 3 / qnm ** 2 /qnm*6) *qnm/6* qnm / Qnm
 
-    #Mr Zhao
-    varpsilon=(5+P**2)/(1+P**2)
-    qnm = 2 * (3 + P ** 2) / (1 + P ** 2)
-    Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
-    Gamma = (4 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / 3 / qnm ** 2 /qnm*6) *varpsilon/5* qnm / Qnm
+    # #Mr Zhao
+    # varpsilon=(5+P**2)/(1+P**2)
+    # qnm = 2 * (3 + P ** 2) / (1 + P ** 2)
+    # Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
+    # Gamma = (4 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / 3 / qnm ** 2 /qnm*6) *varpsilon/5* qnm / Qnm
 
     T2 = (1 - ((qnm - Qnm) / qnm) * Pz ** 2 / P ** 2) * Gamma
     T1 = T2-Gamma/qnm*Qnm
@@ -152,5 +152,5 @@ with plt.style.context(['science']):
 
     plt.xlabel('Time $(1/R_{se})$', fontsize=12)
     plt.ylabel('Polarization', fontsize=12)
-    plt.savefig('imag/Evolution2.png', dpi=600)
+    plt.savefig('imag/Evolution1.png', dpi=600)
 plt.show()

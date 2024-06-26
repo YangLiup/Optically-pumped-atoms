@@ -9,11 +9,10 @@ from scipy.linalg import *
 import numpy as np
 from my_functions.test7_copy import gammam
 bound=1000
-z,Fm1=gammam(3/2, bound)
-zz,Fm2=gammam(5/2,bound)
-zzz,Fm3=gammam(7/2, bound)
+PP,z=gammam(3/2, bound)
+PP,zz=gammam(5/2,bound)
+PP,zzz=gammam(7/2, bound)
 
-PP=np.arange(0, bound, 1)/1000
 P=np.arange(0, bound, 1)/1000
 
 # xiao's fast relaxation rate 
@@ -29,7 +28,7 @@ P=np.arange(0, bound, 1)/1000
 varpsilon1=(5+P**2)/(1+P**2)
 q1 = 2 * (3 + P ** 2) / (1 + P ** 2)
 g1=P**2/(4*(1+P**2))
-h = (q1/8)/varpsilon1* 5
+h = (q1/8)/(varpsilon1)* 5
 
 varpsilon2=(35+42*P**2+3*P**4)/(3+10*P**2+3*P**4)
 q2 = 2 * (19 + 26 * P ** 2 + 3 * P ** 4) / (3 + 10 * P ** 2 + 3 * P ** 4)
