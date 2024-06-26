@@ -14,9 +14,9 @@ from scipy.linalg import *
 import scienceplots
 def masterequation(I):
     # --------------------------------Properties of the alkali metal atom-----------------------------------#
-    T=1000
+    T=4000
     dt=0.01
-    omega_0=0.1
+    omega_0=0.05
     a = round(I + 1 / 2)
     b = round(I - 1 / 2)
     # --------------------------------Generate the angular momentum operators-----------------------------------#
@@ -96,14 +96,17 @@ def masterequation(I):
 
     P=np.arange(0,1,0.01)
     if a==2:
+        varpsilon=(5+P**2)/(1+P**2)
         q = 2 * (3 + P ** 2) / (1 + P ** 2)
-        Gamma =  (-4 + q) * (4 + q)  / 12 / q ** 2 
+        Gamma =  (-4 + q) * (4 + q)  / 2 / q ** 3*varpsilon/5 
     if a==3:
+        varpsilon=(35+42*P**2+3*P**4)/(3+10*P**2+3*P**4)
         q = 2 * (19 + 26 * P ** 2 + 3 * P ** 4) / (3 + 10 * P ** 2 + 3 * P ** 4)
-        Gamma =(-6 + q) * (6 + q)  / 2 / q ** 2 /(2*19/3)
+        Gamma =(-6 + q) * (6 + q)  / 2 / q ** 3 *varpsilon/(35/3)
     if a==4:
+        varpsilon=(21+63*P**2+27*P**4+P**6)/(1+7*P**2+7*P**4+P**6)
         q = 2 * (11 + 35 * P ** 2 + 17 * P ** 4 + P ** 6) / (1 + 7 * P ** 2 + 7 * P ** 4 + P ** 6)
-        Gamma =(-8 + q) * (8 + q)  / 2 / q ** 2 /(22)
+        Gamma =(-8 + q) * (8 + q)  / 2 / q ** 3 *varpsilon/(21)
     
     return P, Gamma, PP, DD
     

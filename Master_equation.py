@@ -21,16 +21,16 @@ b = round(I - 1 / 2)
 # --------------------------------Generate the angular momentum operators-----------------------------------#
 U = alkali_atom_uncoupled_to_coupled(round(2 * I))
 ax, ay, az, bx, by, bz = spin_operators_of_2or1_alkali_metal_atoms(1, I)
-Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax()))
+Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax().full()))
 Sx = U.T.conjugate() @ Sx @ U
-Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay()))
+Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay().full()))
 Sy = U.T.conjugate() @ Sy @ U
-Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz()))
+Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz().full()))
 Sz = U.T.conjugate() @ Sz @ U
 
 # --------------------------------Characterize interactions envolved-----------------------------------#
 Rse = 1
-omega_0 = 0.05
+omega_0 = 0.02
 Rop = 0.
 Rsd = 0.
 sx=np.sqrt(1)/(2)
@@ -42,8 +42,8 @@ a_theta = spin_Jx(a) * np.sin(theta) * np.cos(phi) + spin_Jy(a) * np.sin(theta) 
     theta)
 b_theta = spin_Jx(b) * np.sin(theta) * np.cos(phi) + spin_Jy(b) * np.sin(theta) * np.sin(phi) + spin_Jz(b) * np.cos(
     theta)
-qa, va = np.linalg.eig(np.array(a_theta))
-qb, vb = np.linalg.eig(np.array(b_theta))
+qa, va = np.linalg.eig(np.array(a_theta.full()))
+qb, vb = np.linalg.eig(np.array(b_theta.full()))
 v = block_diag(va, vb)
 q = np.hstack((qa, qb))
 Rho_ini = np.zeros(2 * (a + b + 1))
@@ -62,7 +62,7 @@ Rho_ini = Rho_ini / np.trace(Rho_ini)
 # --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
 Rhot = Rho_ini
 dt = 0.01
-T = 5000
+T = 10000
 t = np.arange(0, T, dt)
 hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
 MSx = np.zeros(round(T / dt))
@@ -110,14 +110,16 @@ for n in np.arange(0, round(T / dt), 1):
     transverse[n] = Px
     longitude[n] = Pz
     #xiao
+    varpsilon=(5+P**2)/(1+P**2)
     qnm = 2 * (3 + P ** 2) / (1 + P ** 2)
     Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
-    Gamma = 4 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / 3 / qnm ** 2 * qnm / Qnm
+    Gamma = (4 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / 3 / qnm ** 2 /qnm*6) *qnm/6* qnm / Qnm
 
     #Mr Zhao
-    # qnm = 2 * (3 + P ** 2) / (1 + P ** 2)
-    # Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
-    # Gamma = 4 * (-4 + qnm) * (4 + qnm)**2 * omega_0 ** 2 / qnm ** 3 /5* qnm / Qnm
+    varpsilon=(5+P**2)/(1+P**2)
+    qnm = 2 * (3 + P ** 2) / (1 + P ** 2)
+    Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
+    Gamma = (4 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / 3 / qnm ** 2 /qnm*6) *varpsilon/5* qnm / Qnm
 
     T2 = (1 - ((qnm - Qnm) / qnm) * Pz ** 2 / P ** 2) * Gamma
     T1 = T2-Gamma/qnm*Qnm
@@ -150,5 +152,5 @@ with plt.style.context(['science']):
 
     plt.xlabel('Time $(1/R_{se})$', fontsize=12)
     plt.ylabel('Polarization', fontsize=12)
-    plt.savefig('Evolution3.png', dpi=600)
+    plt.savefig('imag/Evolution2.png', dpi=600)
 plt.show()
