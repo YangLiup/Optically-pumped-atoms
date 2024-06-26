@@ -1,57 +1,95 @@
+# -*- coding:utf-8 -*-
+"""
+作者：DELL
+日期：2023年12月24日
+"""
+import numpy as np
 import matplotlib.pyplot as plt
 from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
 from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
 from qutip import *
-from sympy.physics.quantum.spin import Rotation
 from sympy import pi
-from my_functions.master_relaxationrate import masterequation
 from scipy.linalg import *
-import numpy as np
-from my_functions.test7_copy import gammam
-bound=1000
-PP,z=gammam(3/2, bound)
-PP,zz=gammam(5/2,bound)
-PP,zzz=gammam(7/2, bound)
+import scienceplots
 
-P=np.arange(0, bound, 1)/1000
 
-# xiao's fast relaxation rate 
-h=3/4
-qq0=2*(19)/(3)
-hh=qq0*4*(5/2)*4/(3*36*(qq0-6))
+# --------------------------------Properties of the alkali metal atom-----------------------------------#
+I = 3 / 2
+a = round(I + 1 / 2)
+b = round(I - 1 / 2)
 
-qqq0=2*(11)/(1)
-hhh=qqq0*4*(7/2)*6/(3*64*(qqq0-8))
+# --------------------------------Generate the angular momentum operators-----------------------------------#
+U = alkali_atom_uncoupled_to_coupled(round(2 * I))
+ax, ay, az, bx, by, bz = spin_operators_of_2or1_alkali_metal_atoms(1, I)
+sx=np.array([[0,0.5],[0.5,0]])
+sy=np.array([[0,1j],[-1j,0]])*0.5
+sz=np.array([[0.5,0],[0,-0.5]])
+Sx = np.kron(np.eye(round(2 * I + 1)), np.array(sx))
+Sx = U.T.conjugate() @ Sx @ U
+Sy = np.kron(np.eye(round(2 * I + 1)), np.array(sy))
+Sy = U.T.conjugate() @ Sy @ U
+Sz = np.kron(np.eye(round(2 * I + 1)), np.array(sz))
+Sz = U.T.conjugate() @ Sz @ U
 
-plt.style.use(['science','nature'])
-with plt.style.context(['science','nature']):
-    fig = plt.figure(figsize=(3.2, 4))
-    ax2 = fig.add_subplot(111)
-    p21=ax2.plot(PP, -z)
-    p22=ax2.plot(PP, -zz)
-    p23=ax2.plot(PP, -zzz)
-    ax2.legend(["$ I=3/2$", "$ I=5/2$", "$ I=7/2$"],
-               loc='upper left', prop={'size': 9})
-    ax2.plot([],[])
-    ax2.plot([],[])
-    ax2.plot([],[])
-    ax2.plot([],[])
-    p24=ax2.plot(PP, h*np.ones(bound),linestyle='dotted')
-    p25=ax2.plot(PP, hh*np.ones(bound),linestyle='dotted')
-    p26=ax2.plot(PP, hhh*np.ones(bound),linestyle='dotted')
-    ax2.set_xlim([0,1])
+# --------------------------------Characterize interactions envolved-----------------------------------#
+Rse = 1
+H = (az - bz) # 投影定理
+dt = 0.001
+q, v = np.linalg.eig(H)
+evolving_B = v @ np.diag(np.exp(-1j * q *0.1)) @ np.linalg.inv(v)
+# --------------------------------Define the initial state-----------------------------------#
+theta = np.pi/2
+phi = 0
+a_theta = spin_Jx(a) * np.sin(theta) * np.cos(phi) + spin_Jy(a) * np.sin(theta) * np.sin(phi) + spin_Jz(a) * np.cos(
+theta)
+b_theta = spin_Jx(b) * np.sin(theta) * np.cos(phi) + spin_Jy(b) * np.sin(theta) * np.sin(phi) + spin_Jz(b) * np.cos(
+theta)
+qa, va = np.linalg.eig(np.array((a_theta.full())))
+qb, vb = np.linalg.eig(np.array((b_theta).full()))
+v = block_diag(va, vb)
+q = np.hstack((qa, qb))
+# # -----------------spin temperature state-----------------#
 
-    # plt.ylim([0.65, 1])
-    # plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
-    # plt.xlabel('Frequency (Hz)', fontsize=12)
-    # plt.ylabel(' PSD ($N \chi_a^2/$Hz)', fontsize=12)
 
-    ax2.set_xlabel('$P$', fontsize=10)
-    ax2.set_ylabel('$\Gamma_t^- \\approx \Gamma_z^-$ ($R_{\\rm{se}}$) ', fontsize=10)
-    ax2.tick_params(axis='x', labelsize='10' )
-    ax2.tick_params(axis='y', labelsize='10' )
-    # ax2.set_xlim([0,1000])
-    
+# -----------------eigenstates-----------------#
 
-    plt.savefig('Gamma.png', dpi=1000)
+# Rho_ini = np.outer(np.array([0, 1, 0, 0, 0, 0, 0, 0]), np.array([0, 1, 0, 0, 0, 0, 0, 0]))
+
+# --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
+
+hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
+
+# -----------------Evolution-----------------#
+Rho_ini = np.zeros(2 * (a + b + 1))
+P = 0.6
+beta = np.log((1 + P) / (1 - P))
+for i in np.arange(0, 2 * (a + b + 1), 1):
+    Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] @ v[:, [i]].T.conjugate()
+Rho_ini = Rho_ini / np.trace(Rho_ini)
+Rho_ini = evolving_B @Rho_ini @ evolving_B.T.conjugate()  # Zeeman effect
+Rhot = Rho_ini
+
+
+
+T=10
+etan=np.zeros(round(T/dt))
+tt=np.arange(0,round(T/dt),1)*dt
+for k in np.arange(0,round(T/dt),1):
+    Rhot = hyperfine * Rhot
+    x1 = Rhot @ Sx
+    x2 = Rhot @ Sy
+    x3 = Rhot @ Sz
+    AS = 3 / 4 * Rhot - (Sx @ x1 + Sy @ x2 + Sz @ x3)
+    alpha = Rhot - AS
+    mSx = np.trace(x1)
+    mSy = np.trace(x2)
+    mSz = np.trace(x3)
+    mSS = mSx * Sx + mSy * Sy + mSz * Sz
+    Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt  + Rhot
+    P=np.sqrt(mSx**2+mSy**2)*2
+    eta=(5+3*P**2)/(1-P**2)
+    etan[k]=eta
+
+plt.plot(tt,etan)
 plt.show()
+

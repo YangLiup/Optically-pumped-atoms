@@ -84,7 +84,7 @@ def gammam(I,bound):
         Fxm0 = np.trace((ax-eta*bx)@Rhot)
         Fym0 = np.trace((ay-eta*by)@Rhot)
         Fm0=np.sqrt(Fxm0**2+Fym0**2)
-        for k in np.arange(0,2,1):
+        for k in np.arange(0,10,1):
             Rhot = hyperfine * Rhot
             x1 = Rhot @ Sx
             x2 = Rhot @ Sy
@@ -96,12 +96,21 @@ def gammam(I,bound):
             mSz = np.trace(x3)
             mSS = mSx * Sx + mSy * Sy + mSz * Sz
             Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt  + Rhot
+        P_t=np.sqrt(np.trace(Rhot@Sx)**2+np.trace(Rhot@Sy)**2)*2
+        if a==2:
+            eta=(5+3*P_t**2)/(1-P_t**2)
+        if a==3:
+            qq=2*(19+26*P_t**2+3*P_t**4)/(3+10*P_t**2+3*P_t**4)
+            eta=(qq+6)/(qq-6)
+        if a==4:
+            qq=2*(11+35*P_t**2+17*P_t**4+P_t**6)/(1+7*P_t**2+7*P_t**4+P_t**6)
+            eta=(qq+8)/(qq-8)
         Fxm = np.trace((ax-eta*bx)@Rhot)
         Fym = np.trace((ay-eta*by)@Rhot)
         Fm=np.sqrt(Fxm**2+Fym**2)
         
 
-        Fmmt[n]=(Fm-Fm0)/(2*dt)/Fm0
+        Fmmt[n]=(Fm-Fm0)/(10*dt)/Fm0
 
     return PP,Fmmt
     
