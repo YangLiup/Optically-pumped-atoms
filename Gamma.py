@@ -16,12 +16,12 @@ PP,zzz=gammam(7/2, bound)
 P=np.arange(0, bound, 1)/1000
 
 # xiao's fast relaxation rate 
-h=3/4
-qq0=2*(19)/(3)
-hh=qq0*4*(5/2)*4/(3*36*(qq0-6))
+# h=3/4
+# qq0=2*(19)/(3)
+# hh=qq0*4*(5/2)*4/(3*36*(qq0-6))
 
-qqq0=2*(11)/(1)
-hhh=qqq0*4*(7/2)*6/(3*64*(qqq0-8))
+# qqq0=2*(11)/(1)
+# hhh=qqq0*4*(7/2)*6/(3*64*(qqq0-8))
 
 # Mr zhao's fast relaxation rate 
 
@@ -61,6 +61,7 @@ with plt.style.context(['science','nature']):
     ax1.plot(P2, Gamma2,linestyle='dotted')
     ax1.plot(P3, Gamma3,linestyle='dotted')
     ax1.set_xlim([0.01,1])
+    # ax1.set_ylim([0,1])
 
     ax1.set_ylabel('$\Gamma^+_t$ $(\omega_e^2/R_{\\rm{se}})$', fontsize=10)
     ax1.tick_params(axis='x', labelsize='10' )
@@ -73,14 +74,15 @@ with plt.style.context(['science','nature']):
     p23=ax2.plot(PP, -zzz)
     ax2.legend(["$ I=3/2$", "$ I=5/2$", "$ I=7/2$"],
                loc='upper left', prop={'size': 9})
-    ax2.plot([],[])
-    ax2.plot([],[])
-    ax2.plot([],[])
-    ax2.plot([],[])
-    p24=ax2.plot(PP, h*np.ones(bound),linestyle='dotted')
-    p25=ax2.plot(PP, hh*np.ones(bound),linestyle='dotted')
-    p26=ax2.plot(PP, hhh*np.ones(bound),linestyle='dotted')
+    # ax2.plot([],[])
+    # ax2.plot([],[])
+    # ax2.plot([],[])
+    # ax2.plot([],[])
+    # p24=ax2.plot(PP, h*np.ones(bound),linestyle='dotted')
+    # p25=ax2.plot(PP, hh*np.ones(bound),linestyle='dotted')
+    # p26=ax2.plot(PP, hhh*np.ones(bound),linestyle='dotted')
     ax2.set_xlim([0,1])
+    # ax2.set_ylim([0,2])
 
     # plt.ylim([0.65, 1])
     # plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))

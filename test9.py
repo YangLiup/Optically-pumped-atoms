@@ -22,7 +22,7 @@ b = round(I - 1 / 2)
 U = alkali_atom_uncoupled_to_coupled(round(2 * I))
 ax, ay, az, bx, by, bz = spin_operators_of_2or1_alkali_metal_atoms(1, I)
 sx=np.array([[0,0.5],[0.5,0]])
-sy=np.array([[0,1j],[-1j,0]])*0.5
+sy=np.array([[0,-1j],[1j,0]])*0.5
 sz=np.array([[0.5,0],[0,-0.5]])
 Sx = np.kron(np.eye(round(2 * I + 1)), np.array(sx))
 Sx = U.T.conjugate() @ Sx @ U
@@ -70,9 +70,8 @@ Rho_ini = evolving_B @Rho_ini @ evolving_B.T.conjugate()  # Zeeman effect
 Rhot = Rho_ini
 
 
-
-T=10
-etan=np.zeros(round(T/dt))
+T=15
+F_=np.zeros(round(T/dt))
 tt=np.arange(0,round(T/dt),1)*dt
 for k in np.arange(0,round(T/dt),1):
     Rhot = hyperfine * Rhot
@@ -88,8 +87,12 @@ for k in np.arange(0,round(T/dt),1):
     Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt  + Rhot
     P=np.sqrt(mSx**2+mSy**2)*2
     eta=(5+3*P**2)/(1-P**2)
-    etan[k]=eta
-
-plt.plot(tt,etan)
+    F_[k]=np.sqrt(np.trace((ax-eta*bx)@Rhot)**2+np.trace((ay-eta*by)@Rhot)**2)
+y=np.log(F_)
+plt.figure()
+# plt.plot(tt,-(y-y[0])/tt)
+plt.plot(tt,(y))
+plt.figure()
+plt.plot(tt,(F_))
 plt.show()
 

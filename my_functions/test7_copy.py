@@ -34,9 +34,9 @@ def gammam(I,bound):
     # --------------------------------Characterize interactions envolved-----------------------------------#
     Rse = 1
     H = (az - bz) # 投影定理
-    dt = 0.0001
+    dt = 0.001
     q, v = np.linalg.eig(H)
-    evolving_B = v @ np.diag(np.exp(-1j * q *0.01)) @ np.linalg.inv(v)
+    evolving_B = v @ np.diag(np.exp(-1j * q *0.1)) @ np.linalg.inv(v)
     # --------------------------------Define the initial state-----------------------------------#
     theta = np.pi/2
     phi = 0
@@ -71,6 +71,8 @@ def gammam(I,bound):
         Rho_ini = Rho_ini / np.trace(Rho_ini)
         Rho_ini = evolving_B @Rho_ini @ evolving_B.T.conjugate()  # Zeeman effect
         Rhot = Rho_ini
+        
+        # #my metheod
         P_ini=np.sqrt(np.trace(Rhot@Sx)**2+np.trace(Rhot@Sy)**2)*2
         PP[n]=P_ini
         if a==2:
@@ -81,14 +83,18 @@ def gammam(I,bound):
         if a==4:
             qq=2*(11+35*P_ini**2+17*P_ini**4+P_ini**6)/(1+7*P_ini**2+7*P_ini**4+P_ini**6)
             eta=(qq+8)/(qq-8)
-        module=np.sqrt(np.trace((ax+bx)@Rhot)**2+np.trace((ay+by)@Rhot)**2)
-        ex= np.trace((ax+bx)@Rhot)/module
-        ey= np.trace((ay+by)@Rhot)/module
-        Fxm0 = np.trace((ax-eta*bx)@Rhot)
-        Fym0 = np.trace((ay-eta*by)@Rhot)
-        Fp0= Fxm0*ex+Fym0*ey
 
-        for k in np.arange(0,10,1):
+        # module=np.sqrt(np.trace((ax+bx)@Rhot)**2+np.trace((ay+by)@Rhot)**2)
+        # ex= np.trace((ax+bx)@Rhot)/module
+        # ey= np.trace((ay+by)@Rhot)/module
+        # Fxm0 = np.trace((ax-eta*bx)@Rhot)
+        # Fym0 = np.trace((ay-eta*by)@Rhot)
+        # Fp0= np.sqrt((Fxm0-Fxm0*ex)**2+(Fym0-Fym0*ey)**2)
+
+         # zhao's metheod
+        byy0=np.trace((eta*by-ay) @ Rhot)
+        
+        for k in np.arange(0,2,1):
             Rhot = hyperfine * Rhot
             x1 = Rhot @ Sx
             x2 = Rhot @ Sy
@@ -109,12 +115,14 @@ def gammam(I,bound):
         # if a==4:
         #     qq=2*(11+35*P_t**2+17*P_t**4+P_t**6)/(1+7*P_t**2+7*P_t**4+P_t**6)
         #     eta=(qq+8)/(qq-8)
-        Fxm = np.trace((ax-eta*bx)@Rhot)
-        Fym = np.trace((ay-eta*by)@Rhot)
-        Fp= Fxm*ex+Fym*ey
-        
+        # Fxm = np.trace((ax-eta*bx)@Rhot)
+        # Fym = np.trace((ay-eta*by)@Rhot)
+        # Fp= np.sqrt((Fxm-Fxm*ex)**2+(Fym-Fym*ey)**2)
+        # Fmmt[n]=(Fp-Fp0)/(2*dt)/Fp0
 
-        Fmmt[n]=(Fp-Fp0)/(10*dt)/Fp0
+        # zhao's metheod
+        byy=np.trace((eta*by-ay) @ Rhot)
+        Fmmt[n]=(byy-byy0)/(2*dt)/byy0
 
     return PP,Fmmt
     
