@@ -81,9 +81,13 @@ def gammam(I,bound):
         if a==4:
             qq=2*(11+35*P_ini**2+17*P_ini**4+P_ini**6)/(1+7*P_ini**2+7*P_ini**4+P_ini**6)
             eta=(qq+8)/(qq-8)
+        module=np.sqrt(np.trace((ax+bx)@Rhot)**2+np.trace((ay+by)@Rhot)**2)
+        ex= np.trace((ax+bx)@Rhot)/module
+        ey= np.trace((ay+by)@Rhot)/module
         Fxm0 = np.trace((ax-eta*bx)@Rhot)
         Fym0 = np.trace((ay-eta*by)@Rhot)
-        Fm0=np.sqrt(Fxm0**2+Fym0**2)
+        Fp0= Fxm0*ex+Fym0*ey
+
         for k in np.arange(0,10,1):
             Rhot = hyperfine * Rhot
             x1 = Rhot @ Sx
@@ -96,21 +100,21 @@ def gammam(I,bound):
             mSz = np.trace(x3)
             mSS = mSx * Sx + mSy * Sy + mSz * Sz
             Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt  + Rhot
-        P_t=np.sqrt(np.trace(Rhot@Sx)**2+np.trace(Rhot@Sy)**2)*2
-        if a==2:
-            eta=(5+3*P_t**2)/(1-P_t**2)
-        if a==3:
-            qq=2*(19+26*P_t**2+3*P_t**4)/(3+10*P_t**2+3*P_t**4)
-            eta=(qq+6)/(qq-6)
-        if a==4:
-            qq=2*(11+35*P_t**2+17*P_t**4+P_t**6)/(1+7*P_t**2+7*P_t**4+P_t**6)
-            eta=(qq+8)/(qq-8)
+        # P_t=np.sqrt(np.trace(Rhot@Sx)**2+np.trace(Rhot@Sy)**2)*2
+        # if a==2:
+        #     eta=(5+3*P_t**2)/(1-P_t**2)
+        # if a==3:
+        #     qq=2*(19+26*P_t**2+3*P_t**4)/(3+10*P_t**2+3*P_t**4)
+        #     eta=(qq+6)/(qq-6)
+        # if a==4:
+        #     qq=2*(11+35*P_t**2+17*P_t**4+P_t**6)/(1+7*P_t**2+7*P_t**4+P_t**6)
+        #     eta=(qq+8)/(qq-8)
         Fxm = np.trace((ax-eta*bx)@Rhot)
         Fym = np.trace((ay-eta*by)@Rhot)
-        Fm=np.sqrt(Fxm**2+Fym**2)
+        Fp= Fxm*ex+Fym*ey
         
 
-        Fmmt[n]=(Fm-Fm0)/(10*dt)/Fm0
+        Fmmt[n]=(Fp-Fp0)/(10*dt)/Fp0
 
     return PP,Fmmt
     
