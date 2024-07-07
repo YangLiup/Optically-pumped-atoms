@@ -56,7 +56,7 @@ with plt.style.context(['science','nature']):
     # my_y_ticks = np.arange(0, 1, 0.2)
     # plt.yticks(my_y_ticks)
     plt.ylim([0,23])
-    # plt.xlim([0,1])
+    plt.xlim([0,1])
 
     plt.savefig('imag/qq.png', dpi=600)
 

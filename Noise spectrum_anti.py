@@ -7,12 +7,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scienceplots
 
-omega = np.arange(-80,80, 0.01)
-P=2/3
-q=2*(3+P**2)/(1-P**2)
-Omega = 300/q*4/2/np.pi
-gammap = 3*100/q/2/np.pi
-gamman = 10000*(2/3+4/3/16-P**2/(1+P**2))/2/np.pi
+omega = np.arange(-300,300, 0.01)
+P=0.8
+q=2*(3+P**2)/(1+P**2)
+Omega = 1000/q*4/2/np.pi
+gammap = 500/q/2/np.pi
+gamman = 30000/2/np.pi
 eta=(3*P**2+5)/(1-P**2)
 Fz = 1/2 *q*P
 az=eta/(1+eta)*Fz
@@ -65,7 +65,7 @@ with plt.style.context(['science','nature']):
     # plt.ylabel(' PSD ($ N \chi_+^2$/Hz)', fontsize=12)
     plt.xlabel('$\\nu$ (Hz)', fontsize=10)
     plt.ylabel(' $S(\\nu)$ (arb. units)', fontsize=10)
-    plt.xlim([-80,80])
+    plt.xlim([-300,300])
     # plt.ylim([-2,6])
     plt.savefig('imag/Noise spectrum_anti.png', dpi=1000)
 

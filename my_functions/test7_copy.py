@@ -11,7 +11,7 @@ from qutip import *
 from sympy import pi
 from scipy.linalg import *
 import scienceplots
-def gammam(I,bound): 
+def gammam(I,PP): 
 
     # --------------------------------Properties of the alkali metal atom-----------------------------------#
     # I = 5 / 2
@@ -58,13 +58,13 @@ def gammam(I,bound):
     # --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
 
     hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
-    Fmmt = np.zeros(bound)
-    PP = np.zeros(bound)
-
-    for n in np.arange(0,bound, 1):
+    Fmmt = np.zeros(len(PP))
+    
+    n=-1
+    for P in PP:
         # -----------------Evolution-----------------#
+  
         Rho_ini = np.zeros(2 * (a + b + 1))
-        P = n/1000
         beta = np.log((1 + P) / (1 - P))
         for i in np.arange(0, 2 * (a + b + 1), 1):
             Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] @ v[:, [i]].T.conjugate()
@@ -74,7 +74,6 @@ def gammam(I,bound):
         
         # #my metheod
         P_ini=np.sqrt(np.trace(Rhot@Sx)**2+np.trace(Rhot@Sy)**2)*2
-        PP[n]=P_ini
         if a==2:
             eta=(5+3*P_ini**2)/(1-P_ini**2)
         if a==3:
@@ -106,6 +105,7 @@ def gammam(I,bound):
             mSz = np.trace(x3)
             mSS = mSx * Sx + mSy * Sy + mSz * Sz
             Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt  + Rhot
+        n=n+1
         # P_t=np.sqrt(np.trace(Rhot@Sx)**2+np.trace(Rhot@Sy)**2)*2
         # if a==2:
         #     eta=(5+3*P_t**2)/(1-P_t**2)
@@ -124,5 +124,5 @@ def gammam(I,bound):
         byy=np.trace((eta*by-ay) @ Rhot)
         Fmmt[n]=(byy-byy0)/(2*dt)/byy0
 
-    return PP,Fmmt
+    return Fmmt
     

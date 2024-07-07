@@ -12,13 +12,12 @@ from sympy.physics.quantum.spin import Rotation
 from sympy import pi
 from scipy.linalg import *
 import scienceplots
-def masterequation(I):
+
     # --------------------------------Properties of the alkali metal atom-----------------------------------#
-    T=5000
-    dt=0.005
-    omega_0=0.05
+def master_equation(I,Rse,omega_0,T,N):
     a = round(I + 1 / 2)
     b = round(I - 1 / 2)
+
     # --------------------------------Generate the angular momentum operators-----------------------------------#
     U = alkali_atom_uncoupled_to_coupled(round(2 * I))
     ax, ay, az, bx, by, bz = spin_operators_of_2or1_alkali_metal_atoms(1, I)
@@ -31,6 +30,9 @@ def masterequation(I):
 
     # --------------------------------Characterize interactions envolved-----------------------------------#
     Rse = 1
+    # omega_0 = 0.01
+    Rop = 0.1
+    Rsd = 0.005
     sx=np.sqrt(1)/(2)
     sz=np.sqrt(1)/(2)
     # --------------------------------Define the initial state-----------------------------------#
@@ -40,13 +42,14 @@ def masterequation(I):
         theta)
     b_theta = spin_Jx(b) * np.sin(theta) * np.cos(phi) + spin_Jy(b) * np.sin(theta) * np.sin(phi) + spin_Jz(b) * np.cos(
         theta)
-    qa, va = np.linalg.eig(a_theta.full())
-    qb, vb = np.linalg.eig(b_theta.full())
+    qa, va = np.linalg.eig(np.array(a_theta.full()))
+    qb, vb = np.linalg.eig(np.array(b_theta.full()))
     v = block_diag(va, vb)
     q = np.hstack((qa, qb))
     Rho_ini = np.zeros(2 * (a + b + 1))
+
     # # -----------------spin temperature state-----------------#
-    P = 0.999
+    P = 0.0001
     beta = np.log((1 + P) / (1 - P))
     for i in np.arange(0, 2 * (a + b + 1), 1):
         Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] * v[:, [i]].T.conjugate()
@@ -58,16 +61,20 @@ def masterequation(I):
 
     # --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
     Rhot = Rho_ini
+    dt = 0.01
+    t = np.arange(0, T, dt)
     hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
-    MFx = np.zeros(round(T / dt))
-    MFy = np.zeros(round(T / dt))
-    MPx = np.zeros(round(T / dt))
-    MPy = np.zeros(round(T / dt))
+    MSx = np.zeros(round(T / dt))
+    MSz = np.zeros(round(T / dt))
+    V = np.zeros(round(T / dt))
+
     H = omega_0 * (az - bz)  # 投影定理
     q, v = np.linalg.eig(H)
     evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
     for n in np.arange(0, round(T / dt), 1):
         # -----------------Evolution-----------------#
+        if n==round(T / dt)/N:
+            Rop = 0.0
         x1 = Rhot @ Sx
         x2 = Rhot @ Sy
         x3 = Rhot @ Sz
@@ -77,68 +84,74 @@ def masterequation(I):
         mSy = np.trace(x2)
         mSz = np.trace(x3)
         mSS = mSx * Sx + mSy * Sy + mSz * Sz
+        ER = -Rsd * AS
+        OP = Rop * (2 * alpha @ (sx*Sx+sz*Sz) - AS)
         Rhot = evolving_B @ Rhot @ evolving_B.T.conjugate()  # Zeeman effect
-        Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt + Rhot
+        Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt + (
+                ER + OP) * dt + Rhot
         Rhot = hyperfine * Rhot
         # -----------------Observables-----------------#
-        MFx[n] = np.trace((ax+bx)@Rhot)
-        MFy[n] = np.trace((ay+by)@Rhot)
-        MPx[n] = np.trace((Sx)@Rhot)*2
-        MPy[n] = np.trace((Sy)@Rhot)*2
+        MSz[n] = mSz
+        MSx[n] = mSx
         # Vx = np.trace(Rhot @ ((ax + bx) @ (ax + bx) + (ay + by) @ (ay + by) + (az + bz) @ (az + bz)))
         # V[n] = Vx
-    FF=np.sqrt(MFy**2+MFx**2)
-    PP=np.sqrt(MPy**2+MPx**2)
-    D = np.zeros(round(T / dt))
-    for n in np.arange(0, round(T / dt)-2, 1):
-        D[n]=(FF[n+2]-FF[n])/2/dt
-    DD=-D/FF/omega_0**2/(2*I+1)**2 
 
-    P=np.arange(0,1,0.001)
-    # if a==2:
-    #     varpsilon=(5+P**2)/(1+P**2)
-    #     q = 2 * (3 + P ** 2) / (1 + P ** 2)
-    #     Gamma =  (-4 + q) * (4 + q)  / 2 / q ** 3*q/6 #varpsilon/5 
-    # if a==3:
-    #     varpsilon=(35+42*P**2+3*P**4)/(3+10*P**2+3*P**4)
-    #     q = 2 * (19 + 26 * P ** 2 + 3 * P ** 4) / (3 + 10 * P ** 2 + 3 * P ** 4)
-    #     Gamma =(-6 + q) * (6 + q)  / 2 / q ** 3 *q/(2*19/3)    #varpsilon/(35/3)
-    # if a==4:
-    #     varpsilon=(21+63*P**2+27*P**4+P**6)/(1+7*P**2+7*P**4+P**6)
-    #     q = 2 * (11 + 35 * P ** 2 + 17 * P ** 4 + P ** 6) / (1 + 7 * P ** 2 + 7 * P ** 4 + P ** 6)
-    #     Gamma =(-8 + q) * (8 + q)  / 2 / q ** 3 * q/(22)      #varpsilon/(21)
+    # ---------------------------Bloch Equation-----------------------------------
+    Rop = 0.1
+    transverse = np.zeros(round(T / dt))
+    longitude = np.zeros(round(T / dt))
+    Px = P * np.sin(theta)
+    Pz = P * np.cos(theta)
+    Py = 0
+    for n in np.arange(0, round(T / dt), 1):
+        if n==round(T / dt)/N:
+            Rop = 0.0
+        transverse[n] = Px
+        longitude[n] = Pz
+        #xiao
+        varpsilon=(5+P**2)/(1+P**2)
+        qnm = 2 * (3 + P ** 2) / (1 + P ** 2)
+        Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
+        Gamma = (4 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / 3 / qnm ** 2 /qnm*6) *qnm/6* qnm / Qnm
 
-    if a==2:
-        omega_e=omega_0*4
-        q = 2 * (3 + P ** 2) / (1 + P ** 2)
-        Gamma =  -np.real(((-36 * q) +np.sqrt(q*(1296*q+6912*1j*omega_e-576*q*omega_e**2)))/96/q/omega_e**2)
-    if a==3:
-        omega_e=omega_0*6
-        q = 2 * (19 + 26 * P ** 2 + 3 * P ** 4) / (3 + 10 * P ** 2 + 3 * P ** 4)
-        Gamma =  -np.real(((-760 * q/3) +np.sqrt(q*(577600*q/9+364800*1j*omega_e-14400*q*omega_e**2)))/720/q/omega_e**2)
-    if a==4:
-        omega_e=omega_0*8       
-        q = 2 * (11 + 35 * P ** 2 + 17 * P ** 4 + P ** 6) / (1 + 7 * P ** 2 + 7 * P ** 4 + P ** 6)
-        Gamma = 1/44*(1-64/q**2)+(q**2-320)*(q**2-64)/1331/q**4*omega_e**2 #varpsilon/(21)
-    
-    return P, Gamma, PP, DD
-    
-    # plt.style.use(['science','nature'])
-    # with plt.style.context(['science','nature']):
-    #     plt.rc('font',family='Times New Roman')
-    #     plt.figure()
-    #     p1, = plt.plot(PP,-D/FF/omega_0**2)
-    #     p2, = plt.plot(P,Gamma)
+        # #Mr Zhao
+        # varpsilon=(5+P**2)/(1+P**2)
+        # qnm = 2 * (3 + P ** 2) / (1 + P ** 2)
+        # Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
+        # Gamma = (4 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / 3 / qnm ** 2 /qnm*6) *varpsilon/5* qnm / Qnm
 
-    #     # plt.xlim(0, 200)
-    #     # plt.ylim(0, 18)
-    #     plt.xticks(fontsize=10)
-    #     plt.yticks(fontsize=10)
-    #     plt.legend([p1, p2], ["Density matrix", "NB"], loc='upper right',
-    #             prop={'size': 9})
+        T2 = (1 - ((qnm - Qnm) / qnm) * Pz ** 2 / P ** 2) * Gamma
+        T1 = T2-Gamma/qnm*Qnm
 
-    #     plt.xlabel('$P$', fontsize=10)
-    #     plt.ylabel('$\Gamma_t^+$', fontsize=10)
-    #     plt.savefig('imag/Gamma_t+.png', dpi=1000)
-    # plt.show()
+        Pz = Pz + (-1 / Qnm * (Rsd + Rop) * Pz + Rop *
+                ((1 / Qnm - 1 / qnm) * (Px *sx+Pz*sz)*(Pz-Px *sx*sz-Pz*sz*sz) / P ** 2)+Rop *sz*
+                ((1 / Qnm  * (Px *sx+Pz*sz)**2/ P ** 2)+(1 / qnm  * (1-(Px *sx+Pz*sz)**2/ P ** 2)))
+                - Pz * T1) * dt
+        Px = Px + (-1 / Qnm * (Rsd + Rop) * Px +Rop *
+                ((1 / Qnm - 1 / qnm) * (Px *sx+Pz*sz)*(Px-Px *sx*sx-Pz*sz*sx) / P ** 2)+Rop *sx*
+                ((1 / Qnm  * (Px *sx+Pz*sz)**2/ P ** 2)+(1 / qnm  * (1-(Px *sx+Pz*sz)**2/ P ** 2)))
+                - 1 / qnm * omega_0 * 4 * Py - Px * T2) * dt
+        Py = Py + (-1 / Qnm * (Rsd + Rop) * Py + Rop * (
+                1 / Qnm - 1 / qnm) * (Px*sx+Pz*sz) / P ** 2 * Py + 1 / qnm * omega_0 * 4 * Px - Py * T2) * dt
+        P = np.sqrt(Px ** 2 + Py ** 2 + Pz ** 2)
+    Px=2*MSx
+    Pz=2*MSz
+    return Px, Pz, transverse, longitude
+# plt.style.use(['science'])
+# with plt.style.context(['science']):
+#     plt.figure()
+#     p1, = plt.plot(t, MSx * 2)
+#     p2, = plt.plot(t, MSz * 2)
+#     p3, = plt.plot(t, transverse)
+#     p4, = plt.plot(t, longitude)
+#     # plt.xlim(0, 200)
+#     # plt.ylim(0, 18)
+#     plt.xticks(fontsize=10)
+#     plt.yticks(fontsize=10)
+#     # plt.legend([p1, p3, p2, p4], ["$P_x^{\mathrm{DM}}$", "$P_x^{\mathrm{NB}}$", "$P_z^{\mathrm{DM}}$", "$P_z^{\mathrm{NB}}$"], loc='upper right',
+#     #            prop={'size': 10})
 
+#     plt.xlabel('Time $(1/R_{se})$', fontsize=12)
+#     plt.ylabel('Polarization', fontsize=12)
+#     plt.savefig('imag/Evolution1.png', dpi=600)
+# plt.show()

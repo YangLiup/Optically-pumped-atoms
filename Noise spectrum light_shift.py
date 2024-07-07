@@ -7,12 +7,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scienceplots
 
-omega = np.arange(-100,100, 0.01)
-P=2/3
-q=2*(3+P**2)/(1-P**2)
-Omega = 300/q*4/2/np.pi
-gammap = 300/q/2/np.pi
-gamman = 10000*(4/3/16-P**2/(1+P**2))/2/np.pi
+omega = np.arange(-0 ,500, 0.01)
+P=0.8
+q=2*(3+P**2)/(1+P**2)
+Omega = 1000/q*4/2/np.pi
+gammap = 500/q/2/np.pi
+gamman = 30000/2/np.pi
 eta=(3*P**2+5)/(1-P**2)
 Fz = 1/2 *q*P
 az=eta/(1+eta)*Fz
@@ -25,11 +25,6 @@ Lorentzianpn = gammap / (gammap**2 + (omega + Omega) ** 2)/2/np.pi
 Lorentzianppd =(omega-Omega) / (gammap**2 + (omega - Omega) ** 2)/2/np.pi
 Lorentzianpnd = (omega+Omega) / (gammap**2 + (omega + Omega) ** 2)/2/np.pi
 
-Lorentzianpp0 = gammap / (gammap**2 )/2/np.pi
-Lorentzianpn0 = gammap / (gammap**2 + (2*Omega) ** 2)/2/np.pi
-Lorentzianppd0 =0
-Lorentzianpnd0 = (2*Omega) / (gammap**2 + (2* Omega) ** 2)/2/np.pi
-
 chip2=(eta-1)**2/(eta+1)**2
 chin2=4/(eta+1)**2
 plt.style.use(['science','nature'])
@@ -39,11 +34,11 @@ with plt.style.context(['science','nature']):
     # p3, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn)-10*Fz/2*(Lorentzianpp - Lorentzianpn))
     # p1, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn))
     # p2, = plt.plot(omega, -10*Fz/2*(Lorentzianpp - Lorentzianpn))
-    p1, = plt.plot(omega, (cxx*(Lorentzianpp + Lorentzianpn)+cxy*(Lorentzianpnd - Lorentzianppd))/(cxx*(Lorentzianpp0 + Lorentzianpn0)+cxy*(Lorentzianpnd0 - Lorentzianppd0))
+    p1, = plt.plot(omega, (cxx*(Lorentzianpp + Lorentzianpn)+cxy*(Lorentzianpnd - Lorentzianppd))/np.max(cxx*(Lorentzianpp + Lorentzianpn)+cxy*(Lorentzianpnd - Lorentzianppd))
 )
-    p2, = plt.plot(omega, (cxx*(Lorentzianpp + Lorentzianpn))/(cxx*(Lorentzianpp0 + Lorentzianpn0)+cxy*(Lorentzianpnd0 - Lorentzianppd0))
+    p2, = plt.plot(omega, (cxx*(Lorentzianpp + Lorentzianpn))/np.max(cxx*(Lorentzianpp + Lorentzianpn)+cxy*(Lorentzianpnd - Lorentzianppd))
 )
-    p3, = plt.plot(omega, (cxx*Lorentzianpnd - cxy*(Lorentzianppd))/(cxx*(Lorentzianpp0 + Lorentzianpn0)+cxy*(Lorentzianpnd0 - Lorentzianppd0))
+    p3, = plt.plot(omega, (cxx*Lorentzianpnd - cxy*(Lorentzianppd))/np.max(cxx*(Lorentzianpp + Lorentzianpn)+cxy*(Lorentzianpnd - Lorentzianppd))
 )
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
@@ -54,8 +49,8 @@ with plt.style.context(['science','nature']):
 
     plt.xlabel('$\\nu$ (Hz)', fontsize=10)
     plt.ylabel(' $S(\\nu)$ (arb. units)', fontsize=10)
-    plt.xlim([0,100])
+    plt.xlim([0,500])
     # plt.ylim([-2,6])
     plt.savefig('imag/Noise spectrum_lightshift.png', dpi=1000)
-
+plt.show()
 
