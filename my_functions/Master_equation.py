@@ -12,6 +12,7 @@ from sympy.physics.quantum.spin import Rotation
 from sympy import pi
 from scipy.linalg import *
 import scienceplots
+from tqdm import trange
 
     # --------------------------------Properties of the alkali metal atom-----------------------------------#
 def master_equation(I,Rse,omega_0,T,N):
@@ -71,7 +72,7 @@ def master_equation(I,Rse,omega_0,T,N):
     H = omega_0 * (az - bz)  # 投影定理
     q, v = np.linalg.eig(H)
     evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
-    for n in np.arange(0, round(T / dt), 1):
+    for n in trange(0, round(T / dt), 1):
         # -----------------Evolution-----------------#
         if n==round(T / dt)/N:
             Rop = 0.0
@@ -86,7 +87,9 @@ def master_equation(I,Rse,omega_0,T,N):
         mSS = mSx * Sx + mSy * Sy + mSz * Sz
         ER = -Rsd * AS
         OP = Rop * (2 * alpha @ (sx*Sx+sz*Sz) - AS)
+
         Rhot = evolving_B @ Rhot @ evolving_B.T.conjugate()  # Zeeman effect
+
         Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt + (
                 ER + OP) * dt + Rhot
         Rhot = hyperfine * Rhot
@@ -137,21 +140,3 @@ def master_equation(I,Rse,omega_0,T,N):
     Px=2*MSx
     Pz=2*MSz
     return Px, Pz, transverse, longitude
-# plt.style.use(['science'])
-# with plt.style.context(['science']):
-#     plt.figure()
-#     p1, = plt.plot(t, MSx * 2)
-#     p2, = plt.plot(t, MSz * 2)
-#     p3, = plt.plot(t, transverse)
-#     p4, = plt.plot(t, longitude)
-#     # plt.xlim(0, 200)
-#     # plt.ylim(0, 18)
-#     plt.xticks(fontsize=10)
-#     plt.yticks(fontsize=10)
-#     # plt.legend([p1, p3, p2, p4], ["$P_x^{\mathrm{DM}}$", "$P_x^{\mathrm{NB}}$", "$P_z^{\mathrm{DM}}$", "$P_z^{\mathrm{NB}}$"], loc='upper right',
-#     #            prop={'size': 10})
-
-#     plt.xlabel('Time $(1/R_{se})$', fontsize=12)
-#     plt.ylabel('Polarization', fontsize=12)
-#     plt.savefig('imag/Evolution1.png', dpi=600)
-# plt.show()

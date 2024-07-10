@@ -35,50 +35,23 @@ from my_functions.test7_copy import gammam
 # hhh =(22/32-2*g3)/varpsilon3*(21)
 
 
-P1,Gamma1,PP1,DD1=masterequation(3/2)
-# P2,Gamma2,PP2,DD2=masterequation(5/2)
-# P3,Gamma3,PP3,DD3=masterequation(7/2)
+P1,Gamma1,PP1,DD1=masterequation(5/2)
 
-q1=2*(3+PP1**2)/(1+PP1**2)
-fp1 = (q1-4)**2*(q1+4)/(2*16*q1**3) #*(q1+4)/(q1-4)
+z=gammam(5/2,PP1)
 
 
 plt.style.use(['science','nature'])
 with plt.style.context(['science','nature']):
-    fig = plt.figure()
+    fig = plt.figure(figsize=(3.35, 4))
     plt.rc('font',family='Times New Roman')
-    ax1 = fig.add_subplot(111)
-    ax1.plot(PP1,(fp1/DD1*(q1+4)/(q1-4)))
-    # ax1.plot(PP2,(fp2/DD2))
-    # ax1.plot(PP3,(fp3/DD3))
-    ax1.plot([],[])
-    ax1.plot([],[])
-    ax1.plot([],[])
-    ax1.plot([],[])
-    ax1.plot(PP1,1/8*6/(1+(q1+4)/(q1-4))*(q1+4)/(q1-4),linestyle='dashed')
-    # ax1.plot(PP2,5/27*6/(1+(q1+4)/(q1-4))*(q1+4)/(q1-4),linestyle='dashed')
-    # ax1.plot(PP3,(fp3/DD3),linestyle='dashed')
-    # ax1.plot(PP3,-fp3*fm3/DD3/zzz*0+1,linestyle='dotted')
-    ax1.set_xlim([0.,0.999])
-    ax1.set_ylim([0.,2])
 
-    ax1.set_ylabel('Quality', fontsize=10)
-    ax1.tick_params(axis='x', labelsize='10' )
-    ax1.tick_params(axis='y', labelsize='10' )
-plt.savefig('f_.png', dpi=1000)
-# plt.style.use(['science','nature'])
-# with plt.style.context(['science','nature']):
-#   
+    ax2 = fig.add_subplot(211)
+    ax2.plot(PP1, DD1)
+    ax2.plot(P1, Gamma1)
+    ax2.text(0.45, 0.05, '(b)',fontsize=8)
+    ax2.set_xlim([0.001,1])
 
-
-#     # plt.ylim([0.65, 1])
-#     # plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
-#     # plt.xlabel('Frequency (Hz)', fontsize=12)
-#     # plt.ylabel(' PSD ($N \chi_a^2/$Hz)', fontsize=12)
-
-
-#     # ax2.set_xlim([0,1000])
-    
-
-#     plt.savefig('Gamma_.png', dpi=1000)
-# plt.show()
+    ax3 = fig.add_subplot(212)
+    p21=ax3.plot(PP1, -z)
+    ax3.set_xlim([0,1])
+plt.savefig('Gamma_.png', dpi=1000)

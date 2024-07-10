@@ -12,11 +12,10 @@ from sympy.physics.quantum.spin import Rotation
 from sympy import pi
 from scipy.linalg import *
 import scienceplots
-def masterequation(I):
+from tqdm import trange
+
+def masterequation(I,cycle,omega_0,P):
     # --------------------------------Properties of the alkali metal atom-----------------------------------#
-    T=5000
-    dt=0.005
-    omega_0=0.05
     a = round(I + 1 / 2)
     b = round(I - 1 / 2)
     # --------------------------------Generate the angular momentum operators-----------------------------------#
@@ -31,8 +30,8 @@ def masterequation(I):
 
     # --------------------------------Characterize interactions envolved-----------------------------------#
     Rse = 1
-    sx=np.sqrt(1)/(2)
-    sz=np.sqrt(1)/(2)
+    dt=0.01
+
     # --------------------------------Define the initial state-----------------------------------#
     theta = np.pi / 2
     phi = 0
@@ -46,7 +45,6 @@ def masterequation(I):
     q = np.hstack((qa, qb))
     Rho_ini = np.zeros(2 * (a + b + 1))
     # # -----------------spin temperature state-----------------#
-    P = 0.999
     beta = np.log((1 + P) / (1 - P))
     for i in np.arange(0, 2 * (a + b + 1), 1):
         Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] * v[:, [i]].T.conjugate()
@@ -59,14 +57,18 @@ def masterequation(I):
     # --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
     Rhot = Rho_ini
     hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
-    MFx = np.zeros(round(T / dt))
-    MFy = np.zeros(round(T / dt))
-    MPx = np.zeros(round(T / dt))
-    MPy = np.zeros(round(T / dt))
+    MFx = np.zeros(cycle)
+    MFy = np.zeros(cycle)
+    MPx = np.zeros(cycle)
+    MPy = np.zeros(cycle)
+    # MFx = np.array([])
+    # MFy = np.array([])
+    # MPx = np.array([])
+    # MPy = np.array([])
     H = omega_0 * (az - bz)  # 投影定理
     q, v = np.linalg.eig(H)
     evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
-    for n in np.arange(0, round(T / dt), 1):
+    for n in np.arange(50):
         # -----------------Evolution-----------------#
         x1 = Rhot @ Sx
         x2 = Rhot @ Sy
@@ -77,68 +79,43 @@ def masterequation(I):
         mSy = np.trace(x2)
         mSz = np.trace(x3)
         mSS = mSx * Sx + mSy * Sy + mSz * Sz
-        Rhot = evolving_B @ Rhot @ evolving_B.T.conjugate()  # Zeeman effect
         Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt + Rhot
+
+        Rhot = evolving_B @ Rhot @ evolving_B.T.conjugate()  # Zeeman effect
+        
+        Rhot = hyperfine * Rhot
+
+    for n in trange(cycle):
+        # -----------------Evolution-----------------#
+        P=np.sqrt((np.trace((Sx)@Rhot)*2)**2+(np.trace((Sy)@Rhot)*2)**2)
+        x1 = Rhot @ Sx
+        x2 = Rhot @ Sy
+        x3 = Rhot @ Sz
+        AS = 3 / 4 * Rhot - (Sx @ x1 + Sy @ x2 + Sz @ x3)
+        alpha = Rhot - AS
+        mSx = np.trace(x1)
+        mSy = np.trace(x2)
+        mSz = np.trace(x3)
+        mSS = mSx * Sx + mSy * Sy + mSz * Sz
+        Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt + Rhot
+
+        Rhot = evolving_B @ Rhot @ evolving_B.T.conjugate()  # Zeeman effect
+        
         Rhot = hyperfine * Rhot
         # -----------------Observables-----------------#
         MFx[n] = np.trace((ax+bx)@Rhot)
-        MFy[n] = np.trace((ay+by)@Rhot)
+        MFy[n] =np.trace((ay+by)@Rhot)
         MPx[n] = np.trace((Sx)@Rhot)*2
         MPy[n] = np.trace((Sy)@Rhot)*2
         # Vx = np.trace(Rhot @ ((ax + bx) @ (ax + bx) + (ay + by) @ (ay + by) + (az + bz) @ (az + bz)))
         # V[n] = Vx
     FF=np.sqrt(MFy**2+MFx**2)
     PP=np.sqrt(MPy**2+MPx**2)
-    D = np.zeros(round(T / dt))
-    for n in np.arange(0, round(T / dt)-2, 1):
+    D = np.zeros(cycle)
+    for n in np.arange(0, cycle-2, 1):
         D[n]=(FF[n+2]-FF[n])/2/dt
     DD=-D/FF/omega_0**2/(2*I+1)**2 
-
-    P=np.arange(0,1,0.001)
-    # if a==2:
-    #     varpsilon=(5+P**2)/(1+P**2)
-    #     q = 2 * (3 + P ** 2) / (1 + P ** 2)
-    #     Gamma =  (-4 + q) * (4 + q)  / 2 / q ** 3*q/6 #varpsilon/5 
-    # if a==3:
-    #     varpsilon=(35+42*P**2+3*P**4)/(3+10*P**2+3*P**4)
-    #     q = 2 * (19 + 26 * P ** 2 + 3 * P ** 4) / (3 + 10 * P ** 2 + 3 * P ** 4)
-    #     Gamma =(-6 + q) * (6 + q)  / 2 / q ** 3 *q/(2*19/3)    #varpsilon/(35/3)
-    # if a==4:
-    #     varpsilon=(21+63*P**2+27*P**4+P**6)/(1+7*P**2+7*P**4+P**6)
-    #     q = 2 * (11 + 35 * P ** 2 + 17 * P ** 4 + P ** 6) / (1 + 7 * P ** 2 + 7 * P ** 4 + P ** 6)
-    #     Gamma =(-8 + q) * (8 + q)  / 2 / q ** 3 * q/(22)      #varpsilon/(21)
-
-    if a==2:
-        omega_e=omega_0*4
-        q = 2 * (3 + P ** 2) / (1 + P ** 2)
-        Gamma =  -np.real(((-36 * q) +np.sqrt(q*(1296*q+6912*1j*omega_e-576*q*omega_e**2)))/96/q/omega_e**2)
-    if a==3:
-        omega_e=omega_0*6
-        q = 2 * (19 + 26 * P ** 2 + 3 * P ** 4) / (3 + 10 * P ** 2 + 3 * P ** 4)
-        Gamma =  -np.real(((-760 * q/3) +np.sqrt(q*(577600*q/9+364800*1j*omega_e-14400*q*omega_e**2)))/720/q/omega_e**2)
-    if a==4:
-        omega_e=omega_0*8       
-        q = 2 * (11 + 35 * P ** 2 + 17 * P ** 4 + P ** 6) / (1 + 7 * P ** 2 + 7 * P ** 4 + P ** 6)
-        Gamma = 1/44*(1-64/q**2)+(q**2-320)*(q**2-64)/1331/q**4*omega_e**2 #varpsilon/(21)
+    return PP, DD
     
-    return P, Gamma, PP, DD
-    
-    # plt.style.use(['science','nature'])
-    # with plt.style.context(['science','nature']):
-    #     plt.rc('font',family='Times New Roman')
-    #     plt.figure()
-    #     p1, = plt.plot(PP,-D/FF/omega_0**2)
-    #     p2, = plt.plot(P,Gamma)
 
-    #     # plt.xlim(0, 200)
-    #     # plt.ylim(0, 18)
-    #     plt.xticks(fontsize=10)
-    #     plt.yticks(fontsize=10)
-    #     plt.legend([p1, p2], ["Density matrix", "NB"], loc='upper right',
-    #             prop={'size': 9})
-
-    #     plt.xlabel('$P$', fontsize=10)
-    #     plt.ylabel('$\Gamma_t^+$', fontsize=10)
-    #     plt.savefig('imag/Gamma_t+.png', dpi=1000)
-    # plt.show()
 

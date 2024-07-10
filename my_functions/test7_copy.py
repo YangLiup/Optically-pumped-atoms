@@ -11,6 +11,8 @@ from qutip import *
 from sympy import pi
 from scipy.linalg import *
 import scienceplots
+from tqdm import trange
+
 def gammam(I,PP): 
 
     # --------------------------------Properties of the alkali metal atom-----------------------------------#
@@ -83,17 +85,17 @@ def gammam(I,PP):
             qq=2*(11+35*P_ini**2+17*P_ini**4+P_ini**6)/(1+7*P_ini**2+7*P_ini**4+P_ini**6)
             eta=(qq+8)/(qq-8)
 
-        # module=np.sqrt(np.trace((ax+bx)@Rhot)**2+np.trace((ay+by)@Rhot)**2)
-        # ex= np.trace((ax+bx)@Rhot)/module
-        # ey= np.trace((ay+by)@Rhot)/module
-        # Fxm0 = np.trace((ax-eta*bx)@Rhot)
-        # Fym0 = np.trace((ay-eta*by)@Rhot)
-        # Fp0= np.sqrt((Fxm0-Fxm0*ex)**2+(Fym0-Fym0*ey)**2)
+        module=np.sqrt(np.trace((ax+bx)@Rhot)**2+np.trace((ay+by)@Rhot)**2)
+        ex= np.trace((ax+bx)@Rhot)/module
+        ey= np.trace((ay+by)@Rhot)/module
+        Fxm0 = np.trace((ax-eta*bx)@Rhot)
+        Fym0 = np.trace((ay-eta*by)@Rhot)
+        Fp0= np.sqrt((Fxm0-Fxm0*ex)**2+(Fym0-Fym0*ey)**2)
 
-         # zhao's metheod
-        byy0=np.trace((eta*by-ay) @ Rhot)
+        #  zhao's metheod
+        # byy0=np.trace((eta*by-ay) @ Rhot)
         
-        for k in np.arange(0,2,1):
+        for k in np.arange(0,5,1):
             Rhot = hyperfine * Rhot
             x1 = Rhot @ Sx
             x2 = Rhot @ Sy
@@ -106,23 +108,23 @@ def gammam(I,PP):
             mSS = mSx * Sx + mSy * Sy + mSz * Sz
             Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt  + Rhot
         n=n+1
-        # P_t=np.sqrt(np.trace(Rhot@Sx)**2+np.trace(Rhot@Sy)**2)*2
-        # if a==2:
-        #     eta=(5+3*P_t**2)/(1-P_t**2)
-        # if a==3:
-        #     qq=2*(19+26*P_t**2+3*P_t**4)/(3+10*P_t**2+3*P_t**4)
-        #     eta=(qq+6)/(qq-6)
-        # if a==4:
-        #     qq=2*(11+35*P_t**2+17*P_t**4+P_t**6)/(1+7*P_t**2+7*P_t**4+P_t**6)
-        #     eta=(qq+8)/(qq-8)
-        # Fxm = np.trace((ax-eta*bx)@Rhot)
-        # Fym = np.trace((ay-eta*by)@Rhot)
-        # Fp= np.sqrt((Fxm-Fxm*ex)**2+(Fym-Fym*ey)**2)
-        # Fmmt[n]=(Fp-Fp0)/(2*dt)/Fp0
+        P_t=np.sqrt(np.trace(Rhot@Sx)**2+np.trace(Rhot@Sy)**2)*2
+        if a==2:
+            eta=(5+3*P_t**2)/(1-P_t**2)
+        if a==3:
+            qq=2*(19+26*P_t**2+3*P_t**4)/(3+10*P_t**2+3*P_t**4)
+            eta=(qq+6)/(qq-6)
+        if a==4:
+            qq=2*(11+35*P_t**2+17*P_t**4+P_t**6)/(1+7*P_t**2+7*P_t**4+P_t**6)
+            eta=(qq+8)/(qq-8)
+        Fxm = np.trace((ax-eta*bx)@Rhot)
+        Fym = np.trace((ay-eta*by)@Rhot)
+        Fp= np.sqrt((Fxm-Fxm*ex)**2+(Fym-Fym*ey)**2)
+        Fmmt[n]=(Fp-Fp0)/(5*dt)/Fp0
 
         # zhao's metheod
-        byy=np.trace((eta*by-ay) @ Rhot)
-        Fmmt[n]=(byy-byy0)/(2*dt)/byy0
+        # byy=np.trace((eta*by-ay) @ Rhot)
+        # Fmmt[n]=(byy-byy0)/(5*dt)/byy0
 
     return Fmmt
     
