@@ -8,15 +8,15 @@ from my_functions.master_relaxationrate import masterequation
 from scipy.linalg import *
 import numpy as np
 from my_functions.test7_copy import gammam
+from matplotlib import ticker
 
 I=3/2
-omega_0=0.01
 a = round(I + 1 / 2)
 b = round(I - 1 / 2)
 
-PP1,DD1=masterequation(3/2,round(6e4),0.1,0.99)
-PP2,DD2=masterequation(5/2,round(6e4),0.1,0.99)
-PP3,DD3=masterequation(7/2,round(6e4),0.1,0.99)
+PP1,DD1=masterequation(3/2,round(5e5),0.05,0.999)
+PP2,DD2=masterequation(5/2,round(5e5),0.05,0.999)
+PP3,DD3=masterequation(7/2,round(5e5),0.05,0.999)
 
 z=gammam(3/2,PP1)
 zz=gammam(5/2,PP2)
@@ -37,9 +37,13 @@ eta3=(q3+8)/(q3-8)
 fp3 = (q3-8)**2*(q3+8)/(2*64*q3**3)#*(q3+8)/(q3-8)
 fm3 =  2*q3/(q3-8)#*(q3-8)/(q3+8)
 
-kappa1=(fp1/DD1-z/fm1)/2
-kappa2=(fp2/DD2-zz/fm2)/2
-kappa3=(fp3/DD3-zzz/fm3)/2
+# kappa1=(fp1/DD1-z/fm1)/2
+# kappa2=(fp2/DD2-zz/fm2)/2
+# kappa3=(fp3/DD3-zzz/fm3)/2
+
+kappa1=(-z/fm1)
+kappa2=(-zz/fm2)
+kappa3=(-zzz/fm3)
 
 Gammap1=4*eta1/(kappa1*16*(1+eta1)**3)
 Gammap2=4*eta2/(kappa2*36*(1+eta2)**3)
@@ -54,16 +58,17 @@ with plt.style.context(['science','nature']):
     fig = plt.figure(figsize=(3.35, 6))
     plt.rc('font',family='Times New Roman')
     ax1 = fig.add_subplot(311)
-    ax1.plot(PP1,(fp1/DD1+z/fm1)/(fp1/DD1-z/fm1))
-    ax1.plot(PP2,(fp2/DD2+zz/fm2)/(fp2/DD2-zz/fm2))
-    ax1.plot(PP3,(fp3/DD3+zzz/fm3)/(fp3/DD3-zzz/fm3))
+    ax1.plot(PP1,-(fp1/DD1+z/fm1)/(fp1/DD1-z/fm1))
+    ax1.plot(PP2,-(fp2/DD2+zz/fm2)/(fp2/DD2-zz/fm2))
+    ax1.plot(PP3,-(fp3/DD3+zzz/fm3)/(fp3/DD3-zzz/fm3))
     # ax1.plot(PP3,-fp3*fm3/DD3/zzz*0+1,linestyle='dotted')
     ax1.set_xlim([0.,0.99])
-    ax1.set_ylim([-0.1,0.1])
-    ax1.set_ylabel('Quality', fontsize=10)
+    # ax1.set_ylim([-0.1,0.1])
+    ax1.set_ylabel('$\\varepsilon$', fontsize=11)
     ax1.tick_params(axis='x', labelsize='10' )
     ax1.tick_params(axis='y', labelsize='10' )
-    # ax1.text(0.45, 0.11, '(a)',fontsize=8)
+    ax1.yaxis.set_major_formatter(ticker.PercentFormatter(xmax=1, decimals=0))
+    ax1.text(0.45, 0.082, '(a)',fontsize=8)
     ax1.axes.xaxis.set_ticklabels([])
 
     ax2 = fig.add_subplot(312)
@@ -74,12 +79,12 @@ with plt.style.context(['science','nature']):
     ax2.plot([],[])
     ax2.plot([],[])
     ax2.plot([],[])
-    ax2.plot(PP1, Gammap1,linestyle='dotted')
-    ax2.plot(PP2, Gammap2,linestyle='dotted')
-    ax2.plot(PP3, Gammap3,linestyle='dotted')
-    # ax2.text(0.45, 0.05, '(b)',fontsize=8)
+    # ax2.plot(PP1, Gammap1,linestyle='dotted')
+    # ax2.plot(PP2, Gammap2,linestyle='dotted')
+    # ax2.plot(PP3, Gammap3,linestyle='dotted')
+    ax2.text(0.45, 0.05, '(b)',fontsize=8)
     ax2.set_xlim([0.001,1])
-    ax2.set_ylim([0,0.1])
+    # ax2.set_ylim([0,0.1])
 
     ax2.set_ylabel('$\Gamma^+_t$ $(\omega_e^2/R_{\\rm{se}})$', fontsize=10)
     ax2.tick_params(axis='x', labelsize='10' )
@@ -94,21 +99,21 @@ with plt.style.context(['science','nature']):
     ax3.plot([],[])
     ax3.plot([],[])
     ax3.plot([],[])
-    ax3.plot(PP1, Gammam1,linestyle='dotted')
-    ax3.plot(PP2, Gammam2,linestyle='dotted')
-    ax3.plot(PP3, Gammam3,linestyle='dotted')
+    # ax3.plot(PP1, Gammam1,linestyle='dotted')
+    # ax3.plot(PP2, Gammam2,linestyle='dotted')
+    # ax3.plot(PP3, Gammam3,linestyle='dotted')
     ax1.legend(["$ I=3/2$", "$ I=5/2$", "$ I=7/2$"],
-               loc='upper right', prop={'size': 9})
+               loc='lower right', prop={'size': 9})
     ax3.set_xlabel('$P$', fontsize=10)
     ax3.set_ylabel('$\Gamma_t^- \\approx \Gamma_z^-$ ($R_{\\rm{se}}$) ', fontsize=10)
     ax3.tick_params(axis='x', labelsize='10' )
     ax3.tick_params(axis='y', labelsize='10' )
-    # ax3.text(0.45, 0.985, '(c)',fontsize=8)
+    ax3.text(0.45, 0.987, '(c)',fontsize=8)
     # p24=ax2.plot(PP, h*np.ones(bound),linestyle='dotted')
     # p25=ax2.plot(PP, hh*np.ones(bound),linestyle='dotted')
     # p26=ax2.plot(PP, hhh*np.ones(bound),linestyle='dotted')
     ax3.set_xlim([0,1])
-    ax3.set_ylim([0.5,1])
+    # ax3.set_ylim([0.5,1])
 
 plt.savefig('Gamma_.png', dpi=1000)
 plt.show()

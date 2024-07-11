@@ -95,7 +95,7 @@ def gammam(I,PP):
         #  zhao's metheod
         # byy0=np.trace((eta*by-ay) @ Rhot)
         
-        for k in np.arange(0,5,1):
+        for k in np.arange(0,2,1):
             Rhot = hyperfine * Rhot
             x1 = Rhot @ Sx
             x2 = Rhot @ Sy
@@ -120,7 +120,7 @@ def gammam(I,PP):
         Fxm = np.trace((ax-eta*bx)@Rhot)
         Fym = np.trace((ay-eta*by)@Rhot)
         Fp= np.sqrt((Fxm-Fxm*ex)**2+(Fym-Fym*ey)**2)
-        Fmmt[n]=(Fp-Fp0)/(5*dt)/Fp0
+        Fmmt[n]=(Fp-Fp0)/(2*dt)/Fp0
 
         # zhao's metheod
         # byy=np.trace((eta*by-ay) @ Rhot)
