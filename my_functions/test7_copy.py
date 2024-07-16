@@ -12,7 +12,6 @@ from sympy import pi
 from scipy.linalg import *
 import scienceplots
 from tqdm import trange
-
 def gammam(I,PP): 
 
     # --------------------------------Properties of the alkali metal atom-----------------------------------#
@@ -62,10 +61,9 @@ def gammam(I,PP):
     hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
     Fmmt = np.zeros(len(PP))
     
-    n=-1
-    for P in PP:
+    for n in trange(len(PP)):
         # -----------------Evolution-----------------#
-  
+        P=PP[n]
         Rho_ini = np.zeros(2 * (a + b + 1))
         beta = np.log((1 + P) / (1 - P))
         for i in np.arange(0, 2 * (a + b + 1), 1):
@@ -107,7 +105,6 @@ def gammam(I,PP):
             mSz = np.trace(x3)
             mSS = mSx * Sx + mSy * Sy + mSz * Sz
             Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt  + Rhot
-        n=n+1
         P_t=np.sqrt(np.trace(Rhot@Sx)**2+np.trace(Rhot@Sy)**2)*2
         if a==2:
             eta=(5+3*P_t**2)/(1-P_t**2)
