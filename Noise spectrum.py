@@ -6,8 +6,25 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scienceplots
+from scipy.special import wofz
 
-omega = np.arange(0,100000, 0.01)
+def voigt_profile(x, sigma, gamma):
+    """
+    Calculate the Voigt profile.
+
+    Parameters:
+        x (array-like): The x-values at which to calculate the profile.
+        sigma (float): The Gaussian standard deviation.
+        gamma (float): The Lorentzian full-width at half-maximum.
+
+    Returns:
+        array-like: The Voigt profile values at the specified x-values.
+    """
+    z = (x + 1j * gamma) / (sigma * np.sqrt(2))
+    v = wofz(z).imag / (sigma * np.sqrt(2 * np.pi))
+    return v
+
+omega = np.arange(0,100000, 1)
 P=0.8
 q=2*(3+P**2)/(1+P**2)
 Omega = 1000/q*4/2/np.pi
@@ -31,14 +48,24 @@ Fxb2= Fxb2/Z
 
 Fx2= Fxa2+Fxb2
 Fxn2= Fxa2+eta**2*Fxb2
+
+Gammap=0.03        
+Gammad=0.5       
+sigma=Gammad/(2*np.sqrt(2*np.log(2)))
+
+delta_nva2=1
+chia=-voigt_profile(delta_nva2,sigma,Gammap)/4-3/4*voigt_profile(delta_nva2+0.8,sigma,Gammap)
+chib=5*voigt_profile(delta_nva2-6.8,sigma,Gammap)/4-1/4*voigt_profile(delta_nva2-6,sigma,Gammap)
+chip=(eta*chia+chib)/(eta+1)
+chim=(chia-chib)/(eta+1)
+
 Lorentzianpp = gammap / (gammap**2 + (omega - Omega) ** 2)/2/np.pi
 Lorentzianpn = gammap / (gammap**2 + (omega + Omega) ** 2)/2/np.pi
 Lorentziannp = gamman / (gamman**2 + (omega - Omega) ** 2)/2/np.pi
 Lorentziannn = gamman / (gamman**2 + (omega + Omega) ** 2)/2/np.pi
 
 
-chip2=(eta-1)**2/(eta+1)**2
-chin2=4/(eta+1)**2
+
 plt.style.use(['science','nature'])
 with plt.style.context(['science','nature']):
     plt.rc('font',family='Times New Roman')
@@ -46,9 +73,9 @@ with plt.style.context(['science','nature']):
     # p3, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn)-10*Fz/2*(Lorentzianpp - Lorentzianpn))
     # p1, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn))
     # p2, = plt.plot(omega, -10*Fz/2*(Lorentzianpp - Lorentzianpn))
-    p1, = plt.loglog(omega, (chin2*Fxn2*(Lorentziannp + Lorentziannn)+chip2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chin2*Fxn2*(Lorentziannp + Lorentziannn)+chip2*Fx2*(Lorentzianpp + Lorentzianpn))))
-    p2, = plt.loglog(omega, (chip2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chip2*Fx2*(Lorentzianpp + Lorentzianpn))))
-    p3, = plt.loglog(omega, (chin2*Fxn2*(Lorentziannp + Lorentziannn))/np.max( (chin2*Fxn2*(Lorentziannp + Lorentziannn))))
+    p1, = plt.loglog(omega, (chim**2*Fxn2*(Lorentziannp + Lorentziannn)+chip**2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chim**2*Fxn2*(Lorentziannp + Lorentziannn)+chip**2*Fx2*(Lorentzianpp + Lorentzianpn))))
+    p2, = plt.loglog(omega, (chip**2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chip**2*Fx2*(Lorentzianpp + Lorentzianpn))))
+    p3, = plt.loglog(omega, (chim**2*Fxn2*(Lorentziannp + Lorentziannn))/np.max( (chim**2*Fxn2*(Lorentziannp + Lorentziannn))))
 
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
@@ -63,5 +90,5 @@ with plt.style.context(['science','nature']):
     plt.xlim([0,100000])
     # plt.ylim([-2,6])
     plt.savefig('imag/Noise spectrum.png', dpi=1000)
-
+plt.show()
 
