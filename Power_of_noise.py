@@ -32,14 +32,15 @@ plt.style.use(['science','nature'])
 with plt.style.context(['science','nature']):
     plt.rc('font',family='Times New Roman')
     fig1 = plt.figure()
+    plt.plot(P, 10*Fp2+10*Fn2)
     plt.plot(P, 10*Fp2)
     plt.plot(P, 10*Fn2)
-    plt.plot(P, 10*Fp2+10*Fn2)
+
     plt.xlabel('$P$', fontsize=10)
     plt.ylabel('Power (arb.units) ',fontsize='10')
-    plt.legend( ["$ \\varPhi_+$", "$ \\varPhi_-$", "$ \\varPhi_+$+$ \\varPhi_-$"],
-               loc='upper left', prop={'size': 9})
-    plt.ylim([0, 15.2])
+    plt.legend( ["$ \\varPhi_+$+$ \\varPhi_-$","$ \\varPhi_+$", "$ \\varPhi_-$"],
+               loc='lower left', prop={'size': 9})
+    # plt.ylim([0, 15.1])
     plt.xlim([0, 1])
     # plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
     # plt.xlabel('Frequency (Hz)', fontsize=12)

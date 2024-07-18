@@ -71,7 +71,7 @@ def Gamma(I,omega_0,dt,T):
     H = omega_0 * (az - bz)  # 投影定理
     q, v = np.linalg.eig(H)
     evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
-    for k in np.arange(1000):
+    for k in np.arange(50000):
         # -----------------Evolution-----------------#
         x1 = Rhot @ Sx
         x2 = Rhot @ Sy
