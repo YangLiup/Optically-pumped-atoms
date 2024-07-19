@@ -1,69 +1,61 @@
 # -*- coding:utf-8 -*-
 """
 作者：DELL
-日期：2024年03月07日
+日期：2023年12月24日
 """
 import numpy as np
 import matplotlib.pyplot as plt
-import scienceplots
-from scipy.special import wofz
-
-def voigt_profile(x, sigma, gamma):
-    """
-    Calculate the Voigt profile.
-
-    Parameters:
-        x (array-like): The x-values at which to calculate the profile.
-        sigma (float): The Gaussian standard deviation.
-        gamma (float): The Lorentzian full-width at half-maximum.
-
-    Returns:
-        array-like: The Voigt profile values at the specified x-values.
-    """
-    z = (x + 1j * gamma) / (sigma * np.sqrt(2))
-    v = wofz(z).imag / (sigma * np.sqrt(2 * np.pi))
-    return v
+from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
+from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
+from qutip import *
+from sympy import pi
+from scipy.linalg import *
 
 
-Gammap=0.03        
-Gammad=0.5       
-sigma=Gammad/(2*np.sqrt(2*np.log(2)))
+    # --------------------------------Properties of the alkali metal atom-----------------------------------#
+I=3/2
+a = round(I + 1 / 2)
+b = round(I - 1 / 2)
 
-def chia(delta_nva2):
-    chia=-voigt_profile(delta_nva2+2.3,sigma,Gammap)/4-3/4*voigt_profile(delta_nva2+3.1,sigma,Gammap)
-    return chia
-def chib(delta_nva2):
-    chib=5*voigt_profile(delta_nva2+2.3-6.8,sigma,Gammap)/4-1/4*voigt_profile(delta_nva2+3.1-6.8,sigma,Gammap)
-    return chib
+# --------------------------------Generate the angular momentum operators-----------------------------------#
+U = alkali_atom_uncoupled_to_coupled(round(2 * I))
+ax, ay, az, bx, by, bz = spin_operators_of_2or1_alkali_metal_atoms(1, I)
+Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax().full()))
+Sx = U.T.conjugate() @ Sx @ U
+Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay().full()))
+Sy = U.T.conjugate() @ Sy @ U
+Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz().full()))
+Sz = U.T.conjugate() @ Sz @ U
 
-def chip(delta_nva2,P):
-    q=2*(3+P**2)/(1+P**2)
-    eta=(3*P**2+5)/(1-P**2)
-    return (eta*chia(delta_nva2)+chib(delta_nva2))/(eta+1)
+# --------------------------------Define the initial state-----------------------------------#
+theta = 0
+phi = 0
+a_theta = spin_Jx(a) * np.sin(theta) * np.cos(phi) + spin_Jy(a) * np.sin(theta) * np.sin(phi) + spin_Jz(a) * np.cos(
+    theta)
+b_theta = spin_Jx(b) * np.sin(theta) * np.cos(phi) + spin_Jy(b) * np.sin(theta) * np.sin(phi) + spin_Jz(b) * np.cos(
+    theta)
+qa, va = np.linalg.eig(np.array(a_theta.full()))
+qb, vb = np.linalg.eig(np.array(b_theta.full()))
+v = block_diag(va, vb)
+q = np.hstack((qa, qb))
+Rho_ini = np.zeros(2 * (a + b + 1))
 
-def chim(delta_nva2,P):
-    q=2*(3+P**2)/(1+P**2)
-    eta=(3*P**2+5)/(1-P**2)
-    return (chia(delta_nva2)-chib(delta_nva2))/(eta+1)
+# # -----------------spin temperature state-----------------#
+P = 0.8
+beta = np.log((1 + P) / (1 - P))
+for i in np.arange(0, 2 * (a + b + 1), 1):
+    Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] * v[:, [i]].T.conjugate()
+Rho_ini = Rho_ini / np.trace(Rho_ini)
 
-plt.style.use(['science','nature'])
-with plt.style.context(['science','nature']):
-    plt.rc('font',family='Times New Roman')
-    delta_nva2=np.arange(-50,50,0.01)
-    fig = plt.figure()
-    plt.rc('font',family='Times New Roman')
-    ax1= fig.add_subplot(111)
+# -----------------eigenstates-----------------#
 
-    p1,=ax1.plot(delta_nva2,chia(delta_nva2)/np.max(chia(delta_nva2)))
-    p2,=ax1.plot(delta_nva2,chib(delta_nva2)/np.max(chia(delta_nva2)))
-    ax1.plot(delta_nva2,np.zeros(len(delta_nva2)),linewidth=0.2,color='black',linestyle='dotted')
+# Rho_ini = np.outer(np.array([0, 1, 0, 0, 0, 0, 0, 0]), np.array([0, 1, 0, 0, 0, 0, 0, 0]))
 
-    ax1.set_ylabel(' (arb. units)', fontsize=10)
-    ax1.tick_params(axis='x', labelsize='10' )
-    ax1.tick_params(axis='y', labelsize='10' )
-    # ax1.set_xlim([-200,-150])
-    # ax1.set_ylim([-0.01,0.01])
-    # ax1.set_yticks([-1,-0.5,0,0.5,1]) # 设置刻度
-    ax1.set_xticklabels([])
+# --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
+Rhot = Rho_ini
+H=ax-bx
+q, v = np.linalg.eig(H)
+evolving_B = v @ np.diag(np.exp(-1j * q*0.01)) @ np.linalg.inv(v)
 
-plt.show()
+Rhot = evolving_B @ Rhot @ evolving_B.T.conjugate()  # Zeeman effect
+
