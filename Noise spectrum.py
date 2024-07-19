@@ -53,11 +53,19 @@ Gammap=0.03
 Gammad=0.5       
 sigma=Gammad/(2*np.sqrt(2*np.log(2)))
 
-delta_nva2=1
-chia=-voigt_profile(delta_nva2,sigma,Gammap)/4-3/4*voigt_profile(delta_nva2+0.8,sigma,Gammap)
-chib=5*voigt_profile(delta_nva2-6.8,sigma,Gammap)/4-1/4*voigt_profile(delta_nva2-6,sigma,Gammap)
-chip=(eta*chia+chib)/(eta+1)
-chim=(chia-chib)/(eta+1)
+def chia(delta_nva2):
+    chia=-voigt_profile(delta_nva2,sigma,Gammap)/4-3/4*voigt_profile(delta_nva2+0.8,sigma,Gammap)
+    return chia
+def chib(delta_nva2):
+    chib=5*voigt_profile(delta_nva2-6.8,sigma,Gammap)/4-1/4*voigt_profile(delta_nva2-6,sigma,Gammap)
+    return chib
+
+def chip(delta_nva2):
+    return (eta*chia(delta_nva2)+chib(delta_nva2))/(eta+1)
+
+def chim(delta_nva2):
+    return (chia(delta_nva2)-chib(delta_nva2))/(eta+1)
+
 
 Lorentzianpp = gammap / (gammap**2 + (omega - Omega) ** 2)/2/np.pi
 Lorentzianpn = gammap / (gammap**2 + (omega + Omega) ** 2)/2/np.pi
@@ -65,23 +73,22 @@ Lorentziannp = gamman / (gamman**2 + (omega - Omega) ** 2)/2/np.pi
 Lorentziannn = gamman / (gamman**2 + (omega + Omega) ** 2)/2/np.pi
 
 
-
 plt.style.use(['science','nature'])
 with plt.style.context(['science','nature']):
     plt.rc('font',family='Times New Roman')
     fig1 = plt.figure()
-    # p3, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn)-10*Fz/2*(Lorentzianpp - Lorentzianpn))
-    # p1, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn))
-    # p2, = plt.plot(omega, -10*Fz/2*(Lorentzianpp - Lorentzianpn))
-    p1, = plt.loglog(omega, (chim**2*Fxn2*(Lorentziannp + Lorentziannn)+chip**2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chim**2*Fxn2*(Lorentziannp + Lorentziannn)+chip**2*Fx2*(Lorentzianpp + Lorentzianpn))))
-    p2, = plt.loglog(omega, (chip**2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chip**2*Fx2*(Lorentzianpp + Lorentzianpn))))
-    p3, = plt.loglog(omega, (chim**2*Fxn2*(Lorentziannp + Lorentziannn))/np.max( (chim**2*Fxn2*(Lorentziannp + Lorentziannn))))
+    
+    
+
+    p1, = plt.loglog(omega, (chim(-10)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-10)**2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chim(-10)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-10)**2*Fx2*(Lorentzianpp + Lorentzianpn))))
+    p2, = plt.loglog(omega, (chip(-10)**2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chim(-10)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-10)**2*Fx2*(Lorentzianpp + Lorentzianpn))))
+    p3, = plt.loglog(omega, (chim(2.)**2*Fxn2*(Lorentziannp + Lorentziannn))/np.max((chim(-10)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-10)**2*Fx2*(Lorentzianpp + Lorentzianpn))))
 
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
     # plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
 
-    plt.legend([p1, p2, p3], ["$\chi_b=-\chi_a$", "$\chi_b=\chi_a$", "$\chi_b=-\eta \chi_a$"], loc='center left',
+    plt.legend([p1, p2, p3], ["$\chi_b=-\chi_a$", "$\chi_b=\chi_a$", "$\chi_b=-\eta \chi_a$"], loc='upper right',
                prop={'size':9})
     # plt.xlabel('Frequency (Hz)', fontsize=12)
     # plt.ylabel(' PSD ($ N \chi_+^2$/Hz)', fontsize=12)
