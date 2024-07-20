@@ -45,20 +45,6 @@ with plt.style.context(['science','nature']):
     ax2.plot(tt2, longitude2)
     ax2.legend(["$P_x^{\mathrm{DM}}$", "$P_z^{\mathrm{DM}}$", "$P_x^{\mathrm{NB}}$", "$P_z^{\mathrm{NB}}$"],
                loc='upper right', prop={'size': 9})
-    # ax2.plot([],[])
-    # ax2.plot([],[])
-    # ax2.plot([],[])
-    # ax2.plot([],[])
-    # p24=ax2.plot(PP, h*np.ones(bound),linestyle='dotted')
-    # p25=ax2.plot(PP, hh*np.ones(bound),linestyle='dotted')
-    # p26=ax2.plot(PP, hhh*np.ones(bound),linestyle='dotted')
-    # ax2.set_xlim([0,1])
-    # ax2.set_ylim([0,2])
-
-    # plt.ylim([0.65, 1])
-    # plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
-    # plt.xlabel('Frequency (Hz)', fontsize=12)
-    # plt.ylabel(' PSD ($N \chi_a^2/$Hz)', fontsize=12)
 
     ax2.set_xlabel('$t$ ($1/R_{\mathrm{se}}$)', fontsize=10)
     ax2.set_ylabel('Polarization ', fontsize=10)
@@ -67,5 +53,5 @@ with plt.style.context(['science','nature']):
     # ax2.set_xlim([0,1000])
     
 
-    plt.savefig('Evolution.png', dpi=1000)
+    plt.savefig('imag/Evolution.png', dpi=1000)
 plt.show()
