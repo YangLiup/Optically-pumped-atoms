@@ -55,11 +55,11 @@ with plt.style.context(['science','nature']):
     fig = plt.figure(figsize=(3.35, 6))
     plt.rc('font',family='Times New Roman')
     ax1= fig.add_subplot(311)
-    ax1.plot([],[])
-    # ax1.plot([],[])
     y_1=chip(delta_nva2,0)/np.max(chip(delta_nva2,0))
     y_2=chim(delta_nva2,0)/np.max(chip(delta_nva2,0))
     p1,=ax1.plot(delta_nva2,y_1)
+    ax1.plot([],[])
+    ax1.plot([],[])
     p2,=ax1.plot(delta_nva2,y_2)
     ax1.plot(delta_nva2,np.zeros(len(delta_nva2)),linewidth=0.2,color='black',linestyle='dashed')
 
@@ -68,15 +68,18 @@ with plt.style.context(['science','nature']):
     ax1.tick_params(axis='y', labelsize='10' )
     ax1.set_yticks([-1,-0.5,0,0.5,1]) # 设置刻度
     ax1.set_xticklabels([])
+    ax1.set_xlim(-10, 10)
 
-    ax1.text(-10, 0.8, '(a) P=0',fontsize=8)
+    ax1.text(-9.5, 0.8, '(a) P=0',fontsize=8)
 
     #嵌入绘制局部放大图的坐标系
-    axins = ax1.inset_axes((0.7, 0.1, 0.25, 0.2))
+    axins = ax1.inset_axes((0.73, 0.1, 0.25, 0.2))
 
     #在子坐标系中绘制原始数据
-    axins.plot([], [])
+
     axins.plot(delta_nva2, y_1)
+    axins.plot([], [])
+    axins.plot([], [])
     axins.plot(delta_nva2, y_2)
     axins.tick_params(axis='x', labelsize='6' )
     axins.tick_params(axis='y', labelsize='6' )
@@ -108,9 +111,10 @@ with plt.style.context(['science','nature']):
     mark_inset(ax1, axins, loc1=3, loc2=1, fc="none", ec='k', lw=0.2)
 
     ax2 = fig.add_subplot(312)
-    ax2.plot([],[])
-    # ax2.plot([],[])
+
     ax2.plot(delta_nva2,chip(delta_nva2,0.5)/np.max(chip(delta_nva2,0)))
+    ax2.plot([],[])
+    ax2.plot([],[])
     ax2.plot(delta_nva2,chim(delta_nva2,0.5)/np.max(chip(delta_nva2,0)))
     ax2.plot(delta_nva2,np.zeros(len(delta_nva2)),linewidth=0.2,color='black',linestyle='dashed')
     ax2.set_ylabel(' (arb. units)', fontsize=10)
@@ -120,12 +124,12 @@ with plt.style.context(['science','nature']):
     ax2.set_yticks([-1,-0.5,0,0.5,1]) # 设置刻度
 
 
-    ax2.text(-10, 0.8, '(b) P=0.5',fontsize=8)
+    ax2.text(-9.5, 0.8, '(b) P=0.5',fontsize=8)
     ax2.text(4.8, -0.9, '$1\\to2$',fontsize=6)
     ax2.text(-2.0, -0.9, '$2\\to2$',fontsize=6)
     ax2.text(-5.5, -0.9, '$2\\to1$',fontsize=6)
     ax2.text(1.6, -0.9, '$1\\to1$',fontsize=6)
-
+    ax2.set_xlim(-10, 10)
     # plt.scatter(4.5,0,s=1.5,c='blue')
     # plt.scatter(-2.3,0,s=1.5,c='purple')
     # plt.scatter(-3.1,0,s=1.5,c='green')
@@ -138,9 +142,10 @@ with plt.style.context(['science','nature']):
 
 
     ax3 = fig.add_subplot(313)
-    ax3.plot([],[])
-    # ax3.plot([],[])
+
     ax3.plot(delta_nva2,chip(delta_nva2,0.99)/np.max(chip(delta_nva2,0)))
+    ax3.plot([],[])
+    ax3.plot([],[])
     ax3.plot(delta_nva2,chim(delta_nva2,0.99)/np.max(chip(delta_nva2,0)))
     ax3.plot(delta_nva2,np.zeros(len(delta_nva2)),linewidth=0.2,color='black',linestyle='dashed')
 
@@ -148,7 +153,8 @@ with plt.style.context(['science','nature']):
     ax3.tick_params(axis='x', labelsize='10' )
     ax3.tick_params(axis='y', labelsize='10' )
     # ax3.set_yticks([-1,-0.5,0,0.5,1]) # 设置刻度
-    ax3.text(-10, 1, '(c) P=0.99',fontsize=8)
+    ax3.text(-9.5, 1, '(c) P=0.99',fontsize=8)
+    ax3.set_xlim(-10, 10)
     ax3.set_yticks([-1,-0.5,0,0.5,1]) # 设置刻度
     ax1.legend([p1,p2],["$\chi_+$", "$\chi_-$"], loc='upper right',prop={'size':9})
     # plt.xlabel('Frequency (Hz)', fontsize=12)
