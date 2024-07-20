@@ -111,11 +111,16 @@ def master_equation(I,Rse,omega_0,T,N):
             Rop = 0.0
         transverse[n] = Px
         longitude[n] = Pz
-        #xiao
-        varpsilon=(5+P**2)/(1+P**2)
+
+        kappa=1/8*(1-0.03686595*P-1.48606789*P**2+0.52648381*P**3)
+        eta=(5+3*P**2)/(1-P**2)
         qnm = 2 * (3 + P ** 2) / (1 + P ** 2)
         Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
-        Gamma = (4 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / 3 / qnm ** 2 /qnm*6) *qnm/6* qnm / Qnm
+        Gamma = 4*eta/(1+eta)**3/kappa*omega_0**2* qnm / Qnm
+        # xiao
+        # qnm = 2 * (3 + P ** 2) / (1 + P ** 2)
+        # Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
+        # Gamma = (4 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / 3 / qnm ** 2 /qnm*6) *qnm/6* qnm / Qnm
 
         # #Mr Zhao
         # varpsilon=(5+P**2)/(1+P**2)

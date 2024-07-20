@@ -4,7 +4,7 @@ from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_
 from qutip import *
 from sympy.physics.quantum.spin import Rotation
 from sympy import pi
-from my_functions.master_relaxationrate import masterequation
+from my_functions.Relaxation_rate_calculation_by_DME import masterequation
 from scipy.linalg import *
 import numpy as np
 from my_functions.test7_copy import gammam
