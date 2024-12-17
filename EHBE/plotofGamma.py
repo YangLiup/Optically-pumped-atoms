@@ -41,7 +41,7 @@ kappa3=fp3/DD3
 plt.style.use(['science'])
 with plt.style.context(['science']):
     plt.rc('font',family='Times New Roman')
-    fig = plt.figure(figsize=(7.2, 4.8))
+    fig = plt.figure(figsize=(6.6, 4.2))
     ax4 = fig.add_subplot(224)
     pp,=ax4.plot(PP1,epsilon1)
     pp2,=ax4.plot(PP2,epsilon2)
