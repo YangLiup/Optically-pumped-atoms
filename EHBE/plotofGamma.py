@@ -41,7 +41,7 @@ kappa3=fp3/DD3
 plt.style.use(['science'])
 with plt.style.context(['science']):
     plt.rc('font',family='Times New Roman')
-    fig = plt.figure(figsize=(6.6, 4.2))
+    fig = plt.figure(figsize=(6.8, 4.2))
     ax4 = fig.add_subplot(224)
     pp,=ax4.plot(PP1,epsilon1)
     pp2,=ax4.plot(PP2,epsilon2)
@@ -71,7 +71,7 @@ with plt.style.context(['science']):
     # ax4.plot(PP3,-fp3*fm3/DD3/zzz*0+1,linestyle='dotted')
     ax3.set_xlim([0.,0.99])
     # ax4.set_ylim([-0.1,0.1])
-    ax3.set_ylabel('$\\tilde{\kappa}(P)$', fontsize=8)
+    ax3.set_ylabel('$\\tilde{\kappa}^+$', fontsize=8)
     ax3.tick_params(axis='x', labelsize='0.9' )
     ax3.tick_params(axis='y', labelsize='0.9' )
     ax3.text(0.45, 0.234, '(c)',fontsize=8)
