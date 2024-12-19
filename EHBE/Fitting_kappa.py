@@ -12,9 +12,9 @@ import pandas as pd
 # PP = np.array(pd.read_csv('data/dt=0.001/PP2.csv'))
 # DD = np.array(pd.read_csv('data/dt=0.001/DD2.csv'))
 
-z = np.array(pd.read_csv('D:\python\pythonProject\Optically_pumped_atoms\data\dt=0.001\zzz.csv'))
-PP = np.array(pd.read_csv('D:\python\pythonProject\Optically_pumped_atoms\data\dt=0.001\PP3.csv'))
-DD = np.array(pd.read_csv('D:\python\pythonProject\Optically_pumped_atoms\data\dt=0.001\DD3.csv'))
+z = np.array(pd.read_csv('D:\python\pythonProject\Optically_pumped_atoms\data\dt=0.001\zz.csv'))
+PP = np.array(pd.read_csv('D:\python\pythonProject\Optically_pumped_atoms\data\dt=0.001\PP2.csv'))
+DD = np.array(pd.read_csv('D:\python\pythonProject\Optically_pumped_atoms\data\dt=0.001\DD2.csv'))
 for i in np.arange(0,10,1):
     deleter=[n for n in range(0, len(PP), 2)]
     PP=np.delete(PP, deleter)
@@ -46,8 +46,8 @@ def fit(PP,DD,z,I):
     kappa2=fp/DD*eta
     kappa=(kappa1+kappa2)/2
 
-    def func(x,a1,a2,a3,a4,a5,a6,a10,a12):
-        return (kappa0*(eta0+1)/(eta+1)*eta)*(1+a1*x+a2*x**2+a3*x**3+a4*x**4+a5*x**5+a6*x**6)
+    def func(x,a2,a4,a6,a8,a10,a12):
+        return (kappa0*(eta0+1)/(eta+1)*eta)*(1+a2*x**2+a4*x**4+a6*x**6+a8*x**8+a10*x**10)
     xdata = PP
     ydata=kappa
     # 利用curve_fit作简单的拟合，popt为拟合得到的参数,pcov是参数的协方差矩阵
@@ -57,11 +57,11 @@ def fit(PP,DD,z,I):
     ss_res = np.sum((ydata - func(xdata, *popt_1)) ** 2)  # 3.residual sum of squares
     r_squared = 1 - (ss_res / ss_tot)  # 4.r squared
     plt.figure()
-    plt.plot(xdata, func(xdata, *popt_1), 'r-', label='fit_1')
+    plt.plot(xdata, func(xdata, *popt_1)/eta*(1+eta), 'r-', label='fit_1')
     plt.plot(xdata, kappa1, 'b-', label='data')
     return r_squared, popt_1
 
-fit(PP,DD,z,7)
+fit(PP,DD,z,5)
 
 
 
