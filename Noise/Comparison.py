@@ -56,8 +56,8 @@ PSD11,PSD21,revise1=comparison(Rse/100,omega1)
 plt.style.use(['science'])
 with plt.style.context(['science']):
     plt.rc('font',family='Times New Roman')
-    fig = plt.figure(figsize=(8, 2.4))
-    ax1= fig.add_subplot(133)
+    fig = plt.figure(figsize=(3.35, 6))
+    ax1= fig.add_subplot(313)
     p1,=ax1.plot(omega1, PSD11/np.max(PSD11))
     ax1.plot([], [])
     ax1.plot([], [])
@@ -80,28 +80,28 @@ with plt.style.context(['science']):
 
 
     
-    ax2= fig.add_subplot(132)
+    ax2= fig.add_subplot(312)
     ax2.plot(omega2, PSD12/np.max(PSD12))
     ax2.plot([], [])
     ax2.plot([], [])
     ax2.plot(omega2, PSD22/np.max(PSD12))
 
     # ax2.set_ylabel(' $S^{\mathrm{in}}(\\nu)$ (arb. units)', fontsize=9)
-    ax2.set_xlabel('$\\nu$ (kHz)', fontsize=8)
+    # ax2.set_xlabel('$\\nu$ (kHz)', fontsize=8)
 
     ax2.tick_params(axis='x', labelsize='9' )
     ax2.tick_params(axis='y', labelsize='9' )
 
     
-    ax3= fig.add_subplot(131)
+    ax3= fig.add_subplot(311)
     ax3.plot(omega3, PSD13/np.max(PSD13))
     ax3.plot([], [])
     ax3.plot([], [])
     ax3.plot(omega3, PSD23/np.max(PSD13))
 
     ax3.set_ylabel(' $S^{\mathrm{in}}(\\nu)$ (arb. units)', fontsize=9)
-    ax3.set_xlabel('$\\nu$ (kHz)', fontsize=8)
-    ax2.legend([p1, p2], ["Mouloudakis","Eq.(63)"], loc='upper right',
+    # ax3.set_xlabel('$\\nu$ (kHz)', fontsize=8)
+    ax2.legend([p1, p2], ["Ref.[19]","Eq.(63)"], loc='upper right',
                prop={'size': 8})
     ax1.legend([p3,p4], ["Eq.(63)$+$\n1st order \ncomponent","1st order \n component"], loc='upper right',
                prop={'size': 8})
