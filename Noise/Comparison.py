@@ -101,7 +101,7 @@ with plt.style.context(['science']):
 
     ax3.set_ylabel(' $S^{\mathrm{in}}(\\nu)$ (arb. units)', fontsize=9)
     ax3.set_xlabel('$\\nu$ (kHz)', fontsize=8)
-    ax2.legend([p1, p2], ["Mouloudakis","Eq.(63)"], loc='upper right',
+    ax2.legend([p1, p2], ["Ref.[19]","Eq.(63)"], loc='upper right',
                prop={'size': 8})
     ax1.legend([p3,p4], ["Eq.(63)$+$\n1st order \ncomponent","1st order \n component"], loc='upper right',
                prop={'size': 8})
