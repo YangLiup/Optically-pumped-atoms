@@ -12,9 +12,9 @@ import pandas as pd
 # PP = np.array(pd.read_csv('data/dt=0.001/PP2.csv'))
 # DD = np.array(pd.read_csv('data/dt=0.001/DD2.csv'))
 
-z = np.array(pd.read_csv('D:\python\pythonProject\Optically_pumped_atoms\data\dt=0.001\zz.csv'))
-PP = np.array(pd.read_csv('D:\python\pythonProject\Optically_pumped_atoms\data\dt=0.001\PP2.csv'))
-DD = np.array(pd.read_csv('D:\python\pythonProject\Optically_pumped_atoms\data\dt=0.001\DD2.csv'))
+z = np.array(pd.read_csv('D:\python\pythonProject\Optically_pumped_atoms\data\dt=0.001\zzz.csv'))
+PP = np.array(pd.read_csv('D:\python\pythonProject\Optically_pumped_atoms\data\dt=0.001\PP3.csv'))
+DD = np.array(pd.read_csv('D:\python\pythonProject\Optically_pumped_atoms\data\dt=0.001\DD3.csv'))
 for i in np.arange(0,10,1):
     deleter=[n for n in range(0, len(PP), 2)]
     PP=np.delete(PP, deleter)
@@ -57,11 +57,11 @@ def fit(PP,DD,z,I):
     ss_res = np.sum((ydata - func(xdata, *popt_1)) ** 2)  # 3.residual sum of squares
     r_squared = 1 - (ss_res / ss_tot)  # 4.r squared
     plt.figure()
-    plt.plot(xdata, func(xdata, *popt_1)/eta*(1+eta), 'r-', label='fit_1')
-    plt.plot(xdata, kappa1, 'b-', label='data')
+    # plt.plot(xdata, func(xdata, *popt_1), 'r-', label='fit_1')
+    plt.plot(xdata, kappa1/eta*(1+eta), 'b-', label='data')
     return r_squared, popt_1
 
-fit(PP,DD,z,5)
+fit(PP,DD,z,7)
 
 
 
