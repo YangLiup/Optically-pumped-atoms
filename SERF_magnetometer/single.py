@@ -17,12 +17,12 @@ def fun(X):
     f=1/3
     c=3e8
     re=2.82e-15
-    m=1
+    m=7
     gamma_e=2*np.pi*2.8*10**10  #Hz/T
-    a=0.5e-2                       #m
+    a=0.5e-2                      #m
     b=0.5e-2                       #m
     l=1.8e-2*m                     #m
-    V=a*b*l/m
+    V=a*b*l
 
     mol=6.02e23
     kB=1.38e-23
@@ -68,12 +68,12 @@ def fun(X):
         D_N2=D0_N2*(760/pN2)*(T0/(273.5+60))**(3/2)*(T/T0)**(1/2) 
         D=1/(1/D_He+1/D_N2)
     
-    r=18e-1/2
+    r=23e-1/2
     q=5
     Gamma_D=q*D*(np.pi/r)**2
-
-    delta_B=1/(gamma_e*np.sqrt(n*V)*Rop)*np.sqrt(4*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**3+2*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**4/(Gamma_pr*OD))# 目标函数
-
+    delta_Bsp=1/(gamma_e*np.sqrt(n*V)*Rop)*np.sqrt(4*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**3)# 目标函数
+    delta_Bph=1/(gamma_e*np.sqrt(n*V)*Rop)*np.sqrt(2*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**4/(Gamma_pr*OD))# 目标函数
+    delta_B=np.sqrt(delta_Bsp**2+delta_Bph**2)
     return delta_B
 
 
