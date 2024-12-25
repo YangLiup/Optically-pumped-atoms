@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 def fun(X):
 #-----------------------碱金属原子种类-------------------------#
-    species='K'
+    species='Rb'
 #-----------------------缓冲气体和淬灭气体的气压(室温时）-------------------------#
     pN2=60
     pHe=760*3
@@ -27,7 +27,10 @@ def fun(X):
     mol=6.02e23
     kB=1.38e-23
     R=8.314/mol
-    T=273.5+200
+    if species=='Rb':
+        T=273.5+160
+    if species=='K':
+        T=273.5+200
     mHe=0.004/mol
     mN2=0.028/mol
     mK=0.039/mol
@@ -70,16 +73,22 @@ def fun(X):
     
     r=23e-1/2
     q=5
+    global delta_Bsp
+    global delta_Bph 
     Gamma_D=q*D*(np.pi/r)**2
-    delta_Bsp=1/(gamma_e*np.sqrt(n*V)*Rop)*np.sqrt(4*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**3)# 目标函数
-    delta_Bph=1/(gamma_e*np.sqrt(n*V)*Rop)*np.sqrt(2*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**4/(Gamma_pr*OD))# 目标函数
-    delta_B=np.sqrt(delta_Bsp**2+delta_Bph**2)
+    delta_Bsp=1/(gamma_e*np.sqrt(n*V)*Rop)*np.sqrt(4*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**3)
+
+    delta_Bph=1/(gamma_e*np.sqrt(n*V)*Rop)*np.sqrt(2*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**4/(Gamma_pr*OD))
+
+    delta_B=np.sqrt(delta_Bsp**2+delta_Bph**2) # 目标函数
     return delta_B
 
 
 delta_B=dual_annealing(fun,bounds=[[0,2000],[0,2000]])
 print(delta_B)
-
+fun(delta_B.x)
+print(delta_Bsp)
+print(delta_Bph)
 
 
 
