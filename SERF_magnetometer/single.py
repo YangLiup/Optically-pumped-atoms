@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 def fun(X):
 #-----------------------碱金属原子种类-------------------------#
-    species='Rb'
+    species='K'
 #-----------------------缓冲气体和淬灭气体的气压(室温时）-------------------------#
     pN2=60
     pHe=760*3
@@ -17,7 +17,7 @@ def fun(X):
     f=1/3
     c=3e8
     re=2.82e-15
-    m=7
+    m=1
     gamma_e=2*np.pi*2.8*10**10  #Hz/T
     a=0.5e-2                      #m
     b=0.5e-2                       #m
@@ -76,9 +76,10 @@ def fun(X):
     global delta_Bsp
     global delta_Bph 
     Gamma_D=q*D*(np.pi/r)**2
+    eta=0.5
     delta_Bsp=1/(gamma_e*np.sqrt(n*V)*Rop)*np.sqrt(4*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**3)
 
-    delta_Bph=1/(gamma_e*np.sqrt(n*V)*Rop)*np.sqrt(2*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**4/(Gamma_pr*OD))
+    delta_Bph=1/(gamma_e*np.sqrt(n*V)*Rop)*np.sqrt(2*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**4/(eta*Gamma_pr*OD))
 
     delta_B=np.sqrt(delta_Bsp**2+delta_Bph**2) # 目标函数
     return delta_B
