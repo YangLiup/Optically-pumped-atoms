@@ -4,13 +4,14 @@
 日期：2023年12月16日
 """
 # this function is used to Generate_a_squeezed_state_by_QND_Takahashi#
-
+import sys
+sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
 import numpy as np
 import matplotlib.pyplot as plt
 from qutip import *
-from my_functions.ptr import ptr
+from ptr import ptr
 from scipy.linalg import *
-from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
+from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
 
 
 def Generate_a_squeezed_state_by_QND(N, I, T, s, alpha, dt):

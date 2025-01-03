@@ -3,10 +3,12 @@
 作者：DELL
 日期：2023年12月24日
 """
+import sys
+sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
 import numpy as np
 import matplotlib.pyplot as plt
-from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
-from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
+from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
+from alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
 from qutip import *
 from sympy.physics.quantum.spin import Rotation
 from sympy import pi

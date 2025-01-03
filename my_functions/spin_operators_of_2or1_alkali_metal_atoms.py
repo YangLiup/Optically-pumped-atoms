@@ -3,6 +3,8 @@
 作者：DELL
 日期：2023年12月20日
 """
+import sys
+sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
 import numpy as np
 from qutip import *
 from scipy.linalg import *

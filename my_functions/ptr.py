@@ -3,6 +3,8 @@
 作者：DELL
 日期：2023年12月17日
 """
+import sys
+sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
 # this function is used to take partial trace for two spins. N-dimension is partial-traced#
 import numpy as np
 def ptr(Rho, N, D):

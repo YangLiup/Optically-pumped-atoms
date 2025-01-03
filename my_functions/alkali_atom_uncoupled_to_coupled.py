@@ -4,7 +4,8 @@
 日期：2023年12月18日
 """
 # This function provides the transformation from uncoupled  representation to coupled  representation for Rb87
-
+import sys
+sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
 import numpy as np
 from sympy.physics.quantum.spin import JzKet, couple, JzKetCoupled, uncouple
 from sympy.physics.quantum.tensorproduct import TensorProduct
