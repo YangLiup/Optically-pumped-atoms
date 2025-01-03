@@ -24,7 +24,7 @@ import scienceplots
 # N is the number of atoms, T is the squeezing time, F is the spin of atom, s is the spin of light and alpha is the coupling constant
 N = 3
 I = 3 / 2
-T_sq = 3
+T_sq = 2
 a = round(I + 1 / 2)
 b = round(I - 1 / 2)
 s = 5

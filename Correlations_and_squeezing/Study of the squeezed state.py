@@ -26,7 +26,7 @@ from matplotlib.ticker import FuncFormatter
 # N is the number of atoms, T is the squeezing time, F is the spin of atom, s is the spin of light and alpha is the coupling constant
 N = 2
 I = 3 / 2
-T = 3
+T = 2
 a = round(I + 1 / 2)
 b = round(I - 1 / 2)
 s = 5
@@ -61,8 +61,8 @@ Rhos_ini = np.outer(Xis_ini, Xis_ini)
 Rho_ini = np.kron(ini_Rho_atom, Rhos_ini)
 Rhot = Rho_ini
 n = round(T / dt)
-C_1z1z = [None] * n
-C_1z2z = [None] * n
+C1 = [None] * n
+C2 = [None] * n
 Vz0 = np.trace(ini_Rho_atom @ Fz @ Fz)
 
 # evolving
@@ -74,20 +74,19 @@ for i in np.arange(0, n, 1):
     Rho_r = read @ Rhot_sample @ read.T.conjugate()
     Rho_r = Rho_r / Rho_r.trace()
     Rho_atom = ptr(Rho_r, 2 * s + 1, (2 * (a + b + 1)) ** N)
-    # C_1z1z[i] = 1 - np.trace(Rho_atom @ Fz @ Fz) / Vz0
-    C_1z2z[i] = np.trace(Rho_atom @ Fy@Fy)
+    C1[i] = 1 - (np.trace(Rho_atom @ Fz @ Fz)-np.trace(Rho_atom @ Fz)**2) / Vz0
+    C2[i] =  np.trace(Rho_atom @ Fx)
 
 tt = np.arange(0, T, dt)
 plt.style.use(['science'])
 with plt.style.context(['science']):
     plt.figure()
-    plt.plot(tt, C_1z2z)
+    plt.plot(C1,C2)
+    # plt.gca().invert_xaxis() 
     # plt.xlim(0, 1)
     # plt.ylim(0, 0.4)
-    plt.xlabel('Noise reduction', fontsize=12)
-    plt.ylabel('Polarization reduction', fontsize=12)
-    plt.xticks(fontsize=10)
-    plt.yticks(fontsize=10)
+    plt.xlabel('$1-\\frac {\mathrm{var}(F_z)_{\mathrm{s}}} {\mathrm{var}(F_z)_0}$')
+    plt.ylabel('$\langle F_x \\rangle_{\mathrm{s}}$')
     plt.savefig('imag\squeezing.png', dpi=600)
 
 # plt.figure()
