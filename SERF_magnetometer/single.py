@@ -6,6 +6,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from tqdm import tqdm
 
 def fun(X):
+    global c,nu_D1,Gamma_D,Gamma_SD,delta_Bsp, Delta_nu,delta_Bph ,re
+
 #-----------------------碱金属原子种类-------------------------#
     species='K'
 #-----------------------缓冲气体和淬灭气体的气压(室温时）-------------------------#
@@ -17,7 +19,7 @@ def fun(X):
     f=1/3
     c=3e8
     re=2.82e-15
-    m=1
+    m=7
     gamma_e=2*np.pi*2.8*10**10  #Hz/T
     a=0.5e-2                      #m
     b=0.5e-2                       #m
@@ -43,8 +45,8 @@ def fun(X):
 
     nN2=133.32*pN2/(T0*R)
     nHe=pHe/(T0*R)*133.32
-
     if species=='K':
+        nu_D1=c/(770.108e-9)
         p=10**(7.4077-4453/T)
         n=133.32*p/(T*R)
         Delta_nu=19.84*pHe*(T/T0)+18.98*pN2*(T/T0)       # MHz
@@ -59,6 +61,7 @@ def fun(X):
         D=1/(1/D_He+1/D_N2)
         
     if species=='Rb':
+        nu_D1=377e12
         p=10**(2.881+4.312-4040/T)
         n=133.32*p/(T*R)
         amg=2.69e25
@@ -73,8 +76,6 @@ def fun(X):
     
     r=23e-1/2
     q=5
-    global delta_Bsp
-    global delta_Bph 
     Gamma_D=q*D*(np.pi/r)**2
     eta=0.5
     delta_Bsp=1/(gamma_e*np.sqrt(n*V)*Rop)*np.sqrt(4*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**3)
@@ -88,8 +89,17 @@ def fun(X):
 delta_B=dual_annealing(fun,bounds=[[0,2000],[0,2000]])
 print(delta_B)
 fun(delta_B.x)
+
+h=6.626e-34
+Power_pump=delta_B.x[1]/re/c*3*(Delta_nu/2*1e6)*h*nu_D1
+detuning=10e9
+Power_probe=delta_B.x[0]/re/c*3*((Delta_nu/2*1e6)**2+detuning**2)/(Delta_nu/2*1e6)*h*nu_D1
+
 print(delta_Bsp)
 print(delta_Bph)
+
+print(Power_pump)
+print(Power_probe)
 
 
 
