@@ -6,7 +6,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from tqdm import tqdm
 
 def fun(X):
-    global c,nu_D1,Gamma_D,Gamma_SD,delta_Bsp, Delta_nu,delta_Bph ,re
+    global c,nu_D1,Gamma_D,Gamma_SD,delta_Bsp, Delta_nu,delta_Bph ,re,OD
 
 #-----------------------碱金属原子种类-------------------------#
     species='K'
@@ -19,7 +19,7 @@ def fun(X):
     f=1/3
     c=3e8
     re=2.82e-15
-    m=7
+    m=1
     gamma_e=2*np.pi*2.8*10**10  #Hz/T
     a=0.5e-2                      #m
     b=0.5e-2                       #m
@@ -100,6 +100,6 @@ print(delta_Bph)
 
 print(Power_pump)
 print(Power_probe)
-
+print(OD)
 
 
