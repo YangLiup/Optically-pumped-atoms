@@ -41,29 +41,29 @@ kappa3=fp3/DD3
 plt.style.use(['science'])
 with plt.style.context(['science']):
     plt.rc('font',family='Times New Roman')
-    fig = plt.figure(figsize=(3.6*2, 4.1)) 
-    ax4 = fig.add_subplot(224)
-    pp,=ax4.plot(PP1,epsilon1)
-    pp2,=ax4.plot(PP2,epsilon2)
-    pp3,=ax4.plot(PP3,epsilon3)
+    fig = plt.figure(figsize=(3.6, 6)) 
+    # ax4 = fig.add_subplot(224)
+    # pp,=ax4.plot(PP1,epsilon1)
+    # pp2,=ax4.plot(PP2,epsilon2)
+    # pp3,=ax4.plot(PP3,epsilon3)
 
-    # ax4.plot(PP3,-fp3*fm3/DD3/zzz*0+1,linestyle='dotted')
-    ax4.set_xlim([0.,0.99])
-    ax4.set_ylim([-0.0001,0.002])
-    # ax4.set_ylim([-0.1,0.1])
-    ax4.set_ylabel('$\\varepsilon$')
-    # ax4.tick_params(axis='x', labelsize='0.9' )
-    # ax4.tick_params(axis='y', labelsize='0.9' )
-    ax4.set_yticks([0,0.001,0.002]) # 设置刻度
-    ax4.set_xlabel('$P$')
+    # # ax4.plot(PP3,-fp3*fm3/DD3/zzz*0+1,linestyle='dotted')
+    # ax4.set_xlim([0.,0.99])
+    # ax4.set_ylim([-0.0001,0.002])
+    # # ax4.set_ylim([-0.1,0.1])
+    # ax4.set_ylabel('$\\varepsilon$')
+    # # ax4.tick_params(axis='x', labelsize='0.9' )
+    # # ax4.tick_params(axis='y', labelsize='0.9' )
+    # ax4.set_yticks([0,0.001,0.002]) # 设置刻度
+    # ax4.set_xlabel('$P$')
 
-    ax4.yaxis.set_major_formatter(ticker.PercentFormatter(xmax=1, decimals=1))
-    ax4.text(0.45, 0.00202, '(d)')
+    # ax4.yaxis.set_major_formatter(ticker.PercentFormatter(xmax=1, decimals=1))
+    # ax4.text(0.45, 0.00202, '(d)')
 
-    ax3 = fig.add_subplot(223)
-    ax3.plot(PP1,fp1/DD1)
-    ax3.plot(PP2,fp2/DD2)
-    ax3.plot(PP3,fp3/DD3)
+    ax3 = fig.add_subplot(313)
+    pp,=ax3.plot(PP1,fp1/DD1)
+    pp2,=ax3.plot(PP2,fp2/DD2)
+    pp3,=ax3.plot(PP3,fp3/DD3)
     ax3.set_ylabel('$\\tilde{\kappa}^+$')
     # ax3.tick_params(axis='x', labelsize='0.9' )
     # ax3.tick_params(axis='y', labelsize='0.9' )
@@ -73,7 +73,7 @@ with plt.style.context(['science']):
 
     # ax3.axes.xaxis.set_ticklabels([])
 
-    ax1 = fig.add_subplot(221)
+    ax1 = fig.add_subplot(311)
     ax1.plot(PP1, DD1)
     ax1.plot(PP2, DD2)
     ax1.plot(PP3, DD3)
@@ -90,7 +90,7 @@ with plt.style.context(['science']):
     # ax1.tick_params(axis='y', labelsize='0.9' )
     ax1.axes.xaxis.set_ticklabels([])
 
-    ax2 = fig.add_subplot(222)
+    ax2 = fig.add_subplot(312)
     p21=ax2.plot(PP1, z)
     p22=ax2.plot(PP2, zz)
     p23=ax2.plot(PP3, zzz)
@@ -99,7 +99,7 @@ with plt.style.context(['science']):
     # ax3.plot(PP1, Gammam1,linestyle='dotted')
     # ax3.plot(PP2, Gammam2,linestyle='dotted')
     # ax3.plot(PP3, Gammam3,linestyle='dotted')
-    ax4.legend([pp, pp2, pp3],["$ I=3/2$", "$ I=5/2$", "$ I=7/2$"],
+    ax3.legend([pp, pp2, pp3],["$ I=3/2$", "$ I=5/2$", "$ I=7/2$"],
                loc='upper right')
     ax2.set_ylabel('$\\tilde{\Gamma}_{\perp}^- $ ($R_{\\rm{se}}$) ')
     # ax2.tick_params(axis='x', labelsize='0.9' )
@@ -109,7 +109,7 @@ with plt.style.context(['science']):
     # p25=ax3.plot(PP, hh*np.ones(bound),linestyle='dotted')
     # p26=ax3.plot(PP, hhh*np.ones(bound),linestyle='dotted')
     ax2.set_xlim([0.,0.99])
-    ax4.set_xlim([0,1])
+    # ax4.set_xlim([0,1])
     ax2.axes.xaxis.set_ticklabels([])
     # ax3.axes.xaxis.set_ticklabels([])
 

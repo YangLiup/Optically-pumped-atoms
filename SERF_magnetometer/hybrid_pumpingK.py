@@ -109,13 +109,13 @@ def fun(X):
 #--------------------噪声------------------------#
     delta_Bsp=1/(gamma_e*np.sqrt(nK*V)*PK0)*np.sqrt(4*(Rse_Rb+Gamma_pr+Gamma_SDK+Gamma_DK))
 
-    delta_Bph=1/(gamma_e*np.sqrt(nK*V)*PK0)*np.sqrt(2*(Rse_Rb+Gamma_pr+Gamma_SDK+Gamma_DK)**2/(eta*Gamma_pr*ODK))
+    # delta_Bph=1/(gamma_e*np.sqrt(nK*V)*PK0)*np.sqrt(2*(Rse_Rb+Gamma_pr+Gamma_SDK+Gamma_DK)**2/(eta*Gamma_pr*ODK))
 
     delta_B=np.sqrt(delta_Bsp**2+delta_Bph**2) # 目标函数
     return delta_B
 
 
-delta_B=dual_annealing(fun,bounds=[[0,200],[0,500000]])
+delta_B=dual_annealing(fun,bounds=[[0,200],[0,500]])
 print(delta_B)
 fun(delta_B.x)
 
@@ -125,7 +125,7 @@ detuning=10e9
 Power_probe=delta_B.x[0]/re/c*3*((Delta_nuK/2*1e6)**2+detuning**2)/(Delta_nuK/2*1e6)*h*nuK_D1
 
 print(delta_Bsp)
-print(delta_Bph)
+# print(delta_Bph)
 
 print(Power_pump)
 # print(Power_probe)
