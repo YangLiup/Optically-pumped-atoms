@@ -124,12 +124,6 @@ def master_equation(I,Rse,omega_0,T,N):
         # Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
         # Gamma = (4 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / 3 / qnm ** 2 /qnm*6) *qnm/6* qnm / Qnm
 
-        # #Mr Zhao
-        # varpsilon=(5+P**2)/(1+P**2)
-        # qnm = 2 * (3 + P ** 2) / (1 + P ** 2)
-        # Qnm = 2 * (3 + P ** 4) / ((1 + P ** 2) ** 2)
-        # Gamma = (4 * (-4 + qnm) * (4 + qnm) * omega_0 ** 2 / 3 / qnm ** 2 /qnm*6) *varpsilon/5* qnm / Qnm
-
         T2 = (1 - ((qnm - Qnm) / qnm) * Pz ** 2 / P ** 2) * Gamma
         T1 = T2-Gamma/qnm*Qnm
 
