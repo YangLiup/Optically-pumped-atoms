@@ -5,7 +5,7 @@
 """
 
 import sys
-sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
+sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
 import numpy as np
 import matplotlib.pyplot as plt
 from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
@@ -15,7 +15,7 @@ from scipy.linalg import *
 import scienceplots
 from tqdm import trange
 P_range=np.arange(0.0001,0.99,0.01)
-def rate(I):
+def rate(I,angle):
     # --------------------------------Properties of the alkali metal atom-----------------------------------#
     # I = 5 / 2
     a = round(I + 1 / 2)
@@ -61,7 +61,7 @@ def rate(I):
     # --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
 
     hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
-    evolving_B = vH @ np.diag(np.exp(-1j * qH *(np.pi/40))) @ np.linalg.inv(vH)
+    evolving_B = vH @ np.diag(np.exp(-1j * qH *(angle))) @ np.linalg.inv(vH)
 
 
 
@@ -83,6 +83,15 @@ def rate(I):
         Rhot = evolving_B @ Rhot @ evolving_B.T.conjugate()  # Zeeman effect
         Rhot = hyperfine * Rhot
 
+        max = np.trace((ax)@Rhot)
+        mbx = np.trace((bx)@Rhot)
+        mFx = max+mbx
+        may = np.trace((ay)@Rhot)
+        mby = np.trace((by)@Rhot)
+        mFy = may+mby
+        module=np.sqrt(mFx**2+mFy**2)
+        ex=mFx/module
+        ey=mFy/module
 
         if a==2:
             eta=(5+3*P**2)/(1-P**2)
@@ -95,7 +104,7 @@ def rate(I):
             q3 = 2 * (11 + 35 * P ** 2 + 17 * P ** 4 + P ** 6) / (1 + 7 * P ** 2 + 7 * P ** 4 + P ** 6)
             eta=(q3+8)/(q3-8)
         
-        Fm0=np.sqrt(np.trace((ax-eta*bx)@Rhot)**2+np.trace((ay-eta*by)@Rhot)**2)
+        Fm0= np.sqrt(np.trace((ax-eta*bx)@Rhot)**2+np.trace((ay-eta*by)@Rhot)**2-(np.trace((ax-eta*bx)@Rhot)*ex+np.trace((ay-eta*by)@Rhot)*ey)**2)
 
         for k in np.arange(0,2*dt,dt):
             Rhot = hyperfine * Rhot
@@ -109,25 +118,34 @@ def rate(I):
             mSz = np.trace(x3)
             mSS = mSx * Sx + mSy * Sy + mSz * Sz
             Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt  + Rhot
-        Fm=np.sqrt(np.trace((ax-eta*bx)@Rhot)**2+np.trace((ay-eta*by)@Rhot)**2)
+        # Fm=np.sqrt(np.trace((ax-eta*bx)@Rhot)**2+np.trace((ay-eta*by)@Rhot)**2)
+        Fm = np.sqrt(np.trace((ax-eta*bx)@Rhot)**2+np.trace((ay-eta*by)@Rhot)**2-(np.trace((ax-eta*bx)@Rhot)*ex+np.trace((ay-eta*by)@Rhot)*ey)**2)
         Gamma[j]=-(Fm-Fm0)/(2*dt)/Fm0
         Fm0_[j]=Fm0
         j=j+1
     return Gamma,Fm0_
-Gamma1,Fm01=rate(3/2)
-Gamma2,Fm02=rate(5/2)
-Gamma3,Fm03=rate(7/2)
+Gamma1,Fm01=rate(3/2,np.pi/200)
+Gamma2,Fm02=rate(5/2,np.pi/200)
+Gamma3,Fm03=rate(7/2,np.pi/200)
+
+Gamma12,Fm012=rate(3/2,np.pi/2000)
+Gamma22,Fm022=rate(5/2,np.pi/2000)
+Gamma32,Fm032=rate(7/2,np.pi/2000)
 
 plt.figure()
-# p1,=plt.plot(P_range,Gamma1)
-# p2,=plt.plot(P_range,Gamma2)
-# p3,=plt.plot(P_range,Gamma3)
-p1,=plt.plot(P_range,Fm01)
-p2,=plt.plot(P_range,Fm02)
-p3,=plt.plot(P_range,Fm03)
+p1,=plt.plot(P_range,Gamma1,color='blue',linewidth='0.5')
+p2,=plt.plot(P_range,Gamma2,color='green',linewidth='0.5')
+p3,=plt.plot(P_range,Gamma3,color='red',linewidth='0.5')
+
+p12,=plt.plot(P_range,Gamma12,color='blue',linestyle='dashed')
+p22,=plt.plot(P_range,Gamma22,color='green',linestyle='dashed')
+p32,=plt.plot(P_range,Gamma32,color='red',linestyle='dashed')
+# p1,=plt.plot(P_range,Fm01)
+# p2,=plt.plot(P_range,Fm02)
+# p3,=plt.plot(P_range,Fm03)
 plt.legend([p1,p2,p3],['I=3/2','I=5/2','I=7/2'])
 plt.xlabel('P')
-plt.ylabel('${[a-\eta b]}_0$')
+plt.ylabel('$\Gamma^-$')
 # plt.ylim([0.12,0.14])
 plt.show()
 

@@ -164,6 +164,31 @@ def Gamma(I,omega_0,dt,T):
     Gammam=np.delete(Gammam, deleter)
     DD=np.delete(DD, deleter)
 
+    deleter=[n for n in range(0,len(PP), 2)]
+    PP=np.delete(PP, deleter)
+    Gammam=np.delete(Gammam, deleter)
+    DD=np.delete(DD, deleter)
+
+    deleter=[n for n in range(0,len(PP), 2)]
+    PP=np.delete(PP, deleter)
+    Gammam=np.delete(Gammam, deleter)
+    DD=np.delete(DD, deleter)
+    deleter=[n for n in range(0,len(PP), 2)]
+    PP=np.delete(PP, deleter)
+    Gammam=np.delete(Gammam, deleter)
+    DD=np.delete(DD, deleter)
+    deleter=[n for n in range(0,len(PP), 2)]
+    PP=np.delete(PP, deleter)
+    Gammam=np.delete(Gammam, deleter)
+    DD=np.delete(DD, deleter)
+    deleter=[n for n in range(0,len(PP), 2)]
+    PP=np.delete(PP, deleter)
+    Gammam=np.delete(Gammam, deleter)
+    DD=np.delete(DD, deleter)
+    deleter=[n for n in range(0,len(PP), 2)]
+    PP=np.delete(PP, deleter)
+    Gammam=np.delete(Gammam, deleter)
+    DD=np.delete(DD, deleter)
     return DD,Gammam,PP
 
     # q1=2*(3+PP**2)/(1+PP**2)
@@ -175,13 +200,22 @@ def Gamma(I,omega_0,dt,T):
     # eta2=(q2+6)/(q2-6)
     # fp2 =  (q2-6)**2*(q2+6)/(2*36*q2**3)#*(q2+6)/(q2-6)
     # fm2 =2*q2/(q2-6)#*(q2-6)/(q2+6)
+DD1,Gammam1,PP1=Gamma(3/2,0.04,0.005,2e4)
+DD11,Gammam11,PP11=Gamma(3/2,0.02,0.005,5e4)
+DD2,Gammam2,PP2=Gamma(3/2,0.01,0.005,10e4)
+DD3,Gammam3,PP3=Gamma(3/2,0.005,0.005,80e4)
 
-    # plt.figure()
-    # # plt.plot(PP,(fp2/DD-Gammam/fm2)/(fp2/DD+Gammam/fm2))
-    # plt.plot(PP,(Gammam))
+plt.figure()
+# plt.plot(PP,(fp2/DD-Gammam/fm2)/(fp2/DD+Gammam/fm2))
+p1,=plt.plot(PP1,Gammam1,linewidth='0.8')
+p11,=plt.plot(PP11,Gammam11,linestyle='dotted')
 
-
-    # plt.show()
+p2,=plt.plot(PP2,Gammam2,linestyle='dashed')
+p3,=plt.plot(PP3,Gammam3,linewidth='0.8')
+plt.legend([p1,p11,p2,p3],['$\omega_0=0.04$','$\omega_0=0.02$','$\omega_0=0.01$','$\omega_0=0.005$'])
+plt.xlabel('P')
+plt.ylabel('$\Gamma^-$')
+plt.show()
         
 
 
