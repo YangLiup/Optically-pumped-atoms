@@ -129,8 +129,12 @@ for k in t:
     # Fmp[j] = np.trace((ay-eta*by)@Rhot)
 
 plt.figure()
-p1,=plt.plot(t,(Fm-Fm[-1])/(Fm-Fm[-1])[0])
-p2,=plt.plot(t,(Fmp-Fmp[-1])/(Fmp-Fmp[-1])[0],linestyle='dashed')
+p1,=plt.plot(t,(Fm-Fm[-1])/(Fm-Fm[-1])[0],color='green',linewidth='0.7')
+p12,=plt.plot(t,np.exp(-0.74*t),color='green',linestyle='dashed',linewidth='0.7')
+
+p2,=plt.plot(t,(Fmp-Fmp[-1])/(Fmp-Fmp[-1])[0],color='red',linewidth='0.7')
+p22,=plt.plot(t,np.exp(-0.6325*t),color='red',linestyle='dashed',linewidth='0.7')
+
 plt.xlabel('t')
 plt.ylabel('$F_-$')
 plt.title('angle=pi/10,P=0.5')
