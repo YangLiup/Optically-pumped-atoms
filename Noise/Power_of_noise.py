@@ -73,10 +73,10 @@ Lorentziannp = gamman / (gamman**2 + (omega - Omega) ** 2)/2/np.pi
 Lorentziannn = gamman / (gamman**2 + (omega + Omega) ** 2)/2/np.pi
 
 
-plt.style.use(['science','nature'])
-with plt.style.context(['science','nature']):
+plt.style.use(['science'])
+with plt.style.context(['science']):
     plt.rc('font',family='Times New Roman')
-    fig = plt.figure(figsize=(3.35, 5.5))
+    fig = plt.figure(figsize=(3.51, 4.8))
     ax_1  = fig.add_subplot(211)
     ax_1.loglog(omega, (chim(-100)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-100)**2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chim(-100)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-100)**2*Fx2*(Lorentzianpp + Lorentzianpn))))
     ax_1.loglog(omega, (chip(-100)**2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chim(-100)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-10)**2*Fx2*(Lorentzianpp + Lorentzianpn))))

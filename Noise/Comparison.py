@@ -56,7 +56,7 @@ PSD11,PSD21,revise1=comparison(Rse/100,omega1)
 plt.style.use(['science'])
 with plt.style.context(['science']):
     plt.rc('font',family='Times New Roman')
-    fig = plt.figure(figsize=(3.35, 6))
+    fig = plt.figure(figsize=(3.51, 6.8))
     ax1= fig.add_subplot(313)
     p1,=ax1.plot(omega1, PSD11/np.max(PSD11))
     ax1.plot([], [])
@@ -99,7 +99,12 @@ with plt.style.context(['science']):
     ax3.plot([], [])
     ax3.plot(omega3, PSD23/np.max(PSD13))
 
-    ax3.set_ylabel(' $S^{\mathrm{in}}(\\nu)$ (arb. units)', fontsize=9)
+    # ax3.set_ylabel(' $S^{\mathrm{in}}(\\nu)$ (arb. units)', fontsize=9)
+    # ax2.set_ylabel(' $S^{\mathrm{in}}(\\nu)$ (arb. units)', fontsize=9)
+    # ax1.set_ylabel(' $S^{\mathrm{in}}(\\nu)$ (arb. units)', fontsize=9)
+
+    fig.text(-0.01, 0.5, ' $S^{\mathrm{in}}(\\nu)$ (arb. units)', va='center', rotation='vertical',fontsize='9')
+
     # ax3.set_xlabel('$\\nu$ (kHz)', fontsize=8)
     ax2.legend([p1, p2], ["Ref.[19]","Eq.(63)"], loc='upper right',
                prop={'size': 8})
