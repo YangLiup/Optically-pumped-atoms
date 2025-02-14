@@ -45,7 +45,7 @@ with plt.style.context(['science']):
 
     ax1.set_ylabel('Polarization', fontsize=8)
     # ax1.axes.xaxis.set_ticklabels([])
-    ax1.text(7200, 0.63, '(a)',fontsize=8)
+    ax1.text(7200, 0.62, '(a)',fontsize=8)
     ax1.tick_params(axis='both', which='major', labelsize=8)
     ax1.tick_params(axis='both', which='minor', labelsize=8)
 
@@ -58,7 +58,7 @@ with plt.style.context(['science']):
     # ax2.set_xlabel('$t$ ($1/R_{\mathrm{se}}$)', fontsize=9)
     ax2.set_ylabel('Polarization ', fontsize=8)
     # ax2.set_xlim([0,10000])
-    ax2.text(4500, 0.63, '(b)',fontsize=8)
+    ax2.text(4500, 0.62, '(b)',fontsize=8)
     # ax2.axes.xaxis.set_ticklabels([])
     ax1.tick_params(axis='both', which='major', labelsize=8)
     ax1.tick_params(axis='both', which='minor', labelsize=8)
@@ -75,12 +75,12 @@ with plt.style.context(['science']):
     # ax3.set_xlabel('$t$ ($1/R_{\mathrm{se}}$)', fontsize=8)
     ax3.set_ylabel('Polarization ', fontsize=8)
     # ax3.set_xlim([0,2000])
-    ax3.text(3600, 0.63, '(c)', fontsize=8)
+    ax3.text(3600, 0.62, '(c)', fontsize=8)
 
     ax3.tick_params(axis='both', which='major', labelsize=8)
     ax3.tick_params(axis='both', which='minor', labelsize=8)
     ax3.set_xlabel('$t$ ($1/R_{\mathrm{se}}$)', fontsize=8)
-    ax3.legend(["$P_{\perp}^{\mathrm{DME}}$", "$P_z^{\mathrm{DME}}$", "$P_{\perp}^{\mathrm{EBE}}$", "$P_z^{\mathrm{EBE}}$"],
+    ax3.legend(["$P_{\perp}^{\mathrm{DME}}$", "$P_z^{\mathrm{DME}}$", "$P_{\perp}^{\mathrm{BE}}$", "$P_z^{\mathrm{BE}}$"],
                loc='center right', prop={'size': 7})
     
 

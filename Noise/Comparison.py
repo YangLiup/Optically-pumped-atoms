@@ -56,7 +56,7 @@ PSD11,PSD21,revise1=comparison(Rse/100,omega1)
 plt.style.use(['science'])
 with plt.style.context(['science']):
     plt.rc('font',family='Times New Roman')
-    fig = plt.figure(figsize=(3.46, 6.8))
+    fig = plt.figure(figsize=(3.4, 7))
     ax1= fig.add_subplot(313)
     p1,=ax1.plot(omega1, PSD11/np.max(PSD11))
     ax1.plot([], [])
@@ -112,15 +112,9 @@ with plt.style.context(['science']):
                prop={'size': 8})
     ax3.tick_params(axis='x', labelsize='9' )
     ax3.tick_params(axis='y', labelsize='9' )
-    ax1.text(8*(0.9/2),1.08, '(c)',fontsize=8)
-    ax2.text(30*(0.9/2),1.07, '(b)',fontsize=8)
-    ax3.text(150*(0.9/2),1.07, '(a)',fontsize=8)
-
-
-
-
-
-
+    ax1.text(0,0.97, '(c)',fontsize=8)
+    ax2.text(0,0.96, '(b)',fontsize=8)
+    ax3.text(0,0.97, '(a)',fontsize=8)
     plt.savefig('Fig10_comparison.png', dpi=1000)
 plt.show()
 

@@ -33,8 +33,8 @@ def master_equation(I,Rse,omega_0,T,N):
 
     # --------------------------------Characterize interactions envolved-----------------------------------#
     # omega_0 = 0.01
-    Rop = 0.1
-    Rsd = 50/1e4
+    Rop =0.1
+    Rsd =50/1e4
     sx=1/np.sqrt(2)
     sz=1/np.sqrt(2)
     # --------------------------------Define the initial state-----------------------------------#
@@ -51,7 +51,7 @@ def master_equation(I,Rse,omega_0,T,N):
     Rho_ini = np.zeros(2 * (a + b + 1))
 
     # # -----------------spin temperature state-----------------#
-    P = 0.00000000000001
+    P = 0.99
     beta = np.log((1 + P) / (1 - P))
     for i in np.arange(0, 2 * (a + b + 1), 1):
         Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] * v[:, [i]].T.conjugate()
@@ -101,7 +101,7 @@ def master_equation(I,Rse,omega_0,T,N):
         # V[n] = Vx
 
     # ---------------------------Bloch Equation-----------------------------------
-    Rop = 0.1
+    Rop =0.1
     transverse = np.zeros(round(T / dt))
     longitude = np.zeros(round(T / dt))
     Px = P * np.sin(theta)
