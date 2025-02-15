@@ -3,10 +3,13 @@
 作者：DELL
 日期：2024年01月19日
 """
+
 import matplotlib.pyplot as plt
 import numpy as np
 import scienceplots
 from pylab import mpl
+import matplotlib
+matplotlib.use('TkAgg')  # 或者 'Qt5Agg' 等其他后端
 
 P = np.linspace(0, 1, 100)
 q = 2 * (3 + P ** 2) / (1 + P ** 2)
