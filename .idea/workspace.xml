@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c9aa01e0-57d7-4674-bce6-0a4e5dfc9682" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/EHBE/qq.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Optically-pumped-atoms.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Optically-pumped-atoms.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rabi.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EHBE/picture of q Q.py" beforeDir="false" afterPath="$PROJECT_DIR$/EHBE/picture of q Q.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test2.py" beforeDir="false" afterPath="$PROJECT_DIR$/picture.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +38,7 @@
     "Python.Noise spectrum.executor": "Run",
     "Python.Study of the squeezed state.executor": "Run",
     "Python.picture of q Q.executor": "Run",
+    "Python.picture.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -48,7 +47,7 @@
     "last_opened_file_path": "D:/Optically-pumped-atoms",
     "python.debugger.dataview.autoresize": "false",
     "python.debugger.dataview.coloredbydefault": "false",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.grazie"
+    "settings.editor.selected.configurable": "configurable.group.tools"
   }
 }]]></component>
   <component name="PyConsoleOptionsProvider">
