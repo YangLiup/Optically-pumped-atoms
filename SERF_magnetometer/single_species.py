@@ -3,10 +3,9 @@ import numpy as np
 from scipy.optimize import dual_annealing
 import matplotlib.pyplot as mp
 from mpl_toolkits.mplot3d import Axes3D
-from tqdm import tqdm
 
 def fun(X):
-    global c,nu_D1,Gamma_D,Gamma_SD,delta_Bsp, Delta_nu,delta_Bph ,re,OD
+    global c,nu_D1,Gamma_D,Gamma_SD,delta_Bsp, Delta_nu,delta_Bph ,re,OD,n
 
 #-----------------------碱金属原子种类-------------------------#
     species='Rb'
@@ -100,11 +99,10 @@ Power_pump=delta_B.x[1]/re/c*3*(Delta_nu/2*1e6)*h*nu_D1
 detuning=10e9
 Power_probe=delta_B.x[0]/re/c*3*((Delta_nu/2*1e6)**2+detuning**2)/(Delta_nu/2*1e6)*h*nu_D1
 
-print(delta_Bsp)
-print(delta_Bph)
+print('delta_Bsp=',delta_Bsp)
+print('delta_Bph=',delta_Bph)
 
-print(Power_pump)
-print(Power_probe)
-print(OD)
+print('Power_pump=',Power_pump)
+print('Power_probe=',Power_probe)
 
 
