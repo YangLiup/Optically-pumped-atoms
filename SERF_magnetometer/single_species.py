@@ -5,10 +5,10 @@ import matplotlib.pyplot as mp
 from mpl_toolkits.mplot3d import Axes3D
 
 def fun(X):
-    global c,nu_D1,Gamma_D,Gamma_SD,delta_Bsp, Delta_nu,delta_Bph ,re,OD,n
+    global c,nu_D1,Gamma_D,Gamma_SD,delta_Bsp, Delta_nu,delta_Bph ,re,OD,n,vRb, vHeRb,vN2Rb
 
 #-----------------------碱金属原子种类-------------------------#
-    species='Rb'
+    species='K'
 #-----------------------缓冲气体和淬灭气体的气压(室温时）-------------------------#
     pN2=60
     pHe=760*3
@@ -81,16 +81,15 @@ def fun(X):
     q=5
     Gamma_D=q*D*(np.pi/r)**2
     eta=0.5
-    P0=Rop/(Rop+Gamma_pr+Gamma_SD+Gamma_D)
-    delta_Bsp=1/(gamma_e*np.sqrt(n*V)*P0)*np.sqrt(4*(Rop+Gamma_pr+Gamma_SD+Gamma_D))
+    delta_Bsp=1/(gamma_e*Rop*np.sqrt(n*V))*np.sqrt(4*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**3)
 
-    delta_Bph=1/(gamma_e*np.sqrt(n*V)*P0)*np.sqrt(2*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**2/(eta*Gamma_pr*OD))
+    delta_Bph=1/(gamma_e*Rop*np.sqrt(n*V))*np.sqrt(2*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**4/(eta*Gamma_pr*OD))
 
     delta_B=np.sqrt(delta_Bsp**2+delta_Bph**2) # 目标函数
     return delta_B
 
 
-delta_B=dual_annealing(fun,bounds=[[0,2000],[0,2000]])
+delta_B=dual_annealing(fun,bounds=[[0.1,2000],[0.1,2000]])
 print(delta_B)
 fun(delta_B.x)
 
