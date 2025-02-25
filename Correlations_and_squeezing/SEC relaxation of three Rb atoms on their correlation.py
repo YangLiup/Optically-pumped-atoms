@@ -66,7 +66,7 @@ Pe23 = Pt23 - Ps23
 # ----------------------state--------------------#
 
 
-xi = np.array([0, 0, 1, 0, 0, 0, 0, 0])
+xi = np.array([0, 1, 0, 0, 0, 0, 0, 0])
 Xi_ini =  np.kron(np.kron(xi
                                    , xi), xi)
 Rho_ini = np.outer(Xi_ini, Xi_ini)

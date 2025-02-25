@@ -8,7 +8,7 @@ def fun(X):
     global c,nu_D1,Gamma_D,Gamma_SD,delta_Bsp, Delta_nu,delta_Bph ,re,OD,n,vRb, vHeRb,vN2Rb
 
 #-----------------------碱金属原子种类-------------------------#
-    species='K'
+    species='Rb'
 #-----------------------缓冲气体和淬灭气体的气压(室温时）-------------------------#
     pN2=60
     pHe=760*3
@@ -29,7 +29,7 @@ def fun(X):
     kB=1.38e-23
     R=8.314/mol
     if species=='Rb':
-        T=273.5+160
+        T=273.5+50
     if species=='K':
         T=273.5+200
     mHe=0.004/mol

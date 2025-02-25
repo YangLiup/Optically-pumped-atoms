@@ -61,11 +61,11 @@ if N == 3:
 
 # ----------------------electron spin----------------------#
 if N == 2:
-    Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax()))
+    Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax().full()))
     Sx = U.T.conjugate() @ Sx @ U
-    Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay()))
+    Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay().full()))
     Sy = U.T.conjugate() @ Sy @ U
-    Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz()))
+    Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz().full()))
     Sz = U.T.conjugate() @ Sz @ U
 
     S1x = np.kron(Sx, np.eye(2 * (a + b + 1)))
@@ -79,11 +79,11 @@ if N == 2:
     Pt12 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S1x @ S2x + S1y @ S2y + S1z @ S2z)
     Pe12 = Pt12 - Ps12
 if N == 3:
-    Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax()))
+    Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax().full()))
     Sx = U.T.conjugate() @ Sx @ U
-    Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay()))
+    Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay().full()))
     Sy = U.T.conjugate() @ Sy @ U
-    Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz()))
+    Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz().full()))
     Sz = U.T.conjugate() @ Sz @ U
 
     S1x = np.kron(np.kron(Sx, np.eye(2 * (a + b + 1))), np.eye(2 * (a + b + 1)))
@@ -108,7 +108,7 @@ if N == 3:
     Pt23 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S2x @ S3x + S2y @ S3y + S2z @ S3z)
     Pe23 = Pt23 - Ps23
 
-T = 10
+T = 20
 dt = 0.01
 n = round(T / dt)
 te = np.arange(0, T, dt)
@@ -126,7 +126,7 @@ C_a1za2z2 = [None] * n
 C_a1zb2z2 = [None] * n
 C_b1zb2z2 = [None] * n
 # ----------------------Magnetic field----------------------#
-omega_0 = 10
+omega_0 = 0.5
 # H = omega_e * (ax-bx)              #一个原子
 # H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
 H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
@@ -177,19 +177,20 @@ for t in np.arange(0, n, 1):
     Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
     Rho_atom = hyperfine * Rho_atom
 
-tt = np.arange(0, n, 1)/10
-with plt.style.context(['science','nature']):
+tt = np.arange(0, n, 1)*0.01
+with plt.style.context(['science']):
     fig = plt.figure()
     ax1 = fig.add_subplot(1, 1, 1)
     p1, = ax1.plot(tt, C_1 )
-    p2, = ax1.plot(tt, C_2)
+    p2, = ax1.plot(tt, C_2,color='orange')
     ax1.legend([p1,p2],
                ["With SEC","Witout SEC"]
-               , loc='upper right')
-    ax1.set_xlabel('t (1/R$_{\mathrm{se}}$)')
-    ax1.set_ylabel('Var $(\hat F_{x})$')
-    plt.xlim(0, 30)
-    plt.savefig('graph1.png', dpi=600)
+               , loc='upper right',ncol=2,fontsize='9')
+    ax1.set_xlabel('$t$ (s)')
+    ax1.set_ylabel('Var $( F_{x})$')
+    # plt.xlim(0, 2)
+    plt.ylim(1.6,9)
+    plt.savefig('desqueezing.png', dpi=600)
 
     # fig = plt.figure()
     # ax2 = fig.add_subplot(1, 1, 1)
