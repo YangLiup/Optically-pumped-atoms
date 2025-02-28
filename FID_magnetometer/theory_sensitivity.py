@@ -27,8 +27,9 @@ def voigt_profile(Delta, Gamma_G, Gamma_L):
 
 
 #delta_nv为失谐
-def chia(delta_nv):
-    Gammap=0.06e9       #压强展宽GHz
+def chia(delta_nv,pHe,pN2,T,T0):
+    Gammap=19.84*pHe*(T/T0)+18.98*pN2*(T/T0)*1e-3       # MHz
+    # Gammap=0.06e9       #压强展宽GHz
     Gammad=0.5e9        #多普勒展宽GHz
     re=2.83e-15
     c=3e8
@@ -43,8 +44,8 @@ def photon_number(power):
     nu=c/lam
     return power/(h*nu)
 
-def Gamma_pr(delta_nv,power):
-    Gammap=0.06e9       #压强展宽GHz
+def Gamma_pr(delta_nv,power,pHe,pN2,T,T0):
+    Gammap=19.84*pHe*(T/T0)+18.98*pN2*(T/T0)*1e-3      #压强展宽GHz
     Gammad=0.5e9        #多普勒展宽GHz
     re=2.83e-15
     c=3e8
@@ -58,23 +59,91 @@ def fun(X):
     Power=X[0]
     Detuning=X[1]
     tau=X[2]
+    species='K'
+#-----------------------缓冲气体和淬灭气体的气压(室温时）-------------------------#
+    pN2=760
+    pHe=760*3e-10
+#-----------------------计算细节-------------------------#
+    f=1/3
+    c=3e8
+    re=2.82e-15
+    m=1
+    gamma_e=2*np.pi*2.8*10**10  #Hz/T
+    a=0.5e-2                      #m
+    b=0.5e-2                       #m
+    l=1.8e-2                     #m
+    A=a*b     #m^2
+    V=a*b*l
+
+    mol=6.02e23
+    kB=1.38e-23
+    R=8.314/mol
+    if species=='Rb':
+        T=273.5+160
+    if species=='K':
+        T=273.5+200
+    mHe=0.004/mol
+    mN2=0.028/mol
+    mK=0.039/mol
+    mRb=0.085/mol
+    T0=273.5+20
+    vHeK=np.sqrt(8*kB*T/np.pi/(mHe*mK/(mHe+mK)))
+    vHeRb=np.sqrt(8*kB*T/np.pi/(mHe*mRb/(mHe+mRb)))
+
+    vN2K=np.sqrt(8*kB*T/np.pi/(mN2*mK/(mN2+mK)))
+    vN2Rb=np.sqrt(8*kB*T/np.pi/(mN2*mRb/(mN2+mRb)))
+
+    vK=np.sqrt(16*kB*T/np.pi/mK)
+    vRb=np.sqrt(16*kB*T/np.pi/mRb)
+
+    nN2=133.32*pN2/(T0*R)
+    nHe=pHe/(T0*R)*133.32
+    if species=='K':
+        nu_D1=c/(770.108e-9)
+        p=10**(7.4077-4453/T)
+        n=133.32*p/(T*R)
+        Delta_nu=19.84*pHe*(T/T0)+18.98*pN2*(T/T0)       # MHz
+        OD=2*re*c*f*n*l/(Delta_nu*1e6)
+        # Gamma_SD=1e-22*n*vK+8e-29*nHe*vHe+7.9e-27*nN2*vN2
+        Gamma_SD=1e-19*n+5e-29*nHe*vHeK+7.9e-27*nN2*vN2K
+        # -------------------考虑扩散弛豫--------------#
+        D0_He=0.35
+        D_He=D0_He*(760/pHe)*pow(T0/273.5,3/2)*np.sqrt(T/T0)
+        D0_N2=0.2
+        D_N2=D0_N2*(760/pN2)*pow(T0/273.5,3/2)*np.sqrt(T/T0)
+        D=1/(1/D_He+1/D_N2)
+        
+    if species=='Rb':
+        nu_D1=377e12
+        p=10**(2.881+4.312-4040/T)
+        n=133.32*p/(T*R)
+        amg=2.69e25
+        Delta_nu=(18e3*nHe+17.8e3*nN2 )/amg      # MHz
+        OD=2*re*c*f*n*l/(Delta_nu*1e6)
+        Gamma_SD=9e-22*n*vRb+9e-28*nHe*vHeRb+1e-26*nN2*vN2Rb
+        D0_He=0.42
+        D_He=D0_He*(760/pHe)*(T0/(273.5+27))**(3/2)*(T/T0)**(1/2)
+        D0_N2=0.159
+        D_N2=D0_N2*(760/pN2)*(T0/(273.5+60))**(3/2)*(T/T0)**(1/2) 
+        D=1/(1/D_He+1/D_N2)
+    
+    r=23e-1/2
+    q=4
+    Gamma_D=q*D*(np.pi/r)**2
+
     def F_error(tau): 
         fArea,err = integrate.quad(lambda t: (1-t/tau)*np.exp(-Gamma2*t),0,tau)
         return fArea
     Phi=photon_number(Power)
-    n=3e17   #/cm^3
-    l=2.4e-2      #cm
-    A=6e-6     #cm^2
     N_at=n*l*A
-    gamma=2*np.pi*2.8*10**10
-    chi=chia(Detuning)
-    Gamma2=1000/30+Gamma_pr(Detuning,Power)
+    chi=chia(Detuning,pHe,pN2,T,T0)
+    Gamma2=Gamma_SD+Gamma_D+Gamma_pr(Detuning,Power,pHe,pN2,T,T0)
     sigmaF_tau=0.86/np.sqrt(N_at)
-    Fx0=0.2
-    sigma=1/(gamma*Fx0*tau*np.exp(-Gamma2*tau))*np.sqrt(4*F_error(tau)/N_at+1/(2*chi**2*n**2*l**2*Phi))
+    Fx0=2*0.1
+    sigma=1/(gamma_e*Fx0*tau*np.exp(-Gamma2*tau))*np.sqrt(4*F_error(tau)/N_at+1/(2*chi**2*n**2*l**2*Phi))
     return sigma
 
-sigma=dual_annealing(fun,bounds=[[0,1e-3],[1e8,1e10],[0,1e-1]])
+sigma=dual_annealing(fun,bounds=[[0,1e-1],[1e8,1e10],[0,1e-1]])
 print(sigma)
 
 #计算

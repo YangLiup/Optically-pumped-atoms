@@ -8,7 +8,7 @@ def fun(X):
     global c,nu_D1,Gamma_D,Gamma_SD,delta_Bsp, Delta_nu,delta_Bph ,re,OD,n,vRb, vHeRb,vN2Rb
 
 #-----------------------碱金属原子种类-------------------------#
-    species='Rb'
+    species='K'
 #-----------------------缓冲气体和淬灭气体的气压(室温时）-------------------------#
     pN2=60
     pHe=760*3
@@ -29,7 +29,7 @@ def fun(X):
     kB=1.38e-23
     R=8.314/mol
     if species=='Rb':
-        T=273.5+50
+        T=273.5+160
     if species=='K':
         T=273.5+200
     mHe=0.004/mol
@@ -89,7 +89,7 @@ def fun(X):
     return delta_B
 
 
-delta_B=dual_annealing(fun,bounds=[[0.1,2000],[0.1,2000]])
+delta_B=dual_annealing(fun,bounds=[[0.1,200],[0.1,100]])
 print(delta_B)
 fun(delta_B.x)
 
