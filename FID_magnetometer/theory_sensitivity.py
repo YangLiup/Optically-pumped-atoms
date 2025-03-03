@@ -56,13 +56,14 @@ def Gamma_pr(delta_nv,power,pHe,pN2,T,T0):
 
 #优化
 def fun(X):
+    global n, vRb,vK
     Power=X[0]
     Detuning=X[1]
     tau=X[2]
-    species='K'
+    species='Rb'
 #-----------------------缓冲气体和淬灭气体的气压(室温时）-------------------------#
-    pN2=760
-    pHe=760*3e-10
+    pN2=60
+    pHe=760*3
 #-----------------------计算细节-------------------------#
     f=1/3
     c=3e8
@@ -106,13 +107,14 @@ def fun(X):
         OD=2*re*c*f*n*l/(Delta_nu*1e6)
         # Gamma_SD=1e-22*n*vK+8e-29*nHe*vHe+7.9e-27*nN2*vN2
         Gamma_SD=1e-19*n+5e-29*nHe*vHeK+7.9e-27*nN2*vN2K
+
         # -------------------考虑扩散弛豫--------------#
         D0_He=0.35
         D_He=D0_He*(760/pHe)*pow(T0/273.5,3/2)*np.sqrt(T/T0)
         D0_N2=0.2
         D_N2=D0_N2*(760/pN2)*pow(T0/273.5,3/2)*np.sqrt(T/T0)
         D=1/(1/D_He+1/D_N2)
-        
+        Gamma_se=n*1.5e-18*vK*2.5/1.5
     if species=='Rb':
         nu_D1=377e12
         p=10**(2.881+4.312-4040/T)
@@ -126,6 +128,8 @@ def fun(X):
         D0_N2=0.159
         D_N2=D0_N2*(760/pN2)*(T0/(273.5+60))**(3/2)*(T/T0)**(1/2) 
         D=1/(1/D_He+1/D_N2)
+        Gamma_se=n*1.9e-18*vRb*2.5/1.5
+
     
     r=23e-1/2
     q=4
@@ -137,13 +141,13 @@ def fun(X):
     Phi=photon_number(Power)
     N_at=n*l*A
     chi=chia(Detuning,pHe,pN2,T,T0)
-    Gamma2=Gamma_SD+Gamma_D+Gamma_pr(Detuning,Power,pHe,pN2,T,T0)
+    Gamma2=Gamma_SD+Gamma_se+Gamma_D+Gamma_pr(Detuning,Power,pHe,pN2,T,T0)
     sigmaF_tau=0.86/np.sqrt(N_at)
-    Fx0=2*0.1
+    Fx0=2
     sigma=1/(gamma_e*Fx0*tau*np.exp(-Gamma2*tau))*np.sqrt(4*F_error(tau)/N_at+1/(2*chi**2*n**2*l**2*Phi))
     return sigma
 
-sigma=dual_annealing(fun,bounds=[[0,1e-1],[1e8,1e10],[0,1e-1]])
+sigma=dual_annealing(fun,bounds=[[0.,5],[5e9,100e9],[0,0.05]], maxiter=10000)
 print(sigma)
 
 #计算

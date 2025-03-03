@@ -50,7 +50,7 @@ def population(P,m):
     for mm in [-2,-1,0,1,2]:
         sum=sum+(1+P)**mm/(1-P)**mm
     return (1+P)**m/(1-P)**m/sum
-def Z(F,m,P):  
+def Z(F,m,P):
     return (F*(F+1)-(m+1)*m)*(population(P,m+1)-population(P,m))
 
 # ,Gamma3,Gamma4
