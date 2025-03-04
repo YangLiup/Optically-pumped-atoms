@@ -38,11 +38,11 @@ corrzy = Fz @ Fy
 corrzz = Fz @ Fz
 
 # ----------------------electron spin----------------------#
-Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax()))
+Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax().full()))
 Sx = U.T.conjugate() @ Sx @ U
-Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay()))
+Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay().full()))
 Sy = U.T.conjugate() @ Sy @ U
-Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz()))
+Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz().full()))
 Sz = U.T.conjugate() @ Sz @ U
 
 S1x = np.kron(Sx, np.eye(2 * (a + b + 1)))
@@ -60,16 +60,16 @@ Pe = Pt - Ps
 #                                                                               [0, 0, 0, 0, 0, 0, 1, 0]) + np.kron(
 #     [0, 0, 0, 1, 0, 0, 0, 0],
 #     [0, 0, 0, 0, 0, 0, 0, 1]))
-Xi_ini= 1 / np.sqrt(2  ) * (
-        np.kron([0, 1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0])  + np.kron(
+Xi_ini= 1 / np.sqrt(2) * (
+        np.kron([1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 1, 0, 0, 0])  + np.kron(
     [1, 0, 0, 0, 0, 0, 0, 0],
     [1, 0, 0, 0, 0, 0, 0, 0]))
 
-# Xi_ini =np.kron([0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0])
+# Xi_ini =np.kron([0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0])
 Rho_ini = np.outer(Xi_ini, Xi_ini)
 Rhot = Rho_ini
 dt = 0.01
-T = 20
+T = 30
 t = np.arange(0, round(T / dt), 1)
 # ----------------------correlations--------------------#
 
@@ -166,5 +166,5 @@ ax1.set_ylabel('Correlations')
 ax1.set_xlabel('Time (T$_{\mathrm{se}}$)')
 ax1.tick_params(axis='x')
 ax1.tick_params(axis='y')
-plt.savefig('spin exchange relaxation of correlations_increase.png', dpi=600)
+plt.savefig('spin exchange increase of correlations.png', dpi=600)
 plt.show()
