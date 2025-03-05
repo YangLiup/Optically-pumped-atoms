@@ -56,7 +56,7 @@ def Gamma_pr(delta_nv,power,pHe,pN2,T,T0):
 
 #优化
 def fun(X):
-    global n, vRb,vK
+    global n, vRb,vK,Gamma_se
     Power=X[0]
     Detuning=X[1]
     tau=X[2]
@@ -114,7 +114,7 @@ def fun(X):
         D0_N2=0.2
         D_N2=D0_N2*(760/pN2)*pow(T0/273.5,3/2)*np.sqrt(T/T0)
         D=1/(1/D_He+1/D_N2)
-        Gamma_se=n*1.5e-18*vK*2.5/1.5
+        Gamma_se=n*1.5e-18*vK
     if species=='Rb':
         nu_D1=377e12
         p=10**(2.881+4.312-4040/T)
@@ -128,7 +128,7 @@ def fun(X):
         D0_N2=0.159
         D_N2=D0_N2*(760/pN2)*(T0/(273.5+60))**(3/2)*(T/T0)**(1/2) 
         D=1/(1/D_He+1/D_N2)
-        Gamma_se=n*1.9e-18*vRb*2.5/1.5
+        Gamma_se=n*1.9e-18*vRb
 
     
     r=23e-1/2
@@ -143,8 +143,8 @@ def fun(X):
     chi=chia(Detuning,pHe,pN2,T,T0)
     Gamma2=Gamma_SD+Gamma_se+Gamma_D+Gamma_pr(Detuning,Power,pHe,pN2,T,T0)
     sigmaF_tau=0.86/np.sqrt(N_at)
-    Fx0=2
-    sigma=1/(gamma_e*Fx0*tau*np.exp(-Gamma2*tau))*np.sqrt(4*F_error(tau)/N_at+1/(2*chi**2*n**2*l**2*Phi))
+    Sx0=1/2
+    sigma=1/(gamma_e*Sx0*tau*np.exp(-Gamma2*tau))*np.sqrt(F_error(tau)/N_at/4+1/(2*chi**2*n**2*l**2*16*Phi))
     return sigma
 
 sigma=dual_annealing(fun,bounds=[[0.,5],[5e9,100e9],[0,0.05]], maxiter=10000)
