@@ -205,7 +205,7 @@ with plt.style.context(['science']):
     C1112=np.array(C_11)+np.array(C_12)
     p1112, = ax6.plot(t, C1112,color='crimson')
     ax6.set_ylim([-1,6])
-    ax6.legend([p11,p12,p1112], ["$<F_{x} F_{x}>$", "$<F_{y} F_{y} >$", "sum"],loc='upper center',ncol=2)
+    ax6.legend([p11,p12,p1112], ["$<\mathcal F_{x} \mathcal F_{x}>$", "$<\mathcal F_{y} \mathcal F_{y} >$", "sum"],loc='upper center',ncol=2)
 
     fig1.text(0.055, 0.5, ' Correlations', va='center', rotation='vertical',fontsize='12')
     fig1.text(0.5, 0.071, ' Time (s)', va='center', rotation='horizontal',fontsize='12')
