@@ -38,11 +38,11 @@ corrzy = Fz @ Fy
 corrzz = Fz @ Fz
 
 # ----------------------electron spin----------------------#
-Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax()))
+Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax().full()))
 Sx = U.T.conjugate() @ Sx @ U
-Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay()))
+Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay().full()))
 Sy = U.T.conjugate() @ Sy @ U
-Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz()))
+Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz().full()))
 Sz = U.T.conjugate() @ Sz @ U
 
 S1x = np.kron(Sx, np.eye(2 * (a + b + 1)))
@@ -122,7 +122,7 @@ for i in t:
     C_6[i] = np.trace(Rhot @ a1x @ b2x) - np.trace(Rhot @ a1x) * np.trace(Rhot @ b2x)
     C_8[i] = np.trace(Rhot @ b1x @ b2x) - np.trace(Rhot @ b1x) * np.trace(Rhot @ b2x)
 
-    C_9[i] = np.trace(Rhot @ Fx @ Fx) - np.trace(Rhot @ Fx) * np.trace(Rhot @ Fx)
+    C_9[i] = np.trace(Rhot @ (a1x+a2x-b1x-b2x) @ (a1x+a2x-b1x-b2x)) - np.trace(Rhot @ (a1x+a2x-b1x-b2x)) * np.trace(Rhot @ (a1x+a2x-b1x-b2x))
 
 Rhot2 = Rho_ini
 for i in t:
@@ -137,9 +137,10 @@ for i in t:
     C_62[i] = np.trace(Rhot2 @ a1x @ b2x) - np.trace(Rhot2 @ a1x) * np.trace(Rhot2 @ b2x)
     C_82[i] = np.trace(Rhot2 @ b1x @ b2x) - np.trace(Rhot2 @ b1x) * np.trace(Rhot2 @ b2x)
 
-    C_92[i] = np.trace(Rhot2 @ Fx @ Fx) - np.trace(Rhot2 @ Fx) * np.trace(Rhot2 @ Fx)
+    C_92[i] = np.trace(Rhot2 @ (a1x+a2x-b1x-b2x) @ (a1x+a2x-b1x-b2x)) - np.trace(Rhot2 @ (a1x+a2x-b1x-b2x)) * np.trace(Rhot2 @ (a1x+a2x-b1x-b2x))
 
 t = t 
+
 plt.style.use(['science'])
 with plt.style.context(['science']):
     fig1 = plt.figure()
@@ -160,10 +161,10 @@ p32, = ax1.plot(t, C_32, linestyle='dashed')
 p92, = ax1.plot(t, C_92, linestyle='dashed')
 ax1.legend([p1, p5, p3, p6, p8, p9],
            ["$<a_{1x} a_{1x}>$", "$<a_{1x} a_{2x}>$", "$<b_{1x} b_{1x}>$", "$<a_{1x} b_{2x}>$", "$<b_{1x} b_{2x}>$",
-            "$<F_xF_x>$"]
+            "$<\mathcal F_x \mathcal F_x>$"]
            , bbox_to_anchor=(1, 1),ncol=1)
 ax1.set_ylabel('Correlations')
-ax1.set_xlabel('Time (T$_{\mathrm{se}}$)')
+ax1.set_xlabel('time (T$_{\mathrm{se}}$)')
 ax1.tick_params(axis='x')
 ax1.tick_params(axis='y')
 plt.savefig('spin exchange relaxation of correlations_increase.png', dpi=600)

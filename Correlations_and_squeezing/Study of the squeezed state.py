@@ -49,33 +49,32 @@ sz = spin_Jz(s)
 qy, vy = sy.eigenstates()
 
 # initiation
-H = alpha * np.kron(Fz, sz)
+H = alpha * np.kron(Fz, sz.full())
 
-XiF_ini = np.vstack((np.array(spin_coherent(a, np.pi / 2, 0)), np.array(zero_ket(2 * b + 1))))
+XiF_ini = np.vstack((np.array(spin_coherent(a, np.pi / 2, 0).full()), np.array(zero_ket(2 * b + 1).full())))
 if N == 2:
     XiF_ini = np.kron(XiF_ini, XiF_ini)
 
 ini_Rho_atom = np.outer(XiF_ini, XiF_ini)
-Xis_ini = np.array(spin_coherent(s, np.pi / 2, 0))
+Xis_ini = np.array(spin_coherent(s, np.pi / 2, 0).full())
 Rhos_ini = np.outer(Xis_ini, Xis_ini)
 Rho_ini = np.kron(ini_Rho_atom, Rhos_ini)
 Rhot = Rho_ini
 n = round(T / dt)
 C1 = [None] * n
 C2 = [None] * n
-Vz0 = np.trace(ini_Rho_atom @ Fz @ Fz)
+Vz0 = np.trace(ini_Rho_atom @(a1z+a2z-b1z-b2z) @ (a1z+a2z-b1z-b2z))
 
 # evolving
 for i in np.arange(0, n, 1):
     Rhot = dt * (H @ Rhot - Rhot @ H) / 1j + Rhot
     Rhot_sample = Rhot
-    read = np.array(
-        tensor(tensor(qeye(2 * (a + b + 1)), qeye(2 * (a + b + 1)), vy[1] * vy[1].dag())))
+    read = tensor(tensor(qeye(2 * (a + b + 1)), qeye(2 * (a + b + 1)), vy[1] * vy[1].dag())).full()
     Rho_r = read @ Rhot_sample @ read.T.conjugate()
     Rho_r = Rho_r / Rho_r.trace()
     Rho_atom = ptr(Rho_r, 2 * s + 1, (2 * (a + b + 1)) ** N)
-    C1[i] = 1 - (np.trace(Rho_atom @ Fz @ Fz)-np.trace(Rho_atom @ Fz)**2) / Vz0
-    C2[i] =  np.trace(Rho_atom @ Fx)
+    C1[i] = 1 - (np.trace(Rho_atom @ (a1z+a2z-b1z-b2z) @ (a1z+a2z-b1z-b2z))-np.trace(Rho_atom @ (a1z+a2z-b1z-b2z))**2) / Vz0
+    C2[i] =  np.trace(Rho_atom @ (a1x+a2x-b1x-b2x))
 
 tt = np.arange(0, T, dt)
 plt.style.use(['science'])
@@ -85,9 +84,9 @@ with plt.style.context(['science']):
     # plt.gca().invert_xaxis() 
     # plt.xlim(0, 1)
     # plt.ylim(0, 0.4)
-    plt.xlabel('$1-\\frac {\mathrm{var}(F_z)_{\mathrm{s}}} {\mathrm{var}(F_z)_0}$')
-    plt.ylabel('$\langle F_x \\rangle_{\mathrm{s}}$')
-    plt.savefig('imag\squeezing.png', dpi=600)
+    plt.xlabel('$1-\\frac {\mathrm{var}(\mathcal F_x)_{\mathrm{s}}} {\mathrm{var}(\mathcal F_x)_0}$')
+    plt.ylabel('$\langle \mathcal F_z \\rangle_{\mathrm{s}}$')
+    plt.savefig('squeezing.png', dpi=600)
 
 # plt.figure()
 # plt.plot(t, C_1x2x)

@@ -38,11 +38,11 @@ corrzy = Fz @ Fy
 corrzz = Fz @ Fz
 
 # ----------------------electron spin----------------------#
-Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax()))
+Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax().full()))
 Sx = U.T.conjugate() @ Sx @ U
-Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay()))
+Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay().full()))
 Sy = U.T.conjugate() @ Sy @ U
-Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz()))
+Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz().full()))
 Sz = U.T.conjugate() @ Sz @ U
 
 S1x = np.kron(Sx, np.eye(2 * (a + b + 1)))
@@ -102,7 +102,7 @@ for i in t:
     C_3[i] = np.trace(Rhot @ a1x @ a2x)
     C_4[i] = np.trace(Rhot @ b1x @ b2x)
     C_5[i] = np.trace(Rhot @ a1x @ b2x)
-    C_6[i] = np.trace(Rhot @ Fx @ Fx)
+    C_6[i] = np.trace(Rhot @ Fx @ Fx )
 #   C_6[i] = np.trace(Rhot @ b1x @ b2x)
 #   C_7[i] = np.trace(Rhot @ Fx @ Fx)
 
@@ -121,7 +121,7 @@ with plt.style.context(['science']):
     # p7, = plt.plot(t * dt, C_7)
     # p5, = plt.plot(t * dt, C_5)
     plt.legend([p1, p2, p3, p4, p5,p6],
-               ["$\langle a_{1x} a_{1x} \\rangle$", "$\langle b_{1x} b_{1x} \\rangle$", "$\langle a_{1x} a_{2x} \\rangle$", "$\langle b_{1x} b_{2x} \\rangle$", "$\langle a_{1x} b_{2x}\\rangle$", "$\langle F_{x} F_{x} \\rangle$"]
+               ["$\langle a_{1x} a_{1x} \\rangle$", "$\langle b_{1x} b_{1x} \\rangle$", "$\langle a_{1x} a_{2x} \\rangle$", "$\langle b_{1x} b_{2x} \\rangle$", "$\langle a_{1x} b_{2x}\\rangle$", "$\langle \mathcal F_{x} \mathcal F_{x} \\rangle$"]
                ,ncol = 2, loc='center right',bbox_to_anchor=(0.95, 0.7))
 
     plt.xlabel('Spin-exchange collision number')

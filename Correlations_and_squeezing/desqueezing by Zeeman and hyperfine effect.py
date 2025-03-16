@@ -143,14 +143,14 @@ if N == 3:
     hyperfine = np.kron(hyperfine, np.kron(hyperfine, hyperfine))  # 三个原子
 
 for t in np.arange(0, n, 1):
-    C_1[t] = np.trace(Rho_atom @ Fz @ Fz) - np.trace(Rho_atom @ Fz) ** 2
+    C_1[t] = np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z) @ (a1z+a2z+a3z-b1z-b2z-b3z)) - np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z)) ** 2
     # C_a1za1z[t] = np.trace(Rho_atom @ a1z @ a1z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a1z)
     # C_b1zb1z[t] = np.trace(Rho_atom @ b1z @ b1z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b1z)
     # C_a1za2z[t] = np.trace(Rho_atom @ a1z @ a2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a2z)
     # C_a1zb2z[t] = np.trace(Rho_atom @ a1z @ b2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ b2z)
     # C_b1zb2z[t] = np.trace(Rho_atom @ b1z @ b2z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b2z)
     hh=np.random.uniform()
-    if hh<0.5:
+    if hh<1:
         r = np.random.uniform()
         if r  < 0.3:
             phi = np.random.normal(np.pi / 2, 2)
@@ -167,7 +167,7 @@ for t in np.arange(0, n, 1):
     Rho_atom = hyperfine * Rho_atom
 Rho_atom = Rho_atomi
 for t in np.arange(0, n, 1):
-    C_2[t] = np.trace(Rho_atom @ Fz @ Fz) - np.trace(Rho_atom @ Fz) ** 2
+    C_2[t] = np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z) @ (a1z+a2z+a3z-b1z-b2z-b3z)) - np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z)) ** 2
 
     # C_a1za1z2[t] = np.trace(Rho_atom @ a1z @ a1z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a1z)
     # C_b1zb1z2[t] = np.trace(Rho_atom @ b1z @ b1z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b1z)
@@ -177,7 +177,7 @@ for t in np.arange(0, n, 1):
     Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
     Rho_atom = hyperfine * Rho_atom
 
-tt = np.arange(0, n, 1)*0.01
+tt = np.arange(0, n, 1)*0.005
 with plt.style.context(['science']):
     fig = plt.figure()
     ax1 = fig.add_subplot(1, 1, 1)
@@ -187,7 +187,7 @@ with plt.style.context(['science']):
                ["With SEC","Witout SEC"]
                , loc='upper right',ncol=2,fontsize='9')
     ax1.set_xlabel('$t$ (s)')
-    ax1.set_ylabel('Var $( F_{x})$')
+    ax1.set_ylabel('Var $( \mathcal F_{x})$')
     # plt.xlim(0, 2)
     plt.ylim(1.6,9)
     plt.savefig('desqueezing.png', dpi=600)

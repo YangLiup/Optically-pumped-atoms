@@ -136,9 +136,10 @@ for i in t:
     C_8[i] = np.trace(Rhot2 @ a1y @ b2y) - np.trace(Rhot2 @ a1y) * np.trace(Rhot2 @ b2y)
     C_9[i] = np.trace(Rhot2 @ b1x @ b2x) - np.trace(Rhot2 @ b1x) * np.trace(Rhot2 @ b2x)
     C_10[i] = np.trace(Rhot2 @ b1y @ b2y) - np.trace(Rhot2 @ b1y) * np.trace(Rhot2 @ b2y)
-    C_11[i] = np.trace(Rhot2 @ Fx @ Fx) - np.trace(Rhot2 @ Fx) * np.trace(Rhot2 @ Fx)
-    C_12[i] = np.trace(Rhot2 @ Fy @ Fx) - np.trace(Rhot2 @ Fy) * np.trace(Rhot2 @ Fy)
+    C_11[i] = np.trace(Rhot2 @ (a1x+a2x-b1x-b2x) @ (a1x+a2x-b1x-b2x) )  - np.trace(Rhot2 @ (a1x+a2x-b1x-b2x) ) * np.trace(Rhot2 @ (a1x+a2x-b1x-b2x) ) 
+    C_12[i] = np.trace(Rhot2 @ (a1y+a2y-b1y-b2y)  @  (a1y+a2y-b1y-b2y))  - np.trace(Rhot2 @  (a1y+a2y-b1y-b2y)) * np.trace(Rhot2 @  (a1y+a2y-b1y-b2y)) 
 t=t*dt
+
 plt.style.use(['science'])
 with plt.style.context(['science']):
     fig1 = plt.figure(figsize=(6.4,8))
@@ -204,11 +205,11 @@ with plt.style.context(['science']):
     p12, = ax6.plot(t, C_12,color='darkgreen')
     C1112=np.array(C_11)+np.array(C_12)
     p1112, = ax6.plot(t, C1112,color='crimson')
-    ax6.set_ylim([-1,6])
+    ax6.set_ylim([0,6.6])
     ax6.legend([p11,p12,p1112], ["$<\mathcal F_{x} \mathcal F_{x}>$", "$<\mathcal F_{y} \mathcal F_{y} >$", "sum"],loc='upper center',ncol=2)
 
     fig1.text(0.055, 0.5, ' Correlations', va='center', rotation='vertical',fontsize='12')
-    fig1.text(0.5, 0.071, ' Time (s)', va='center', rotation='horizontal',fontsize='12')
+    fig1.text(0.5, 0.071, ' time (s)', va='center', rotation='horizontal',fontsize='12')
 
 # ax1.tick_params(axis='x')
 # ax1.tick_params(axis='y')
