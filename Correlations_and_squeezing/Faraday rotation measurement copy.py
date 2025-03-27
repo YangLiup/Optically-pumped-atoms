@@ -39,7 +39,7 @@ with plt.style.context(['science']):
     ax_1.plot([],[])
     ax_1.set_ylim([0,0.6])
 #     ax_1.plot(Jx,1/np.sqrt(2*np.pi)*np.exp(-Jx**2/2),linestyle='dashed')
-    ax_1.set_xlabel('$\langle{ F_x}\\rangle^{\prime}$', fontsize=9)
+    ax_1.set_xlabel('$\\tilde J_x$', fontsize=9)
     ax_1.set_ylabel('Distribution@$t=1$', fontsize=9)
     ax_1.tick_params(axis='x', labelsize='9' )
     ax_1.tick_params(axis='y', labelsize='9' )
@@ -50,13 +50,13 @@ with plt.style.context(['science']):
     up=C_1z1z+np.sqrt(C_1z2z)/2
     ax_2.plot(tt,C_1z1z)
     ax_2.fill_between(tt, down,up,facecolor = 'red', alpha = 0.5)
-    ax_2.text(8.5/10, 0.1, '$\mathbb{E}[\langle{ F_x}\\rangle^{\prime}]$',fontsize=6)
-    ax_2.annotate('$\sqrt{ {\mathrm{var}} ({F_x}) }$', xy=(0.3/10, 1), xytext=(2/10, 1),
+    ax_2.text(8.5/10, 0.1, '$\mathbb{E}[\\tilde J_x]$',fontsize=6)
+    ax_2.annotate('$\sqrt{ {\mathrm{var}} ({J_x}) }$', xy=(0.3/10, 1), xytext=(2/10, 1),
             arrowprops=dict(arrowstyle='->', color='red'),fontsize=6)
 
     ax_2.plot(tt, np.zeros(1000),color='black',linestyle='dashed')
     ax_2.set_xlabel('t ($1/\Phi$)', fontsize=9)
-    ax_2.set_ylabel('$\langle{ F_x}\\rangle^{\prime}$', fontsize=9)
+    ax_2.set_ylabel('$\\tilde J_x$', fontsize=9)
     ax_2.tick_params(axis='x', labelsize='9' )
     ax_2.tick_params(axis='y', labelsize='9' )
     ax_2.text(0.975, 1.5, '(a)',fontsize=8)

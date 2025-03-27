@@ -126,7 +126,7 @@ C_a1za2z2 = [None] * n
 C_a1zb2z2 = [None] * n
 C_b1zb2z2 = [None] * n
 # ----------------------Magnetic field----------------------#
-omega_0 = 0.5
+omega_0 = 1
 # H = omega_e * (ax-bx)              #一个原子
 # H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
 H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
@@ -150,7 +150,7 @@ for t in np.arange(0, n, 1):
     # C_a1zb2z[t] = np.trace(Rho_atom @ a1z @ b2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ b2z)
     # C_b1zb2z[t] = np.trace(Rho_atom @ b1z @ b2z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b2z)
     hh=np.random.uniform()
-    if hh<1:
+    if hh<0.01:
         r = np.random.uniform()
         if r  < 0.3:
             phi = np.random.normal(np.pi / 2, 2)

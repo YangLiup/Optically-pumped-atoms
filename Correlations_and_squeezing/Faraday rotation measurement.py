@@ -25,7 +25,7 @@ from tqdm import trange
 
 # ----------------------Squeezing----------------------------#
 # N is the number of atoms, T is the squeezing time, F is the spin of atom, s is the spin of light and alpha is the coupling constant
-T = 10
+T = 1
 F= 10
 s = 10
 alpha = 0.25
@@ -81,7 +81,7 @@ with plt.style.context(['science','nature']):
     # for j in np.arange(0, N, 1):       
     #         ax_1.plot(tt, data[(j)*n:(j+1)*n],linewidth='0.5')
     ax_1.hist(x,bins=20,histtype='stepfilled',density=True)
-    ax_1.set_xlabel('$\langle{ F_x}\\rangle\prime$', fontsize=9)
+    ax_1.set_xlabel('$\tilde J_x$', fontsize=9)
     ax_1.tick_params(axis='x', labelsize='9' )
     ax_1.tick_params(axis='y', labelsize='9' )
 
@@ -90,13 +90,13 @@ with plt.style.context(['science','nature']):
     up=np.array(list(C_1z1z))+np.sqrt(np.array(list(C_1z2z)))/2
     ax_2.plot(tt,np.array(list(C_1z1z)))
     ax_2.fill_between(tt, down,up,facecolor = 'red', alpha = 0.5)
-    ax_2.text(8.5, 0.1, '$\mathbb{E}[\langle{ F_x}\\rangle\prime]$',fontsize=8)
-    ax_2.annotate('$ \sqrt{\langle \Delta \hat { F_x}^2 \\rangle_f}$', xy=(0.5, 1), xytext=(2, 1),
+    ax_2.text(8.5, 0.1, '$\mathbb{E}[\tilde J_x]$',fontsize=8)
+    ax_2.annotate('$ \sqrt{\mathrm{var} ( J_x )}$', xy=(0.5, 1), xytext=(2, 1),
             arrowprops=dict(arrowstyle='->', color='red'),fontsize=6)
 
     ax_2.plot(tt, np.zeros(n),color='black',linestyle='dashed')
     ax_2.set_xlabel('t ($1/\Phi$)', fontsize=9)
-    ax_2.set_ylabel('$\langle{ F_x}\\rangle\prime$', fontsize=9)
+    ax_2.set_ylabel('$\tilde J_x$', fontsize=9)
     ax_2.tick_params(axis='x', labelsize='9' )
     ax_2.tick_params(axis='y', labelsize='9' )
     # ax_2.plot(tt, np.zeros(n),color='black',linestyle='dashed',linewidth='0.5')
