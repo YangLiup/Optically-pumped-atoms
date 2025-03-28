@@ -4,7 +4,8 @@
 日期：2023年12月17日
 """
 import sys
-sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
+# sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
+sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -108,8 +109,8 @@ if N == 3:
     Pt23 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S2x @ S3x + S2y @ S3y + S2z @ S3z)
     Pe23 = Pt23 - Ps23
 
-T = 20
-dt = 0.01
+T = 5
+dt = 0.0001
 n = round(T / dt)
 te = np.arange(0, T, dt)
 C_1 = [None] * n
@@ -150,7 +151,7 @@ for t in np.arange(0, n, 1):
     # C_a1zb2z[t] = np.trace(Rho_atom @ a1z @ b2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ b2z)
     # C_b1zb2z[t] = np.trace(Rho_atom @ b1z @ b2z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b2z)
     hh=np.random.uniform()
-    if hh<0.01:
+    if hh<1:
         r = np.random.uniform()
         if r  < 0.3:
             phi = np.random.normal(np.pi / 2, 2)
@@ -177,7 +178,7 @@ for t in np.arange(0, n, 1):
     Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
     Rho_atom = hyperfine * Rho_atom
 
-tt = np.arange(0, n, 1)*0.005
+tt = np.arange(0, n, 1)*0.001
 with plt.style.context(['science']):
     fig = plt.figure()
     ax1 = fig.add_subplot(1, 1, 1)
@@ -190,6 +191,7 @@ with plt.style.context(['science']):
     ax1.set_ylabel('Var $( \mathcal F_{x})$')
     # plt.xlim(0, 2)
     plt.ylim(1.6,9)
+    plt.show()
     plt.savefig('desqueezing.png', dpi=600)
 
     # fig = plt.figure()
