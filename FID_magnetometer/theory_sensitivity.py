@@ -28,7 +28,7 @@ def voigt_profile(Delta, Gamma_G, Gamma_L):
 
 #delta_nv为失谐
 def chia(delta_nv,pHe,pN2,T,T0):
-    Gammap=19.84*pHe*(T/T0)+18.98*pN2*(T/T0)*1e-3       # MHz
+    Gammap=(19.84*pHe*(T/T0)+18.98*pN2*(T/T0))*1e6       # Hz
     # Gammap=0.06e9       #压强展宽GHz
     Gammad=0.5e9        #多普勒展宽GHz
     re=2.83e-15
@@ -42,11 +42,12 @@ def photon_number(power):
     c=3e8
     lam=795e-9
     nu=c/lam
+    # nu=c/(770.108e-9)
     return power/(h*nu)
 
 def Gamma_pr(delta_nv,power,pHe,pN2,T,T0):
-    Gammap=19.84*pHe*(T/T0)+18.98*pN2*(T/T0)*1e-3      #压强展宽GHz
-    Gammad=0.5e9        #多普勒展宽GHz
+    Gammap=(19.84*pHe*(T/T0)+18.98*pN2*(T/T0))*1e6    #压强展宽Hz
+    Gammad=0.5e9        #多普勒展宽Hz
     re=2.83e-15
     c=3e8
     fD1=1/3
@@ -60,7 +61,7 @@ def fun(X):
     Power=X[0]
     Detuning=X[1]
     tau=X[2]
-    species='Rb'
+    species='K'
 #-----------------------缓冲气体和淬灭气体的气压(室温时）-------------------------#
     pN2=60
     pHe=760*3
