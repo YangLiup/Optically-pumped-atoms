@@ -1,7 +1,7 @@
-
 import sys
 # sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
 sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
+
 import matplotlib.pyplot as plt
 from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
 from alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
@@ -61,7 +61,7 @@ def master_equation(I,Rse,omega_0,Rop,Rsd,T):
     Rhot = Rho_ini
     hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
     Py = np.zeros(round(T / dt))
-    Px = np.zeros(round(T / dt))
+
     H = omega_0 * (az - bz)  # 投影定理
     q, v = np.linalg.eig(H)
     evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
@@ -85,44 +85,39 @@ def master_equation(I,Rse,omega_0,Rop,Rsd,T):
                 ER + OP) * dt + Rhot
         Rhot = hyperfine * Rhot
         # -----------------Observables-----------------#
-        Px[n] = np.trace(2*Sx@Rhot)
         Py[n] = np.trace(2*Sy@Rhot)
-    return Px,Py
+    return Py
 
 
 global dt
 dt=0.005
-T=3000
+T=1000
 t=np.arange(0,T,dt)
 
-frequency = 0.001
-amplitude = 0.5
-Rop= amplitude * signal.square(2 * np.pi * frequency * t, duty=0.05)+amplitude 
-Rsd =0.05
-Rse= 1
-omega0=0.0025
-Px,Py=master_equation(3/2,Rse,omega0,Rop,Rsd,T)
+frequency = 0.05
+Rop= 0.05*np.cos(2*np.pi*frequency*t)
+Rse=1
+omega0=0.01
+Rsd =0.05 
+
+Py=master_equation(3/2,Rse,omega0,Rop,Rsd,T)
 
 plt.style.use(['science'])
 with plt.style.context(['science']):
     plt.rc('font',family='Times New Roman')
     fig = plt.figure()
     
-    ax1 = fig.add_subplot(211)
+    ax1 = fig.add_subplot(111)
     ax1.plot(t,Py)
+    # ax1.plot(tt1, Maz)
+    # ax1.set_xlim([0,50000])
+    # ax1.set_ylim([0,1])
     ax1.set_ylabel('$P_y$', fontsize=8)
     ax1.set_xlabel('$t(1/R_{\\text{se}})$', fontsize=8)
+    # ax1.set_xlim(1500,2000)
+    # ax1.set_ylim(-1e-3,-5e-4)
     ax1.tick_params(axis='both', which='major', labelsize=8)
     ax1.tick_params(axis='both', which='minor', labelsize=8)
-
-    ax2 = fig.add_subplot(212)
-    ax2.plot([],[])
-    ax2.plot([],[])
-    ax2.plot(t,Rop)
-    ax2.set_ylabel('$R_{\\text{op}}$', fontsize=8)
-    ax2.set_xlabel('$t(1/R_{\\text{se}})$', fontsize=8)
-    ax2.tick_params(axis='both', which='major', labelsize=8)
-    ax2.tick_params(axis='both', which='minor', labelsize=8)
     plt.grid()
     plt.savefig('signal.png', dpi=1000)
 plt.show()

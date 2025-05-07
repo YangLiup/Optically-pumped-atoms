@@ -23,14 +23,10 @@ def voigt_profile(Delta, Gamma_G, Gamma_L):
     v = wofz(z) * 2*np.sqrt(np.log(2)/np.pi)/Gamma_G
     return v
 
-
-
-T=273.5+200
-T0=273.5+20
-pHe=760*3 #Torr
-pN2=60 #Torr
-Gammap=50     # 压强展宽GHz (19.84*pHe*(T/T0)+18.98*pN2*(T/T0))*1e-3 
-Gammad=0.5        #多普勒展宽GHz
+pHe=1e-10 #Torr
+pN2=1e-10 #Torr
+Gammap=0.0001         # 压强展宽GHz (19.84*pHe*(T/T0)+18.98*pN2*(T/T0))*1e-3 
+Gammad=0.5            # 多普勒展宽GHz
 
 
 def photon_number(power):
@@ -43,8 +39,8 @@ gamma_e=2*np.pi*2.8*1e10  #Hz/T
 re=2.83e-15 # m
 c=3e8       # m/s
 fD1=1/3
-power=10
-delta_nv_range=np.arange(-200,200,1)
+power=10    #W/m^2
+delta_nv_range=np.arange(-200,200,0.01)
 
 B=np.zeros(len(delta_nv_range))
 i=0
@@ -55,8 +51,8 @@ for delta_nv in delta_nv_range:
 plt.plot(delta_nv_range,B)
 plt.xlabel('detuning (GHz)')
 plt.ylabel('$B_{\\text{ls}}$ (T)')
-plt.title('K')
-plt.text(300,
-	0.7e-9,
-	"Power=1 mW/cm$^2$ \n $p_{\\text{He}}=3\\times 760$ Torr \n $p_{\\text{N}_2}=60$ Torr"
-)
+# plt.title('K')
+# plt.text(300,
+# 	0.7e-9,
+# 	"Power=1 mW/cm$^2$ \n $p_{\\text{He}}=3\\times 760$ Torr \n $p_{\\text{N}_2}=60$ Torr"
+# )
