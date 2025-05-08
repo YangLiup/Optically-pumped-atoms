@@ -91,18 +91,19 @@ def master_equation(I,Rse,omega_0,Rop,Rsd,T):
 
 
 global dt
-dt=0.005
-T=3000
+dt=0.001
+T=2000
 t=np.arange(0,T,dt)
 
-frequency = 0.001
+frequency = 0.002
 amplitude = 0.5
-Rop= amplitude * signal.square(2 * np.pi * frequency * t, duty=0.05)+amplitude 
-Rsd =0.05
+Rop= amplitude * signal.square(2 * np.pi * frequency * t, duty=0.1)+amplitude 
+Rsd =0.001
 Rse= 1
-omega0=0.0025
+omega0=0.001
 Px,Py=master_equation(3/2,Rse,omega0,Rop,Rsd,T)
 
+t=np.arange(0,T,dt)*1e-2
 plt.style.use(['science'])
 with plt.style.context(['science']):
     plt.rc('font',family='Times New Roman')
@@ -111,16 +112,16 @@ with plt.style.context(['science']):
     ax1 = fig.add_subplot(211)
     ax1.plot(t,Py)
     ax1.set_ylabel('$P_y$', fontsize=8)
-    ax1.set_xlabel('$t(1/R_{\\text{se}})$', fontsize=8)
+    # ax1.set_xlabel('$t(1/R_{\\text{se}})$', fontsize=8)
     ax1.tick_params(axis='both', which='major', labelsize=8)
     ax1.tick_params(axis='both', which='minor', labelsize=8)
-
+    ax1.set_xticklabels([])
     ax2 = fig.add_subplot(212)
     ax2.plot([],[])
     ax2.plot([],[])
     ax2.plot(t,Rop)
     ax2.set_ylabel('$R_{\\text{op}}$', fontsize=8)
-    ax2.set_xlabel('$t(1/R_{\\text{se}})$', fontsize=8)
+    ax2.set_xlabel('t (ms)', fontsize=8)
     ax2.tick_params(axis='both', which='major', labelsize=8)
     ax2.tick_params(axis='both', which='minor', labelsize=8)
     plt.grid()
