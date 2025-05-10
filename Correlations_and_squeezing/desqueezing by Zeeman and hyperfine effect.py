@@ -4,8 +4,8 @@
 日期：2023年12月17日
 """
 import sys
-sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
-# sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
+# sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
+sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -109,12 +109,13 @@ if N == 3:
     Pt23 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S2x @ S3x + S2y @ S3y + S2z @ S3z)
     Pe23 = Pt23 - Ps23
 
-T = 3
-dt = 0.0001
+T = 60
+dt = 0.01
 n = round(T / dt)
 te = np.arange(0, T, dt)
 C_1 = [None] * n
 C_2 = [None] * n
+C_3 = [None] * n
 C_a1za1z = [None] * n
 C_b1zb1z = [None] * n
 C_a1za2z = [None] * n
@@ -127,7 +128,7 @@ C_a1za2z2 = [None] * n
 C_a1zb2z2 = [None] * n
 C_b1zb2z2 = [None] * n
 # ----------------------Magnetic field----------------------#
-omega_0 = 10
+omega_0 = 30
 # H = omega_e * (ax-bx)              #一个原子
 # H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
 H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
@@ -136,27 +137,28 @@ q, v = np.linalg.eig(H)
 evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
 
 # ----------------------Hyperfine interaction--------------------#
-Rho_atom = Rho_atomi
 hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
 if N == 2:
     hyperfine = np.kron(hyperfine, hyperfine)  # 两个原子
 if N == 3:
     hyperfine = np.kron(hyperfine, np.kron(hyperfine, hyperfine))  # 三个原子
 
+Rho_atom = Rho_atomi
 for t in np.arange(0, n, 1):
     C_1[t] = np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z) @ (a1z+a2z+a3z-b1z-b2z-b3z)) - np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z)) ** 2
-    # C_a1za1z[t] = np.trace(Rho_atom @ a1z @ a1z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a1z)
-    # C_b1zb1z[t] = np.trace(Rho_atom @ b1z @ b1z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b1z)
-    # C_a1za2z[t] = np.trace(Rho_atom @ a1z @ a2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a2z)
-    # C_a1zb2z[t] = np.trace(Rho_atom @ a1z @ b2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ b2z)
-    # C_b1zb2z[t] = np.trace(Rho_atom @ b1z @ b2z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b2z)
+    Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
+    Rho_atom = hyperfine * Rho_atom
+
+Rho_atom = Rho_atomi
+for t in np.arange(0, n, 1):
+    C_2[t] = np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z) @ (a1z+a2z+a3z-b1z-b2z-b3z)) - np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z)) ** 2
     hh=np.random.uniform()
-    if hh<0.3:
+    if hh<0.9:
         r = np.random.uniform()
-        if r  < 0.3:
+        if r  < 0.33:
             phi = np.random.normal(np.pi / 2, 2)
             sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe12
-        elif r < 0.6:
+        elif r < 0.66:
             phi = np.random.normal(np.pi / 2, 2)
             sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe13
         else:
@@ -166,65 +168,55 @@ for t in np.arange(0, n, 1):
     # C_1z2z[t] = np.trace(ini_Rho_atom @ a1z @ a2z)
     Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
     Rho_atom = hyperfine * Rho_atom
-Rho_atom = Rho_atomi
-for t in np.arange(0, n, 1):
-    C_2[t] = np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z) @ (a1z+a2z+a3z-b1z-b2z-b3z)) - np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z)) ** 2
 
-    # C_a1za1z2[t] = np.trace(Rho_atom @ a1z @ a1z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a1z)
-    # C_b1zb1z2[t] = np.trace(Rho_atom @ b1z @ b1z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b1z)
-    # C_a1za2z2[t] = np.trace(Rho_atom @ a1z @ a2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a2z)
-    # C_a1zb2z2[t] = np.trace(Rho_atom @ a1z @ b2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ b2z)
-    # C_b1zb2z2[t] = np.trace(Rho_atom @ b1z @ b2z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b2z)
+# ----------------------Magnetic field----------------------#
+omega_0 = 1.5
+# H = omega_e * (ax-bx)              #一个原子
+# H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
+H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
+
+q, v = np.linalg.eig(H)
+evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
+Rho_atom = Rho_atomi   
+for t in np.arange(0, n, 1):
+    C_3[t] = np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z) @ (a1z+a2z+a3z-b1z-b2z-b3z)) - np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z)) ** 2
+    # C_a1za1z[t] = np.trace(Rho_atom @ a1z @ a1z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a1z)
+    # C_b1zb1z[t] = np.trace(Rho_atom @ b1z @ b1z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b1z)
+    # C_a1za2z[t] = np.trace(Rho_atom @ a1z @ a2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a2z)
+    # C_a1zb2z[t] = np.trace(Rho_atom @ a1z @ b2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ b2z)
+    # C_b1zb2z[t] = np.trace(Rho_atom @ b1z @ b2z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b2z)
+    hh=np.random.uniform()
+    if hh<0.9:
+        r = np.random.uniform()
+        if r  < 0.33:
+            phi = np.random.normal(np.pi / 2, 2)
+            sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe12
+        elif r < 0.66:
+            phi = np.random.normal(np.pi / 2, 2)
+            sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe13
+        else:
+            phi = np.random.normal(np.pi / 2, 2)
+            sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe23
+        Rho_atom = sec @ Rho_atom @ sec.T.conjugate()
+    # C_1z2z[t] = np.trace(ini_Rho_atom @ a1z @ a2z)
     Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
     Rho_atom = hyperfine * Rho_atom
 C_1=np.array(C_1)/16
 C_2=np.array(C_2)/16
+C_3=np.array(C_3)/16
 tt = np.arange(0, n, 1)*dt
 with plt.style.context(['science']):
     fig = plt.figure()
     ax1 = fig.add_subplot(1, 1, 1)
     p1, = ax1.plot(tt, C_1 )
-    p2, = ax1.plot(tt, C_2,color='orange')
-    ax1.legend([p1,p2],
-               ["With SEC","Witout SEC"]
-               , loc='upper right',ncol=2,fontsize='9')
+    p2, = ax1.plot(tt, C_2)
+    p3, = ax1.plot(tt, C_3)
+
+    ax1.legend([p1,p2,p3],
+               ["$R_{\\text{se}}=0$ Hz,$\omega_0=10$ rad/s","$R_{\\text{se}}=30$ Hz, $\omega_0=30$ rad/s","$R_{\\text{se}}=30$ Hz, $\omega_0=1.5$ rad/s"]
+               ,bbox_to_anchor=(1, 1),ncol=1)
     ax1.set_xlabel('$t$ (s)')
     ax1.set_ylabel('Var $( \mathcal S_{x})$')
     # plt.xlim(0, 2)
-    plt.ylim(0.1,0.6)
+    plt.ylim(0.1,0.55)
     plt.savefig('desqueezing.png', dpi=600)
-
-    # fig = plt.figure()
-    # ax2 = fig.add_subplot(1, 1, 1)
-    # p3, = ax2.plot(tt, C_a1za1z, color='brown')
-    # p5, = ax2.plot(tt, C_a1za2z, color='olive')
-    # p32, = ax2.plot(tt, C_a1za1z2, color='brown',linestyle='dashed')
-    # p52, = ax2.plot(tt, C_a1za2z2, color='olive',linestyle='dashed')
-    # ax2.legend([p3, p5],
-    #            ["Cov$(a_{1z}a_{1z})$", "Cov$(a_{1z}a_{2z})$"]
-    #            , loc='upper right', prop={'size': 10})
-    # ax2.set_ylabel('Correlations', fontsize=12)
-    # ax2.set_xlabel('SEC times', fontsize=12)
-    # plt.xlim(0, 18)
-    # plt.savefig('graph2.png', dpi=600)
-
-
-    # fig = plt.figure()
-    # ax3 = fig.add_subplot(1, 1, 1)
-    # p4, = ax3.plot(tt, C_b1zb1z)
-    # p6, = ax3.plot(tt, C_a1zb2z)
-    # p7, = ax3.plot(tt, C_b1zb2z)
-    # p42, = ax3.plot(tt, C_b1zb1z2,linestyle='dashed')
-    # p62, = ax3.plot(tt, C_a1zb2z2,linestyle='dashed')
-    # p72, = ax3.plot(tt, C_b1zb2z2,linestyle='dashed')
-    # ax3.set_xlabel('SEC times', fontsize=12)
-    # ax3.set_ylabel('Correlations', fontsize=12)
-    # ax3.legend([p4, p6, p7],
-    #            ["Cov$(b_{1z}b_{1z})$", "Cov$(a_{1z}b_{2z})$",
-    #             "Cov$(b_{1z}b_{2z})$", ]
-    #            , loc='upper right', prop={'size': 10})
-    # plt.xlim(0, 18)
-
-    # plt.savefig('graph3.png', dpi=600)
-
-    # plt.ylim(-0.5, 5.2)

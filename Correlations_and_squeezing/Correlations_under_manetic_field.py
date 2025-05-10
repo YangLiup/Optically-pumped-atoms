@@ -148,7 +148,7 @@ with plt.style.context(['science']):
     p2, = ax1.plot(t, C_2)
     C12=np.array(C_1)+np.array(C_2)
     p12, = ax1.plot(t,C12 )
-    ax1.legend([p1, p2, p12], ["$<a_{1x} a_{1x}>$", "$<a_{1y} a_{1y}>$", "sum"],loc='upper center',ncol=2)
+    ax1.legend([p1, p2, p12], ["$<f^a_{1x} f^a_{1x}>$", "$<f^a_{1y} f^a_{1y}>$", "sum"],loc='upper center',ncol=2)
 
     ax2 = fig1.add_subplot(3, 2, 2)
     ax2.plot([], [])
@@ -158,7 +158,7 @@ with plt.style.context(['science']):
     p4, = ax2.plot(t, C_4)
     C34=np.array(C_3)+np.array(C_4)
     p34, = ax2.plot(t, C34)
-    ax2.legend([p3, p4, p34], ["$<b_{1x} b_{1x}>$", "$<b_{1y} b_{1y}>$", "sum"],loc='upper center',ncol=2)
+    ax2.legend([p3, p4, p34], ["$<f^b_{1x} f^b_{1x}>$", "$<f^b_{1y} f^b_{1y}>$", "sum"],loc='upper center',ncol=2)
 
     ax3 = fig1.add_subplot(3, 2, 3)
     ax3.plot([], [])
@@ -172,7 +172,7 @@ with plt.style.context(['science']):
     C56=np.array(C_5)+np.array(C_6)
     p56,=ax3.plot(t, C56,color='darkgoldenrod')
     ax3.set_ylim([-0.2,0.7])
-    ax3.legend([p5, p6, p56], ["$<a_{1x} a_{2x}>$", "$<a_{1y} a_{2y}>$", "sum"],loc='upper center',ncol=2)
+    ax3.legend([p5, p6, p56], ["$<f^a_{1x} f^a_{2x}>$", "$<f^a_{1y} f^a_{2y}>$", "sum"],loc='upper center',ncol=2)
 
 
     ax4 = fig1.add_subplot(3, 2, 4)
@@ -187,7 +187,7 @@ with plt.style.context(['science']):
     C78=np.array(C_7)+np.array(C_8)
     p78, = ax4.plot(t,C78,color='salmon')
     ax4.set_ylim([-0.2,0.3])
-    ax4.legend([p7,p8,p78], ["$<a_{1x} b_{2x}>$", "$<a_{1y} b_{2y}>$", "sum"],loc='upper center',ncol=2)
+    ax4.legend([p7,p8,p78], ["$<f^a_{1x} f^b_{2x}>$", "$<f^a_{1y} f^b_{2y}>$", "sum"],loc='upper center',ncol=2)
 
 
     ax5 = fig1.add_subplot(3, 2, 5)
@@ -196,7 +196,7 @@ with plt.style.context(['science']):
     C910=np.array(C_9)+np.array(C_10)
     p910,=ax5.plot(t, C910,color='darkolivegreen')
     ax5.set_ylim([-0.1,0.25])
-    ax5.legend([p9,p10,p910], ["$<b_{1x} b_{2x}>$", "$<b_{1y} b_{2y}>$", "sum"],loc='upper center',ncol=2)
+    ax5.legend([p9,p10,p910], ["$<f^b_{1x} f^b_{2x}>$", "$<f^b_{1y} f^b_{2y}>$", "sum"],loc='upper center',ncol=2)
 
 
 
@@ -205,8 +205,8 @@ with plt.style.context(['science']):
     p12, = ax6.plot(t, C_12,color='darkgreen')
     C1112=np.array(C_11)+np.array(C_12)
     p1112, = ax6.plot(t, C1112,color='crimson')
-    ax6.set_ylim([0,6.6])
-    ax6.legend([p11,p12,p1112], ["$<\mathcal F_{x} \mathcal F_{x}>$", "$<\mathcal F_{y} \mathcal F_{y} >$", "sum"],loc='upper center',ncol=2)
+    ax6.set_ylim([0,6.8])
+    ax6.legend([p11,p12,p1112], ["$[I]^2<\mathcal S_{x} \mathcal S_{x}>$", "$[I]^2<\mathcal S_{y} \mathcal S_{y} >$", "sum"],loc='upper center',ncol=2)
 
     fig1.text(0.055, 0.5, ' Correlations', va='center', rotation='vertical',fontsize='12')
     fig1.text(0.5, 0.071, ' time (s)', va='center', rotation='horizontal',fontsize='12')

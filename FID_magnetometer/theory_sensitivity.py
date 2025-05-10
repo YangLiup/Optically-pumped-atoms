@@ -29,8 +29,8 @@ def voigt_profile(Delta, Gamma_G, Gamma_L):
 #delta_nv为失谐
 def chia(delta_nv,pHe,pN2,T,T0):
     Gammap=(19.84*pHe*(T/T0)+18.98*pN2*(T/T0))*1e6       # Hz
-    # Gammap=0.06e9       #压强展宽GHz
-    Gammad=0.5e9        #多普勒展宽GHz
+    # Gammap=0.06e9       #压强展宽Hz
+    Gammad=0.5e9        #多普勒展宽Hz
     re=2.83e-15
     c=3e8
     fD1=1/3
@@ -115,7 +115,7 @@ def fun(X):
         D0_N2=0.2
         D_N2=D0_N2*(760/pN2)*pow(T0/273.5,3/2)*np.sqrt(T/T0)
         D=1/(1/D_He+1/D_N2)
-        Gamma_se=n*1.5e-18*vK
+        Gamma_se=0 #n*1.5e-18*vK
     if species=='Rb':
         nu_D1=377e12
         p=10**(2.881+4.312-4040/T)
@@ -129,7 +129,7 @@ def fun(X):
         D0_N2=0.159
         D_N2=D0_N2*(760/pN2)*(T0/(273.5+60))**(3/2)*(T/T0)**(1/2) 
         D=1/(1/D_He+1/D_N2)
-        Gamma_se=n*1.9e-18*vRb
+        Gamma_se=0 #n*1.9e-18*vRb
 
     
     r=23e-1/2
@@ -151,20 +151,3 @@ def fun(X):
 sigma=dual_annealing(fun,bounds=[[0.,5],[5e9,100e9],[0,0.05]], maxiter=10000)
 print(sigma)
 
-#计算
-# delta_nu=1.6e9
-# power=1e-3
-# n=1.5e11   #/cm^3
-# l=2.4      #cm
-# A=6e-2     #cm^2
-# Nat=n*A*l
-# tau=0.01
-# Sz0=0.05
-# Gammarel=60
-# gamma=2*np.pi*7e-6
-# phi0=0.0135
-# delta_ph=np.sqrt(2)/(gamma*np.sqrt(photon_number(power))*tau*phi0)
-# # delta=1/(-gamma*chia(delta_nu)*Nat*np.sqrt(2*photon_number(power))*tau*np.exp(-Gammarel*tau)*Sz0)
-# print(delta_ph)
-# delta_sp=2/(gamma*np.sqrt(Nat*tau))
-# print(delta_sp)
