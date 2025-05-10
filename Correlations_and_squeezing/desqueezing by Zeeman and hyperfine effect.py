@@ -4,16 +4,16 @@
 日期：2023年12月17日
 """
 import sys
-sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
+sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 # sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
 
 import numpy as np
 import matplotlib.pyplot as plt
 from qutip import *
-from my_functions.Generate_a_squeezed_state_by_QND import Generate_a_squeezed_state_by_QND
-from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
+from Generate_a_squeezed_state_by_QND import Generate_a_squeezed_state_by_QND
+from alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
 from scipy.linalg import *
-from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
+from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
 from sympy.physics.quantum.spin import JzKet, JxKet
 from sympy.physics.quantum.represent import represent
 from matplotlib import rc
@@ -110,7 +110,7 @@ if N == 3:
     Pe23 = Pt23 - Ps23
 
 T = 3
-dt = 0.001
+dt = 0.0001
 n = round(T / dt)
 te = np.arange(0, T, dt)
 C_1 = [None] * n
@@ -127,7 +127,7 @@ C_a1za2z2 = [None] * n
 C_a1zb2z2 = [None] * n
 C_b1zb2z2 = [None] * n
 # ----------------------Magnetic field----------------------#
-omega_0 = 1
+omega_0 = 10
 # H = omega_e * (ax-bx)              #一个原子
 # H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
 H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
@@ -179,7 +179,7 @@ for t in np.arange(0, n, 1):
     Rho_atom = hyperfine * Rho_atom
 C_1=np.array(C_1)/16
 C_2=np.array(C_2)/16
-tt = np.arange(0, n, 1)*0.01
+tt = np.arange(0, n, 1)*dt
 with plt.style.context(['science']):
     fig = plt.figure()
     ax1 = fig.add_subplot(1, 1, 1)
