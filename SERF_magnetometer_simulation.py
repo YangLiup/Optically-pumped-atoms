@@ -1,4 +1,3 @@
-
 import sys
 # sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
 sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
@@ -95,9 +94,9 @@ dt=0.001
 T=2000
 t=np.arange(0,T,dt)
 
-frequency = 0.002
-amplitude = 0.5
-Rop= amplitude * signal.square(2 * np.pi * frequency * t, duty=0.1)+amplitude 
+frequency = 0.1
+amplitude = 0.05
+Rop= amplitude * signal.square(2 * np.pi * frequency * t, duty=0.5)+amplitude 
 Rsd =0.001
 Rse= 1
 omega0=0.001

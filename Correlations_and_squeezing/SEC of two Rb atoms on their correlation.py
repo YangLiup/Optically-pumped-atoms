@@ -7,8 +7,8 @@ import sys
 sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
 import numpy as np
 import matplotlib.pyplot as plt
-from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
-from alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
+from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
+from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
 from qutip import *
 from scipy.linalg import *
 import matplotlib.pyplot as plt
@@ -121,7 +121,7 @@ with plt.style.context(['science']):
     # p7, = plt.plot(t * dt, C_7)
     # p5, = plt.plot(t * dt, C_5)
     plt.legend([p1, p2, p3, p4, p5,p6],
-               ["$\langle a_{1x} a_{1x} \\rangle$", "$\langle b_{1x} b_{1x} \\rangle$", "$\langle a_{1x} a_{2x} \\rangle$", "$\langle b_{1x} b_{2x} \\rangle$", "$\langle a_{1x} b_{2x}\\rangle$", "$\langle \mathcal F_{x} \mathcal F_{x} \\rangle$"]
+               ["$\langle f^a_{1x} f^a_{1x} \\rangle$", "$\langle f^b_{1x} f^b_{1x} \\rangle$", "$\langle f^a_{1x} f^a_{2x} \\rangle$", "$\langle f^b_{1x} f^b_{2x} \\rangle$", "$\langle f^a_{1x} f^b_{2x}\\rangle$", "$\langle \mathcal F_{x} \mathcal F_{x} \\rangle$"]
                ,ncol = 2, loc='center right',bbox_to_anchor=(0.95, 0.7))
 
     plt.xlabel('Spin-exchange collision number')

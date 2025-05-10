@@ -6,13 +6,14 @@
 # -*- coding:utf-8 -*-
 import sys
 sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
+
 import numpy as np
 import matplotlib.pyplot as plt
-from Generate_a_squeezed_state_by_QND import Generate_a_squeezed_state_by_QND
-from alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
+from my_functions.Generate_a_squeezed_state_by_QND import Generate_a_squeezed_state_by_QND
+from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
 from scipy.linalg import *
-from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
-from ptr import ptr
+from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
+from my_functions.ptr import ptr
 from scipy.linalg import *
 import scienceplots
 from matplotlib.ticker import FuncFormatter

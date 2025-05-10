@@ -10,10 +10,10 @@ sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
 import numpy as np
 import matplotlib.pyplot as plt
 from qutip import *
-from Generate_a_squeezed_state_by_QND import Generate_a_squeezed_state_by_QND
-from alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
+from my_functions.Generate_a_squeezed_state_by_QND import Generate_a_squeezed_state_by_QND
+from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
 from scipy.linalg import *
-from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
+from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
 from sympy.physics.quantum.spin import JzKet, JxKet
 from sympy.physics.quantum.represent import represent
 from matplotlib import rc
@@ -109,8 +109,8 @@ if N == 3:
     Pt23 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S2x @ S3x + S2y @ S3y + S2z @ S3z)
     Pe23 = Pt23 - Ps23
 
-T = 150
-dt = 0.01
+T = 3
+dt = 0.001
 n = round(T / dt)
 te = np.arange(0, T, dt)
 C_1 = [None] * n
@@ -127,7 +127,7 @@ C_a1za2z2 = [None] * n
 C_a1zb2z2 = [None] * n
 C_b1zb2z2 = [None] * n
 # ----------------------Magnetic field----------------------#
-omega_0 = 0.1
+omega_0 = 1
 # H = omega_e * (ax-bx)              #一个原子
 # H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
 H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
@@ -151,7 +151,7 @@ for t in np.arange(0, n, 1):
     # C_a1zb2z[t] = np.trace(Rho_atom @ a1z @ b2z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ b2z)
     # C_b1zb2z[t] = np.trace(Rho_atom @ b1z @ b2z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b2z)
     hh=np.random.uniform()
-    if hh<0.1:
+    if hh<0.3:
         r = np.random.uniform()
         if r  < 0.3:
             phi = np.random.normal(np.pi / 2, 2)
@@ -177,7 +177,8 @@ for t in np.arange(0, n, 1):
     # C_b1zb2z2[t] = np.trace(Rho_atom @ b1z @ b2z) - np.trace(Rho_atom @ b1z) * np.trace(Rho_atom @ b2z)
     Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
     Rho_atom = hyperfine * Rho_atom
-
+C_1=np.array(C_1)/16
+C_2=np.array(C_2)/16
 tt = np.arange(0, n, 1)*0.01
 with plt.style.context(['science']):
     fig = plt.figure()
@@ -188,10 +189,9 @@ with plt.style.context(['science']):
                ["With SEC","Witout SEC"]
                , loc='upper right',ncol=2,fontsize='9')
     ax1.set_xlabel('$t$ (s)')
-    ax1.set_ylabel('Var $( \mathcal F_{x})$')
+    ax1.set_ylabel('Var $( \mathcal S_{x})$')
     # plt.xlim(0, 2)
-    plt.ylim(1.6,9)
-    plt.show()
+    plt.ylim(0.1,0.6)
     plt.savefig('desqueezing.png', dpi=600)
 
     # fig = plt.figure()

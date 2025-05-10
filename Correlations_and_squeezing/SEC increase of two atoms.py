@@ -8,8 +8,8 @@ sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
 
 import numpy as np
 import matplotlib.pyplot as plt
-from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
-from  alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
+from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
+from  my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
 from qutip import *
 from scipy.linalg import *
 import matplotlib.pyplot as plt
@@ -159,8 +159,8 @@ p82, = ax1.plot(t, C_82, linestyle='dashed')
 p32, = ax1.plot(t, C_32, linestyle='dashed')
 p92, = ax1.plot(t, C_92, linestyle='dashed')
 ax1.legend([p1, p5, p3, p6, p8, p9],
-           ["$<a_{1x} a_{1x}>$", "$<a_{1x} a_{2x}>$", "$<b_{1x} b_{1x}>$", "$<a_{1x} b_{2x}>$", "$<b_{1x} b_{2x}>$",
-            "$<\mathcal F_x \mathcal F_x>$"]
+           ["$<f^a_{1x} f^a_{1x}>$", "$<f^a_{1x} f^a_{2x}>$", "$<f^b_{1x} f^b_{1x}>$", "$<f^a_{1x} f^b_{2x}>$", "$<f^b_{1x} f^b_{2x}>$",
+            "$[I]^2<\mathcal S_x \mathcal S_x>$"]
            , bbox_to_anchor=(1, 1),ncol=1)
 ax1.set_ylabel('Correlations')
 ax1.set_xlabel('time (T$_{\mathrm{se}}$)')
