@@ -15,6 +15,7 @@ def fun(X):
 #-----------------------计算细节-------------------------#
     Gamma_pr=X[0]
     Rop=X[1]
+    tau=X[2]
     f=1/3
     c=3e8
     re=2.82e-15
@@ -81,15 +82,15 @@ def fun(X):
     q=5
     Gamma_D=q*D*(np.pi/r)**2
     eta=0.5
-    delta_Bsp=1/(gamma_e*Rop*np.sqrt(n*V))*np.sqrt(4*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**3)
+    delta_Bsp=1/(gamma_e*Rop*np.sqrt(n*V*tau))*np.sqrt(4*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**3)
 
-    delta_Bph=1/(gamma_e*Rop*np.sqrt(n*V))*np.sqrt(2*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**4/(eta*Gamma_pr*OD))
+    delta_Bph=1/(gamma_e*Rop*np.sqrt(n*V*tau))*np.sqrt(2*(Rop+Gamma_pr+Gamma_SD+Gamma_D)**4/(eta*Gamma_pr*OD))
 
     delta_B=np.sqrt(delta_Bsp**2+delta_Bph**2) # 目标函数
     return delta_B
 
 
-delta_B=dual_annealing(fun,bounds=[[0.1,200],[0.1,100]])
+delta_B=dual_annealing(fun,bounds=[[0.1,1000],[0.1,10000], [0,0.5]],maxiter=20000)
 print(delta_B)
 fun(delta_B.x)
 
