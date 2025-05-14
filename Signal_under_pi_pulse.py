@@ -94,7 +94,7 @@ def master_equation(I,Rse,omega_0,theta_B,phi_B,omega_pi,Rop,Rsd,T):
 
 
 global dt
-dt=0.0001
+dt=0.00001
 T=10
 t=np.arange(0,T,dt)
 
@@ -139,6 +139,7 @@ with plt.style.context(['science']):
     ax1.tick_params(axis='both', which='major', labelsize=8)
     ax1.tick_params(axis='both', which='minor', labelsize=8)
     ax1.set_xticklabels([])
+    plt.title('$\omega_x=1$ rad/s')
     ax2 = fig.add_subplot(312)
     ax2.plot([],[])
     ax2.plot([],[])
@@ -152,7 +153,7 @@ with plt.style.context(['science']):
     ax3.plot([],[])
     ax3.plot(t,Rop)
     ax3.set_ylabel('$R_{\\text{op}}$ (kHz)', fontsize=8)
-    ax3.set_xlabel('t (ms)', fontsize=8)
+    ax3.set_xlabel('t (ms)',fontsize=8)
     ax3.tick_params(axis='both', which='major', labelsize=8)
     ax3.tick_params(axis='both', which='minor', labelsize=8)
     # ax1.set_xlim([2,3])
