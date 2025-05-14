@@ -57,14 +57,15 @@ def master_equation(I,Rse,omega_0,theta_B,phi_B,omega_pi,Rop,Rsd,T):
     # Rho_ini = np.outer(np.array([0, 1, 0, 0, 0, 0, 0, 0]), np.array([0, 1, 0, 0, 0, 0, 0, 0]))
 
     # --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
-    H0 = omega_0*np.cos(theta_B) * (az - bz)+omega_0*np.sin(theta_B) *np.cos(phi_B)* (ax - bx)+omega_0*np.sin(theta_B) *np.sin(phi_B)* (ay - by)  # 投影定理
+    # H0 = omega_0*np.cos(theta_B) * (az - bz)+omega_0*np.sin(theta_B) *np.cos(phi_B)* (ax - bx)+omega_0*np.sin(theta_B) *np.sin(phi_B)* (ay - by)  # 投影定理
+    H0 =  omega_0* (az - bz)+  omega_0*(ax - bx) # 投影定理
     Rhot = Rho_ini
     hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
     Py = np.zeros(round(T / dt))
     Px = np.zeros(round(T / dt))
     may = np.zeros(round(T / dt))
     for n in trange(0, round(T / dt), 1):
-        Hpi = omega_pi[n]*(az - bz)
+        Hpi = omega_pi[n]*np.cos(theta_B) * (az - bz)+omega_pi[n]*np.sin(theta_B) *np.cos(phi_B)* (ax - bx)+omega_pi[n]*np.sin(theta_B) *np.sin(phi_B)* (ay - by)
         H=H0+Hpi
         qH, vH = np.linalg.eig(H)
         evolving_B = vH @ np.diag(np.exp(-1j * qH * dt)) @ np.linalg.inv(vH)
@@ -94,8 +95,8 @@ def master_equation(I,Rse,omega_0,theta_B,phi_B,omega_pi,Rop,Rsd,T):
 
 
 global dt
-dt=0.00001
-T=10
+dt=0.0001
+T=4
 t=np.arange(0,T,dt)
 
 
@@ -105,21 +106,21 @@ frequency_op = 0.1 #kHz#
 duty_op=duration_op*frequency_op
 Rop = amplitude_op * signal.square(2 * np.pi * frequency_op * (t), duty=duty_op)+amplitude_op 
 
-integer=8
+integer=16
 frequency_pi = integer/8 #kHz，integer是个整数，这是为了使得光泵浦和pi脉冲的相位稳定
 amplitude_pi = 100  #kHz#
 duration_pi=np.pi/(2*amplitude_pi)  #ms#
 
 duty_pi=duration_pi*frequency_pi
-omega_pi = amplitude_pi * signal.square(2 * np.pi * frequency_pi * (t), duty=duty_pi)+amplitude_pi
-for k in np.arange(0, round(T / dt), 1): 
-    if Rop[k]==2*amplitude_op:
-        omega_pi[k]=0
+omega_pi = -amplitude_pi * signal.square(2 * np.pi * frequency_pi * (t), duty=duty_pi)-amplitude_pi
+# for k in np.arange(0, round(T / dt), 1): 
+#     if Rop[k]==2*amplitude_op:
+#         omega_pi[k]=0
 
 Rsd = 0.05     #20Hz#
 Rse = 0.001   #5 Hz@50度#
-omega_0=0.001
-theta_B=np.pi/2
+omega_0=3*7*2*np.pi*1e-4
+theta_B=np.pi/200
 phi_B=0
 
 
@@ -156,9 +157,9 @@ with plt.style.context(['science']):
     ax3.set_xlabel('t (ms)',fontsize=8)
     ax3.tick_params(axis='both', which='major', labelsize=8)
     ax3.tick_params(axis='both', which='minor', labelsize=8)
-    # ax1.set_xlim([2,3])
-    # ax2.set_xlim([2,3])
-    # ax3.set_xlim([2,3])
+    # ax1.set_xlim([2,4])
+    # ax2.set_xlim([2,4])
+    # ax3.set_xlim([2,4])
     plt.grid()
     plt.savefig('signal.png', dpi=1000)
 plt.show()
