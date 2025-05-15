@@ -28,7 +28,7 @@ def voigt_profile(Delta, Gamma_G, Gamma_L):
 
 #delta_nv为失谐
 def chia(delta_nv,pHe,pN2,T,T0):
-    Gammap=(19.84*pHe*(T/T0)+18.98*pN2*(T/T0))*1e6       # Hz
+    Gammap=(19.84*pHe*(T/T0)+18.98*pN2*(T/T0))*1e6       #Hz
     # Gammap=0.06e9       #压强展宽Hz
     Gammad=0.5e9        #多普勒展宽Hz
     re=2.83e-15
@@ -40,9 +40,9 @@ def chia(delta_nv,pHe,pN2,T,T0):
 def photon_number(power):
     h=6.626e-34
     c=3e8
-    lam=795e-9
-    nu=c/lam
-    # nu=c/(770.108e-9)
+    lam_K=770.108e-9
+    lam_Rb=795e-9
+    nu=c/lam_K
     return power/(h*nu)
 
 def Gamma_pr(delta_nv,power,pHe,pN2,T,T0):
@@ -55,6 +55,9 @@ def Gamma_pr(delta_nv,power,pHe,pN2,T,T0):
     Phi=photon_number(power)
     return Phi*sigma
 
+def F_error(tau): 
+    fArea,err = integrate.quad(lambda t: (1-t/tau)*np.exp(-Gamma2*t),0,tau)
+    return fArea
 #优化
 def fun(X):
     global n, vRb,vK,Gamma_se,Gamma2
@@ -115,7 +118,7 @@ def fun(X):
         D0_N2=0.2
         D_N2=D0_N2*(760/pN2)*pow(T0/273.5,3/2)*np.sqrt(T/T0)
         D=1/(1/D_He+1/D_N2)
-        Gamma_se=n*1.5e-18*vK
+        Gamma_se=n*1.5e-18*vK*0
     if species=='Rb':
         nu_D1=377e12
         p=10**(2.881+4.312-4040/T)
@@ -129,25 +132,24 @@ def fun(X):
         D0_N2=0.159
         D_N2=D0_N2*(760/pN2)*(T0/(273.5+60))**(3/2)*(T/T0)**(1/2) 
         D=1/(1/D_He+1/D_N2)
-        Gamma_se=n*1.9e-18*vRb
+        Gamma_se=n*1.9e-18*vRb*0
 
     
     r=23e-1/2
     q=4
     Gamma_D=q*D*(np.pi/r)**2
 
-    def F_error(tau): 
-        fArea,err = integrate.quad(lambda t: (1-t/tau)*np.exp(-Gamma2*t),0,tau)
-        return fArea
     Phi=photon_number(Power)
     N_at=n*l*A
     chi=chia(Detuning,pHe,pN2,T,T0)
     Gamma2=Gamma_SD+Gamma_se+Gamma_D+Gamma_pr(Detuning,Power,pHe,pN2,T,T0)
     sigmaF_tau=0.86/np.sqrt(N_at)
     Sx0=1/2
-    sigma=1/(gamma_e*Sx0*tau*np.exp(-Gamma2*tau))*np.sqrt(F_error(tau)/N_at/4+1/(2*chi**2*n**2*l**2*16*Phi))
+    delta_sp=np.sqrt(2/tau*F_error(tau)/N_at)/4/(gamma_e*Sx0*np.sqrt(tau)*np.exp(-Gamma2*tau))
+    delta_ph=1/(gamma_e*chi*n*l*np.sqrt(2*Phi)*tau*Sx0*tau*np.exp(-Gamma2*tau)*4)
+    sigma=np.sqrt(delta_sp**2+delta_ph**2)
     return sigma
 
-sigma=dual_annealing(fun,bounds=[[0.,5],[5e9,100e9],[0,0.5]], maxiter=10000)
+sigma=dual_annealing(fun,bounds=[[0.,5],[5e9,100e9],[0,0.1]], maxiter=10000)
 print(sigma)
 
