@@ -42,7 +42,7 @@ def photon_number(power):
     c=3e8
     lam_K=770.108e-9
     lam_Rb=795e-9
-    nu=c/lam_K
+    nu=c/lam_Rb
     return power/(h*nu)
 
 def Gamma_pr(delta_nv,power,pHe,pN2,T,T0):
@@ -64,7 +64,7 @@ def fun(X):
     Power=X[0]
     Detuning=X[1]
     tau=X[2]
-    species='K'
+    species='Rb'
 #-----------------------缓冲气体和淬灭气体的气压(室温时）-------------------------#
     pN2=60
     pHe=760*3
@@ -145,11 +145,12 @@ def fun(X):
     Gamma2=Gamma_SD+Gamma_se+Gamma_D+Gamma_pr(Detuning,Power,pHe,pN2,T,T0)
     sigmaF_tau=0.86/np.sqrt(N_at)
     Sx0=1/2
-    delta_sp=np.sqrt(2/tau*F_error(tau)/N_at)/4/(gamma_e*Sx0*np.sqrt(tau)*np.exp(-Gamma2*tau))
-    delta_ph=1/(gamma_e*chi*n*l*np.sqrt(2*Phi)*tau*Sx0*tau*np.exp(-Gamma2*tau)*4)
+    delta_sp=np.sqrt(1/tau*F_error(tau)/N_at)/(gamma_e*Sx0*np.sqrt(tau)*np.exp(-Gamma2*tau))
+    delta_ph=1/(gamma_e*chi*n*l*np.sqrt(2*Phi)*tau*Sx0*np.exp(-Gamma2*tau)*4)
+
     sigma=np.sqrt(delta_sp**2+delta_ph**2)
     return sigma
 
-sigma=dual_annealing(fun,bounds=[[0.,5],[5e9,100e9],[0,0.1]], maxiter=10000)
+sigma=dual_annealing(fun,bounds=[[0.,5],[5e9,100e9],[0,0.001]], maxiter=10000)
 print(sigma)
 

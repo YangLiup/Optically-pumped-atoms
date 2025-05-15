@@ -1,6 +1,6 @@
 import sys
-sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
-# sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
+# sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
+sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 import matplotlib.pyplot as plt
 from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
 from alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
@@ -57,7 +57,7 @@ def master_equation(I,Rse,omega_0,theta_B,phi_B,omega_pi,theta_pi,phi_pi,Rop,Rsd
     # Rho_ini = np.outer(np.array([0, 1, 0, 0, 0, 0, 0, 0]), np.array([0, 1, 0, 0, 0, 0, 0, 0]))
 
     # --------------------------------------Evolution under hyperfine effect, etc.--------------------------------#
-    H0 = omega_0*np.cos(theta_B) * (az - bz)+omega_0*np.sin(theta_B) *np.cos(phi_B)* (ax - bx)+omega_0*np.sin(theta_B) *np.sin(phi_B)* (ay - by)  # 投影定理
+    H0 =omega_0z* (az - bz)+omega_0x* (ax - bx)+omega_0y* (ay - by)  # 投影定理
     Rhot = Rho_ini
     hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
     Py = np.zeros(round(T / dt))
@@ -112,25 +112,25 @@ duration_pi=np.pi/(2*amplitude_pi)  #ms#
 
 duty_pi=duration_pi*frequency_pi
 omega_pi = amplitude_pi * signal.square(2 * np.pi * frequency_pi * (t), duty=duty_pi)+amplitude_pi
-theta_pi=np.pi/200000
-phi_pi=0
+theta_pi=np.pi/180*0.
+phi_pi=np.pi/2
 
 
-# for k in np.arange(0, round(T / dt), 1): 
-#     if Rop[k]==2*amplitude_op:
-#         omega_pi[k]=0
+for k in np.arange(0, round(T / dt), 1): 
+    if Rop[k]==2*amplitude_op:
+        omega_pi[k]=0
 
-Rsd = 5   #20Hz#
+Rsd = 100e-3   #20Hz#
 Rse = 0.001    #5 Hz@50度#
-omega_0=5e-1
-theta_B=np.pi/4
-phi_B=0
+omega_0x=0.1e-1
+omega_0y=0.0e-1
+omega_0z=0.1e-1
 
 
 
 
 
-Px,Py,may=master_equation(3/2,Rse,omega_0,theta_B,phi_B,omega_pi,theta_pi,phi_pi,Rop,Rsd,T)
+Px,Py,may=master_equation(3/2,Rse,omega_0x,omega_0y,omega_0z,omega_pi,theta_pi,phi_pi,Rop,Rsd,T)
 
 t=np.arange(0,T,dt)
 plt.style.use(['science'])
