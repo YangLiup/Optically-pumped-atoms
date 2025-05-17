@@ -34,21 +34,21 @@ with plt.style.context(['science']):
     # p3, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn)-10*Fz/2*(Lorentzianpp - Lorentzianpn))
     # p1, = plt.plot(omega, 10*Fx2*(Lorentzianpp + Lorentzianpn))
     # p2, = plt.plot(omega, -10*Fz/2*(Lorentzianpp - Lorentzianpn))
-    p1, = plt.plot(omega, (cxx*(Lorentzianpp + Lorentzianpn)+cxy*(Lorentzianpnd - Lorentzianppd))/np.max(cxx*(Lorentzianpp + Lorentzianpn)+cxy*(Lorentzianpnd - Lorentzianppd))
+    p1, = plt.plot(omega, (cxx*(Lorentzianpp + Lorentzianpn)+cxy*(Lorentzianpnd - Lorentzianppd))/np.max(cxx*(Lorentzianpp + Lorentzianpn)+cxy*(Lorentzianpnd - Lorentzianppd)),linewidth=1.5
 )
-    p2, = plt.plot(omega, (cxx*(Lorentzianpp + Lorentzianpn))/np.max(cxx*(Lorentzianpp + Lorentzianpn)+cxy*(Lorentzianpnd - Lorentzianppd))
+    p2, = plt.plot(omega, (cxx*(Lorentzianpp + Lorentzianpn))/np.max(cxx*(Lorentzianpp + Lorentzianpn)+cxy*(Lorentzianpnd - Lorentzianppd)),linewidth=1.5
 )
-    p3, = plt.plot(omega, (cxx*Lorentzianpnd - cxy*(Lorentzianppd))/np.max(cxx*(Lorentzianpp + Lorentzianpn)+cxy*(Lorentzianpnd - Lorentzianppd))
+    p3, = plt.plot(omega, (cxx*Lorentzianpnd - cxy*(Lorentzianppd))/np.max(cxx*(Lorentzianpp + Lorentzianpn)+cxy*(Lorentzianpnd - Lorentzianppd)),linewidth=1.5
 )
-    plt.xticks(fontsize=9)
-    plt.yticks(fontsize=9)
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
     # plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
 
     plt.legend([p1, p2, p3], ["Total", "Absorptive", "Dispersive"], loc='upper right',
-               prop={'size': 9})
+               prop={'size': 12})
 
-    plt.xlabel('$\\nu$ (Hz)', fontsize=9)
-    plt.ylabel(' $S^{\mathrm{ls}}(\\nu)$ (arb. units)', fontsize=9)
+    plt.xlabel('$\\nu$ (Hz)', fontsize=12,fontweight='bold')
+    plt.ylabel(' $S^{\mathrm{ls}}(\\nu)$ (arb. units)', fontsize=12,fontweight='bold')
     plt.xlim([0,500])
     # plt.ylim([-2,6])
     plt.savefig('Noise spectrum_lightshift.png', dpi=1000)

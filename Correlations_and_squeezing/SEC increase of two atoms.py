@@ -4,12 +4,12 @@
 日期：2023年12月20日
 """
 import sys
-sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
+sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 
 import numpy as np
 import matplotlib.pyplot as plt
-from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
-from  my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
+from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
+from alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
 from qutip import *
 from scipy.linalg import *
 import matplotlib.pyplot as plt
@@ -95,7 +95,9 @@ C_92 = [None] * round(T / dt)
 # ----------------------Hyperfine interaction--------------------#
 hyperfine = block_diag(np.ones((5, 5)), np.ones((3, 3)))  # 一个原子
 hyperfine = np.kron(hyperfine, hyperfine) # 两个原子
-
+mathcal_Fx=a1x+a2x+b1x+b2x
+mathcal_Sx=(a1x+a2x-b1x-b2x)
+mathcal_Fx=mathcal_Fx
 # ----------------------With magnetic field--------------------#
 omega_0 = 1
 # H = omega_0 * (S1z + S2z)  # 非投影定理
@@ -122,13 +124,18 @@ for i in t:
     C_6[i] = np.trace(Rhot @ a1x @ b2x) - np.trace(Rhot @ a1x) * np.trace(Rhot @ b2x)
     C_8[i] = np.trace(Rhot @ b1x @ b2x) - np.trace(Rhot @ b1x) * np.trace(Rhot @ b2x)
 
-    C_9[i] = np.trace(Rhot @ (a1x+a2x-b1x-b2x) @ (a1x+a2x-b1x-b2x)) - np.trace(Rhot @ (a1x+a2x-b1x-b2x)) * np.trace(Rhot @ (a1x+a2x-b1x-b2x))
+    C_9[i] = np.trace(Rhot @mathcal_Fx @ mathcal_Fx) - np.trace(Rhot @mathcal_Fx) * np.trace(Rhot @ mathcal_Fx)
 
 Rhot2 = Rho_ini
 for i in t:
-    Rhot2 = evolving_B @ Rhot2 @ evolving_B.T.conjugate()  # Zeeman effect
+    # Rhot2 = evolving_B @ Rhot2 @ evolving_B.T.conjugate()  # Zeeman effect
 
     Rhot2 = hyperfine * Rhot2  # Hyperfine effect
+    hh = np.random.uniform()
+    if hh < 0.01:
+        phi = stats.cauchy.rvs(loc=0, scale=10, size=1) 
+        sec = np.cos(phi) * np.eye(round((2 * (2 * I + 1)) ** 2)) - 1j * np.sin(phi) * Pe
+        Rhot2 = sec @ Rhot2 @ sec.T.conjugate()  # spin exchange collision
 
     C_12[i] = np.trace(Rhot2 @ a1x @ a1x) - np.trace(Rhot2 @ a1x) * np.trace(Rhot2 @ a1x)
     C_32[i] = np.trace(Rhot2 @ b1x @ b1x) - np.trace(Rhot2 @ b1x) * np.trace(Rhot2 @ b1x)
@@ -137,34 +144,34 @@ for i in t:
     C_62[i] = np.trace(Rhot2 @ a1x @ b2x) - np.trace(Rhot2 @ a1x) * np.trace(Rhot2 @ b2x)
     C_82[i] = np.trace(Rhot2 @ b1x @ b2x) - np.trace(Rhot2 @ b1x) * np.trace(Rhot2 @ b2x)
 
-    C_92[i] = np.trace(Rhot2 @ (a1x+a2x-b1x-b2x)  @ (a1x+a2x-b1x-b2x)) - np.trace(Rhot2 @ (a1x+a2x-b1x-b2x)) * np.trace(Rhot2 @ (a1x+a2x-b1x-b2x))
+    C_92[i] = np.trace(Rhot2 @ mathcal_Fx @ mathcal_Fx) - np.trace(Rhot2 @ mathcal_Fx) * np.trace(Rhot2 @ mathcal_Fx)
 
 t = t 
 plt.style.use(['science'])
 with plt.style.context(['science']):
     fig1 = plt.figure()
-ax1 = fig1.add_subplot(1, 1, 1)
-p1, = ax1.plot(t, C_1)
-p5, = ax1.plot(t, C_5)
-p6, = ax1.plot(t, C_6)
-p8, = ax1.plot(t, C_8)
-p3, = ax1.plot(t, C_3)
-p9, = ax1.plot(t, C_9)
-ax1.plot([], [])
-# ax1.plot([], [])
-p12, = ax1.plot(t, C_12, linestyle='dashed')
-p52, = ax1.plot(t, C_52, linestyle='dashed')
-p62, = ax1.plot(t, C_62, linestyle='dashed')
-p82, = ax1.plot(t, C_82, linestyle='dashed')
-p32, = ax1.plot(t, C_32, linestyle='dashed')
-p92, = ax1.plot(t, C_92, linestyle='dashed')
-ax1.legend([p1, p5, p3, p6, p8, p9],
-           ["$<f^a_{1x} f^a_{1x}>$", "$<f^a_{1x} f^a_{2x}>$", "$<f^b_{1x} f^b_{1x}>$", "$<f^a_{1x} f^b_{2x}>$", "$<f^b_{1x} f^b_{2x}>$",
-            "$[I]^2<\mathcal S_x \mathcal S_x>$"]
-           , bbox_to_anchor=(1, 1),ncol=1)
-ax1.set_ylabel('Correlations')
-ax1.set_xlabel('time (T$_{\mathrm{se}}$)')
-ax1.tick_params(axis='x')
-ax1.tick_params(axis='y')
+    ax1 = fig1.add_subplot(1, 1, 1)
+    p1, = ax1.plot(t, C_1,linewidth=1.5)
+    p5, = ax1.plot(t, C_5,linewidth=1.5)
+    p6, = ax1.plot(t, C_6,linewidth=1.5)
+    p8, = ax1.plot(t, C_8,linewidth=1.5)
+    p3, = ax1.plot(t, C_3,linewidth=1.5)
+    p9, = ax1.plot(t, C_9,linewidth=1.5)
+    ax1.plot([], [])
+    # ax1.plot([], [])
+    p12, = ax1.plot(t, C_12, linestyle='dashed',linewidth=1.5)
+    p52, = ax1.plot(t, C_52, linestyle='dashed',linewidth=1.5)
+    p62, = ax1.plot(t, C_62, linestyle='dashed',linewidth=1.5)
+    p82, = ax1.plot(t, C_82, linestyle='dashed',linewidth=1.5)
+    p32, = ax1.plot(t, C_32, linestyle='dashed',linewidth=1.5)
+    p92, = ax1.plot(t, C_92, linestyle='dashed',linewidth=1.5)
+    ax1.legend([p1, p5, p3, p6, p8, p9],
+            ["$<f^a_{1x} f^a_{1x}>$", "$<f^a_{1x} f^a_{2x}>$", "$<f^b_{1x} f^b_{1x}>$", "$<f^a_{1x} f^b_{2x}>$", "$<f^b_{1x} f^b_{2x}>$",
+                "$<\mathcal F_x \mathcal F_x>$"]
+            , bbox_to_anchor=(1, 1),ncol=1)
+    ax1.set_ylabel('Correlations')
+    ax1.set_xlabel('t (T$_{\mathrm{se}}$)')
+    ax1.tick_params(axis='x')
+    ax1.tick_params(axis='y')
 plt.savefig('spin exchange increase of correlations.png', dpi=600)
 plt.show()

@@ -80,9 +80,9 @@ with plt.style.context(['science','nature']):
     
     
 
-    p1, = plt.loglog(omega, (chim(-100)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-100)**2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chim(-100)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-100)**2*Fx2*(Lorentzianpp + Lorentzianpn))))
-    p2, = plt.loglog(omega, (chip(-100)**2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chim(-100)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-10)**2*Fx2*(Lorentzianpp + Lorentzianpn))))
-    p3, = plt.loglog(omega, (chim(100)**2*Fxn2*(Lorentziannp + Lorentziannn))/np.max((chim(-100)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-100)**2*Fx2*(Lorentzianpp + Lorentzianpn))))
+    p1, = plt.loglog(omega, (chim(-100)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-100)**2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chim(-100)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-100)**2*Fx2*(Lorentzianpp + Lorentzianpn))),linewidth=1.5)
+    p2, = plt.loglog(omega, (chip(-100)**2*Fx2*(Lorentzianpp + Lorentzianpn))/np.max((chim(-100)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-10)**2*Fx2*(Lorentzianpp + Lorentzianpn))),linewidth=1.5)
+    p3, = plt.loglog(omega, (chim(100)**2*Fxn2*(Lorentziannp + Lorentziannn))/np.max((chim(-100)**2*Fxn2*(Lorentziannp + Lorentziannn)+chip(-100)**2*Fx2*(Lorentzianpp + Lorentzianpn))),linewidth=1.5)
 
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)

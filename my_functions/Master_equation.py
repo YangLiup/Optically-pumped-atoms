@@ -51,7 +51,7 @@ def master_equation(I,Rse,omega_0,T,N):
     Rho_ini = np.zeros(2 * (a + b + 1))
 
     # # -----------------spin temperature state-----------------#
-    P = 0.99
+    P = 1e-5
     beta = np.log((1 + P) / (1 - P))
     for i in np.arange(0, 2 * (a + b + 1), 1):
         Rho_ini = Rho_ini + np.exp(beta * q[i]) * v[:, [i]] * v[:, [i]].T.conjugate()

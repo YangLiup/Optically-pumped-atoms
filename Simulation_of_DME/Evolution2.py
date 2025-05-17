@@ -1,5 +1,5 @@
 import sys
-sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
+sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 
 import matplotlib.pyplot as plt
 from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
@@ -30,58 +30,58 @@ tt3=np.arange(0,T3,dt)
 plt.style.use(['science'])
 with plt.style.context(['science']):
     plt.rc('font',family='Times New Roman')
-    fig = plt.figure(figsize=(3.2, 5))
+    fig = plt.figure(figsize=(5, 7))
     # plt.ylabel('Polarization ', fontsize=8)
     # plt.xlabel('$t$ ($1/R_{\mathrm{se}}$)', fontsize=8)
     # plt.xticks(ticks=[])
     # plt.yticks(ticks=[])
     ax1 = fig.add_subplot(311)
-    ax1.plot(tt1, Px1)
-    ax1.plot(tt1, Pz1)
-    ax1.plot(tt1, transverse1)
-    ax1.plot(tt1, longitude1)
+    ax1.plot(tt1, Px1,linewidth=3)
+    ax1.plot(tt1, Pz1,linewidth=3)
+    ax1.plot(tt1, transverse1,linewidth=3)
+    ax1.plot(tt1, longitude1,linewidth=3)
     # ax1.set_xlim([0,50000])
     # ax1.set_ylim([0,1])
 
-    ax1.set_ylabel('Polarization', fontsize=8)
+    ax1.set_ylabel('Polarization', fontsize=14, fontweight='bold')
     # ax1.axes.xaxis.set_ticklabels([])
-    ax1.text(7200, 0.62, '(a)',fontsize=8)
-    ax1.tick_params(axis='both', which='major', labelsize=8)
-    ax1.tick_params(axis='both', which='minor', labelsize=8)
+    ax1.text(7200, 0.62, '(a)',fontsize=14, fontweight='bold')
+    ax1.tick_params(axis='both', which='major', labelsize=14)
+    ax1.tick_params(axis='both', which='minor', labelsize=14)
 
     ax2 = fig.add_subplot(312)
-    ax2.plot(tt2, Px2)
-    ax2.plot(tt2, Pz2)
-    ax2.plot(tt2, transverse2)
-    ax2.plot(tt2, longitude2)
+    ax2.plot(tt2, Px2,linewidth=3)
+    ax2.plot(tt2, Pz2,linewidth=3)
+    ax2.plot(tt2, transverse2,linewidth=3)
+    ax2.plot(tt2, longitude2,linewidth=3)
 
     # ax2.set_xlabel('$t$ ($1/R_{\mathrm{se}}$)', fontsize=9)
-    ax2.set_ylabel('Polarization ', fontsize=8)
+    ax2.set_ylabel('Polarization ', fontsize=14, fontweight='bold')
     # ax2.set_xlim([0,10000])
-    ax2.text(4500, 0.62, '(b)',fontsize=8)
+    ax2.text(4500, 0.62, '(b)',fontsize=14, fontweight='bold')
     # ax2.axes.xaxis.set_ticklabels([])
-    ax1.tick_params(axis='both', which='major', labelsize=8)
-    ax1.tick_params(axis='both', which='minor', labelsize=8)
+    ax1.tick_params(axis='both', which='major', labelsize=14)
+    ax1.tick_params(axis='both', which='minor', labelsize=14)
 
-    ax2.tick_params(axis='both', which='major', labelsize=8)
-    ax2.tick_params(axis='both', which='minor', labelsize=8)
+    ax2.tick_params(axis='both', which='major', labelsize=14)
+    ax2.tick_params(axis='both', which='minor', labelsize=14)
 
     ax3 = fig.add_subplot(313)
-    ax3.plot(tt3, Px3)
-    ax3.plot(tt3, Pz3)
-    ax3.plot(tt3, transverse3)
-    ax3.plot(tt3, longitude3)
+    ax3.plot(tt3, Px3,linewidth=3)
+    ax3.plot(tt3, Pz3,linewidth=3)
+    ax3.plot(tt3, transverse3,linewidth=3)
+    ax3.plot(tt3, longitude3,linewidth=3)
 
     # ax3.set_xlabel('$t$ ($1/R_{\mathrm{se}}$)', fontsize=8)
-    ax3.set_ylabel('Polarization ', fontsize=8)
+    ax3.set_ylabel('Polarization ', fontsize=14, fontweight='bold')
     # ax3.set_xlim([0,2000])
-    ax3.text(3600, 0.62, '(c)', fontsize=8)
+    ax3.text(3600, 0.62, '(c)', fontsize=14, fontweight='bold')
 
-    ax3.tick_params(axis='both', which='major', labelsize=8)
-    ax3.tick_params(axis='both', which='minor', labelsize=8)
-    ax3.set_xlabel('$t$ ($1/R_{\mathrm{se}}$)', fontsize=8)
+    ax3.tick_params(axis='both', which='major', labelsize=14)
+    ax3.tick_params(axis='both', which='minor', labelsize=14)
+    ax3.set_xlabel('$t$ ($1/R_{\mathrm{se}}$)', fontsize=14)
     ax3.legend(["$P_{\perp}^{\mathrm{DME}}$", "$P_z^{\mathrm{DME}}$", "$P_{\perp}^{\mathrm{BE}}$", "$P_z^{\mathrm{BE}}$"],
-               loc='center right', prop={'size': 7})
+               loc='center right', prop={'size': 14})
     
 
     formatter = ticker.ScalarFormatter(useMathText=True)
@@ -103,8 +103,8 @@ with plt.style.context(['science']):
     axins.plot(tt3, Px3, linewidth=1)
     axins.plot([], [], linewidth=1)
     axins.plot(tt3, transverse3,  linewidth=1)
-    axins.tick_params(axis='both', which='major', labelsize=6)
-    axins.tick_params(axis='both', which='minor', labelsize=6)
+    axins.tick_params(axis='both', which='major')
+    axins.tick_params(axis='both', which='minor')
 
     # 设置放大区间
     zone_left = 300*100
@@ -134,5 +134,5 @@ with plt.style.context(['science']):
 
 
     plt.tight_layout()
-    plt.savefig('Evolution.png', dpi=1000)
+    plt.savefig('Evolution.png', dpi=600)
 plt.show()

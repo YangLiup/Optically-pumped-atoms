@@ -5,7 +5,7 @@
 """
 # -*- coding:utf-8 -*-
 import sys
-sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
+sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 import numpy as np
 import matplotlib.pyplot as plt
 from qutip import *
@@ -63,7 +63,7 @@ Rhot = Rho_ini
 n = round(T / dt)
 C1 = [None] * n
 C2 = [None] * n
-Vz0 = np.trace(ini_Rho_atom @(a1z+a2z-b1z-b2z) @ (a1z+a2z-b1z-b2z))
+Vz0 = np.trace(ini_Rho_atom @(a1z+a2z-b1z-b2z) @ (a1z+a2z-b1z-b2z))/16
 
 # evolving
 for i in np.arange(0, n, 1):
@@ -73,19 +73,19 @@ for i in np.arange(0, n, 1):
     Rho_r = read @ Rhot_sample @ read.T.conjugate()
     Rho_r = Rho_r / Rho_r.trace()
     Rho_atom = ptr(Rho_r, 2 * s + 1, (2 * (a + b + 1)) ** N)
-    C1[i] = 1 - (np.trace(Rho_atom @ (a1z+a2z-b1z-b2z) @ (a1z+a2z-b1z-b2z))-np.trace(Rho_atom @ (a1z+a2z-b1z-b2z))**2) / Vz0
-    C2[i] =  np.trace(Rho_atom @ (a1x+a2x-b1x-b2x))
+    C1[i] = 1 - (np.trace(Rho_atom @ (a1z+a2z-b1z-b2z) @ (a1z+a2z-b1z-b2z))/16-np.trace(Rho_atom @ (a1z+a2z-b1z-b2z))**2)/16 / Vz0
+    C2[i] =  np.trace(Rho_atom @ (a1x+a2x-b1x-b2x)/4)
 
 tt = np.arange(0, T, dt)
 plt.style.use(['science'])
 with plt.style.context(['science']):
     plt.figure()
-    plt.plot(C1,C2)
+    plt.plot(C1,C2,linewidth='1.5')
     # plt.gca().invert_xaxis() 
     # plt.xlim(0, 1)
     # plt.ylim(0, 0.4)
-    plt.xlabel('$1-\\frac {\mathrm{var}(\mathcal F_x)_{\mathrm{s}}} {\mathrm{var}(\mathcal F_x)_0}$')
-    plt.ylabel('$\langle \mathcal F_z \\rangle_{\mathrm{s}}$')
+    plt.xlabel('$1-\\frac {\mathrm{var}(\mathcal S_x)_{\mathrm{s}}} {\mathrm{var}(\mathcal S_x)_0}$')
+    plt.ylabel('$\langle \mathcal S_x \\rangle_{\mathrm{s}}$')
     plt.savefig('squeezing.png', dpi=600)
 
 # plt.figure()

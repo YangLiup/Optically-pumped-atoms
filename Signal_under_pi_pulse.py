@@ -1,6 +1,6 @@
 import sys
-sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
-# sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
+# sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
+sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 import matplotlib.pyplot as plt
 from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
 from alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
@@ -116,15 +116,15 @@ theta_pi=np.pi/180*0.
 phi_pi=np.pi/2
 
 
-# for k in np.arange(0, round(T / dt), 1): 
-#     if Rop[k]==2*amplitude_op:
-#         omega_pi[k]=0
+for k in np.arange(0, round(T / dt), 1): 
+    if Rop[k]==2*amplitude_op:
+        omega_pi[k]=0
 
 Rsd = 100e-3   #20Hz#
 Rse = 0.001    #5 Hz@50度#
-omega_0x=0.3e-1
-omega_0y=0.3e-1
-omega_0z=0.1e-1
+omega_0x=0.1e-1
+omega_0y=0.1e-1
+omega_0z=0.5e-1
 
 
 
