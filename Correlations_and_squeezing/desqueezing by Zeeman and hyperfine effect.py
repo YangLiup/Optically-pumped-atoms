@@ -4,8 +4,8 @@
 日期：2023年12月17日
 """
 import sys
+sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
 # sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
-sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -52,11 +52,28 @@ if N == 3:
 
 ini_Rho_atom, Rho_atom = Generate_a_squeezed_state_by_QND(2, I, T_sq, s, alpha, dt)
 
-if N == 3:
-    # Rho_atom3 = np.outer(np.vstack((v[:, [2]], np.array(zero_ket(2 * b + 1)))),
-    #                      np.vstack((v[:, [2]], np.array(zero_ket(2 * b + 1)))))
 
-    Rho_atom3 = np.eye(8)/8
+if N == 3:
+    Rho_atom3 = np.zeros(2 * (a + b + 1))
+    # --------------------------------Define the initial state-----------------------------------#
+    theta = np.pi / 2
+    phi = 0
+    a_theta = spin_Jx(a) * np.sin(theta) * np.cos(phi) + spin_Jy(a) * np.sin(theta) * np.sin(phi) + spin_Jz(a) * np.cos(
+        theta)
+    b_theta = spin_Jx(b) * np.sin(theta) * np.cos(phi) + spin_Jy(b) * np.sin(theta) * np.sin(phi) + spin_Jz(b) * np.cos(
+        theta)
+    qa, va = np.linalg.eig(np.array(a_theta.full()))
+    qb, vb = np.linalg.eig(np.array(b_theta.full()))
+    vs = block_diag(va, vb)
+    qs = np.hstack((qa, qb))
+    # # -----------------spin temperature state-----------------#
+    P = 0.9999999999999
+    beta = np.log((1 + P) / (1 - P))
+    for i in np.arange(0, 2 * (a + b + 1), 1):
+        Rho_atom3 =Rho_atom3 + np.exp(beta * qs[i]) * vs[:, [i]] * vs[:, [i]].T.conjugate()
+    Rho_atom3 = Rho_atom3 / np.trace(Rho_atom3)
+
+    # Rho_atom3 = np.eye(8)/8
     Rho_atomi = np.kron(Rho_atom, Rho_atom3)
 # ----------------------Evolution of the spin under magnetic field and hyperfine interaction----------------------#
 
@@ -109,7 +126,7 @@ if N == 3:
     Pt23 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S2x @ S3x + S2y @ S3y + S2z @ S3z)
     Pe23 = Pt23 - Ps23
 
-T = 60
+T = 40
 dt = 0.01
 n = round(T / dt)
 te = np.arange(0, T, dt)
@@ -144,8 +161,8 @@ H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
 q, v = np.linalg.eig(H)
 evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
 mathcal_F=a1z+a2z+a3z+b1z+b2z+b3z
-mathcal_S=a1z+a2z+a3z-b1z-b2z-b3z
-mathcal_F=mathcal_S/4
+mathcal_S=(a1z+a2z+a3z-b1z-b2z-b3z)/4
+mathcal_F=mathcal_S
 Rho_atom = Rho_atomi
 for t in np.arange(0, n, 1):
     C_1[t] = np.trace(Rho_atom @ mathcal_F@ mathcal_F) - np.trace(Rho_atom @mathcal_F) ** 2
