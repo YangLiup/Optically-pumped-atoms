@@ -4,11 +4,11 @@
 日期：2023年12月20日
 """
 import sys
-sys.path.append(r"D:\python\pythonProject\Optically_pumped_atoms\my_functions")
+sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
 import numpy as np
 import matplotlib.pyplot as plt
-from my_functions.spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
-from my_functions.alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
+from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
+from alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
 from qutip import *
 from scipy.linalg import *
 import matplotlib.pyplot as plt
@@ -79,7 +79,7 @@ hyperfine = block_diag(np.ones((5, 5)), np.ones((3, 3)))  # 一个原子
 hyperfine = np.kron(hyperfine, hyperfine)  # 两个原子
 
 # ----------------------With magnetic field--------------------#
-omega_0 = 10
+omega_0 = 0
 # H = omega_0 * (S1z + S2z)  # 非投影定理
 H = omega_0 * (a1z + a2z - b1z - b2z)  # 投影定理
 

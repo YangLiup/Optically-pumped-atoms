@@ -4,7 +4,7 @@
 日期：2023年12月20日
 """
 import sys
-sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
+sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -82,6 +82,7 @@ C_6 = [None] * round(T / dt)
 C_7 = [None] * round(T / dt)
 C_8 = [None] * round(T / dt)
 C_9 = [None] * round(T / dt)
+C_10 = [None] * round(T / dt)
 C_12 = [None] * round(T / dt)
 C_22 = [None] * round(T / dt)
 C_32 = [None] * round(T / dt)
@@ -91,6 +92,7 @@ C_62 = [None] * round(T / dt)
 C_72 = [None] * round(T / dt)
 C_82 = [None] * round(T / dt)
 C_92 = [None] * round(T / dt)
+C_102 = [None] * round(T / dt)
 # C_8 = [None] * round(T / dt)
 # ----------------------Hyperfine interaction--------------------#
 hyperfine = block_diag(np.ones((5, 5)), np.ones((3, 3)))  # 一个原子
@@ -98,7 +100,7 @@ hyperfine = np.kron(hyperfine, hyperfine) # 两个原子
 
 mathcal_Fx=a1x+a2x+b1x+b2x
 mathcal_Sx=(a1x+a2x-b1x-b2x)
-mathcal_Fx=mathcal_Sx
+# mathcal_Fx=mathcal_Sx
 # ----------------------With magnetic field--------------------#
 omega_0 = 1
 # H = omega_0 * (S1z + S2z)  # 非投影定理
@@ -126,6 +128,7 @@ for i in t:
     C_8[i] = np.trace(Rhot @ b1x @ b2x) - np.trace(Rhot @ b1x) * np.trace(Rhot @ b2x)
 
     C_9[i] = np.trace(Rhot @ mathcal_Fx @ mathcal_Fx) - np.trace(Rhot @ mathcal_Fx) * np.trace(Rhot @ mathcal_Fx)
+    C_10[i] = np.trace(Rhot @ mathcal_Sx @ mathcal_Sx) - np.trace(Rhot @ mathcal_Sx) * np.trace(Rhot @ mathcal_Sx)
 
 Rhot2 = Rho_ini
 for i in t:
@@ -145,7 +148,7 @@ for i in t:
     C_82[i] = np.trace(Rhot2 @ b1x @ b2x) - np.trace(Rhot2 @ b1x) * np.trace(Rhot2 @ b2x)
 
     C_92[i] = np.trace(Rhot2 @ mathcal_Fx @ mathcal_Fx) - np.trace(Rhot2 @ mathcal_Fx) * np.trace(Rhot2 @ mathcal_Fx)
-
+    C_102[i] = np.trace(Rhot2 @ mathcal_Sx @ mathcal_Sx) - np.trace(Rhot2 @ mathcal_Sx) * np.trace(Rhot2 @ mathcal_Sx)
 t = t 
 
 plt.style.use(['science'])
@@ -158,7 +161,8 @@ with plt.style.context(['science']):
     p8, = ax1.plot(t, C_8,linewidth=1.5)
     p3, = ax1.plot(t, C_3,linewidth=1.5)
     p9, = ax1.plot(t, C_9,linewidth=1.5)
-    ax1.plot([], [])
+    p10, = ax1.plot(t, C_10,linewidth=1.5)
+    # ax1.plot([], [])
     # ax1.plot([], [])
     p12, = ax1.plot(t, C_12, linestyle='dashed',linewidth=1.5)
     p52, = ax1.plot(t, C_52, linestyle='dashed',linewidth=1.5)
@@ -166,9 +170,10 @@ with plt.style.context(['science']):
     p82, = ax1.plot(t, C_82, linestyle='dashed',linewidth=1.5)
     p32, = ax1.plot(t, C_32, linestyle='dashed',linewidth=1.5)
     p92, = ax1.plot(t, C_92, linestyle='dashed',linewidth=1.5)
-    ax1.legend([p1, p5, p3, p6, p8, p9],
+    p102, = ax1.plot(t, C_102, linestyle='dashed',linewidth=1.5)
+    ax1.legend([p1, p5, p3, p6, p8, p9,p10],
             ["$<f^a_{1x} f^a_{1x}>$", "$<f^a_{1x} f^a_{2x}>$", "$<f^b_{1x} f^b_{1x}>$", "$<f^a_{1x} f^b_{2x}>$", "$<f^b_{1x} f^b_{2x}>$",
-                "$[I]^2<\mathcal S_x \mathcal S_x>$"]
+                "$<\mathcal F_x \mathcal F_x>$","$[I]^2<\mathcal S_x \mathcal S_x>$"]
             , bbox_to_anchor=(1, 1),ncol=1)
     ax1.set_ylabel('Correlations',fontweight='bold')
     ax1.set_xlabel('t (T$_{\mathrm{se}}$)',fontweight='bold')
