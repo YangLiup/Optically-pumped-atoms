@@ -40,45 +40,15 @@ az = spin_Jz(a)
 bx = spin_Jx(b)
 by = spin_Jy(b)
 bz = spin_Jz(b)
+omega_0=10
+# ----------------------Hyperfine interaction--------------------#
+hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
+
 if N == 2:
     a1x, a2x, a1y, a2y, a1z, a2z, b1x, b2x, b1y, b2y, b1z, b2z, Fx, Fy, Fz = spin_operators_of_2or1_alkali_metal_atoms(
         2, I)
-if N == 3:
-    a1x, a2x, a3x, a1y, a2y, a3y, a1z, a2z, a3z, b1x, b2x, b3x, b1y, b2y, b3y, b1z, b2z, b3z, Fx, Fy, Fz = spin_operators_of_2or1_alkali_metal_atoms(
-        3, I)
-    Fx = a1x + a2x + a3x + b1x + b2x + b3x
-    Fz = a1z + a2z + a3z + b1z + b2z + b3z
-# ----------------------squeezing----------------------#
-
-ini_Rho_atom, Rho_atom = Generate_a_squeezed_state_by_QND(2, I, T_sq, s, alpha, dt)
-
-
-if N == 3:
-    Rho_atom3 = np.zeros(2 * (a + b + 1))
-    # --------------------------------Define the initial state-----------------------------------#
-    theta = np.pi / 2
-    phi = 0
-    a_theta = spin_Jx(a) * np.sin(theta) * np.cos(phi) + spin_Jy(a) * np.sin(theta) * np.sin(phi) + spin_Jz(a) * np.cos(
-        theta)
-    b_theta = spin_Jx(b) * np.sin(theta) * np.cos(phi) + spin_Jy(b) * np.sin(theta) * np.sin(phi) + spin_Jz(b) * np.cos(
-        theta)
-    qa, va = np.linalg.eig(np.array(a_theta.full()))
-    qb, vb = np.linalg.eig(np.array(b_theta.full()))
-    vs = block_diag(va, vb)
-    qs = np.hstack((qa, qb))
-    # # -----------------spin temperature state-----------------#
-    P = 0.9999999999999
-    beta = np.log((1 + P) / (1 - P))
-    for i in np.arange(0, 2 * (a + b + 1), 1):
-        Rho_atom3 =Rho_atom3 + np.exp(beta * qs[i]) * vs[:, [i]] * vs[:, [i]].T.conjugate()
-    Rho_atom3 = Rho_atom3 / np.trace(Rho_atom3)
-
-    # Rho_atom3 = np.eye(8)/8
-    Rho_atomi = np.kron(Rho_atom, Rho_atom3)
-# ----------------------Evolution of the spin under magnetic field and hyperfine interaction----------------------#
-
-# ----------------------electron spin----------------------#
-if N == 2:
+    H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
+    hyperfine = np.kron(hyperfine, hyperfine)  # 两个原子
     Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax().full()))
     Sx = U.T.conjugate() @ Sx @ U
     Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay().full()))
@@ -97,6 +67,13 @@ if N == 2:
     Pt12 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S1x @ S2x + S1y @ S2y + S1z @ S2z)
     Pe12 = Pt12 - Ps12
 if N == 3:
+    a1x, a2x, a3x, a1y, a2y, a3y, a1z, a2z, a3z, b1x, b2x, b3x, b1y, b2y, b3y, b1z, b2z, b3z, Fx, Fy, Fz = spin_operators_of_2or1_alkali_metal_atoms(
+        3, I)
+    H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
+    hyperfine = np.kron(hyperfine, np.kron(hyperfine, hyperfine))  # 三个原子
+
+    Fx = a1x + a2x + a3x + b1x + b2x + b3x
+    Fz = a1z + a2z + a3z + b1z + b2z + b3z
     Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax().full()))
     Sx = U.T.conjugate() @ Sx @ U
     Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay().full()))
@@ -125,8 +102,34 @@ if N == 3:
     Ps23 = 1 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) - (S2x @ S3x + S2y @ S3y + S2z @ S3z)
     Pt23 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S2x @ S3x + S2y @ S3y + S2z @ S3z)
     Pe23 = Pt23 - Ps23
+# ----------------------squeezing----------------------#
+ini_Rho_atom, Rho_atom = Generate_a_squeezed_state_by_QND(2, I, T_sq, s, alpha, dt)
 
-T = 40
+
+if N == 3:
+    Rho_atom3 = np.zeros(2 * (a + b + 1))
+    # --------------------------------Define the initial state-----------------------------------#
+    theta = np.pi / 2
+    phi = 0
+    a_theta = spin_Jx(a) * np.sin(theta) * np.cos(phi) + spin_Jy(a) * np.sin(theta) * np.sin(phi) + spin_Jz(a) * np.cos(
+        theta)
+    b_theta = spin_Jx(b) * np.sin(theta) * np.cos(phi) + spin_Jy(b) * np.sin(theta) * np.sin(phi) + spin_Jz(b) * np.cos(
+        theta)
+    qa, va = np.linalg.eig(np.array(a_theta.full()))
+    qb, vb = np.linalg.eig(np.array(b_theta.full()))
+    vs = block_diag(va, vb)
+    qs = np.hstack((qa, qb))
+    # # -----------------spin temperature state-----------------#
+    P = 0.9999999999999
+    beta = np.log((1 + P) / (1 - P))
+    for i in np.arange(0, 2 * (a + b + 1), 1):
+        Rho_atom3 =Rho_atom3 + np.exp(beta * qs[i]) * vs[:, [i]] * vs[:, [i]].T.conjugate()
+    Rho_atom3 = Rho_atom3 / np.trace(Rho_atom3)
+
+    # Rho_atom3 = np.eye(8)/8
+    Rho_atomi = np.kron(Rho_atom, Rho_atom3)
+# ----------------------Evolution of the spin under magnetic field and hyperfine interaction----------------------#
+T = 50
 dt = 0.01
 n = round(T / dt)
 te = np.arange(0, T, dt)
@@ -146,17 +149,7 @@ C_a1za2z2 = [None] * n
 C_a1zb2z2 = [None] * n
 C_b1zb2z2 = [None] * n
 
-# ----------------------Hyperfine interaction--------------------#
-hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
-if N == 2:
-    hyperfine = np.kron(hyperfine, hyperfine)  # 两个原子
-if N == 3:
-    hyperfine = np.kron(hyperfine, np.kron(hyperfine, hyperfine))  # 三个原子
-# ----------------------Magnetic field----------------------#
-omega_0 = 30
-# H = omega_e * (ax-bx)              #一个原子
-# H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
-H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
+
 
 q, v = np.linalg.eig(H)
 evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
@@ -188,12 +181,6 @@ for t in np.arange(0, n, 1):
         Rho_atom = sec @ Rho_atom @ sec.T.conjugate()
     Rho_atom = hyperfine * Rho_atom
 
-# ----------------------Magnetic field----------------------#
-omega_0 = 30
-# H = omega_e * (ax-bx)              #一个原子
-# H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
-H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
-
 q, v = np.linalg.eig(H)
 evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
 Rho_atom = Rho_atomi
@@ -219,8 +206,8 @@ for t in np.arange(0, n, 1):
 # ----------------------Magnetic field----------------------#
 omega_0 = 1.5
 # H = omega_e * (ax-bx)              #一个原子
-# H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
-H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
+H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
+# H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
 
 q, v = np.linalg.eig(H)
 evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
