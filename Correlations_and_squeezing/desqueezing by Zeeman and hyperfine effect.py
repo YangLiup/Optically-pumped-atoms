@@ -4,8 +4,8 @@
 日期：2023年12月17日
 """
 import sys
-sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
-# sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
+# sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
+sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -25,7 +25,7 @@ import scienceplots
 # N is the number of atoms, T is the squeezing time, F is the spin of atom, s is the spin of light and alpha is the coupling constant
 N = 3
 I = 3 / 2
-T_sq = 2
+T_sq = 3.5
 a = round(I + 1 / 2)
 b = round(I - 1 / 2)
 s = 5
@@ -103,31 +103,31 @@ if N == 3:
     Pt23 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S2x @ S3x + S2y @ S3y + S2z @ S3z)
     Pe23 = Pt23 - Ps23
 # ----------------------squeezing----------------------#
-ini_Rho_atom, Rho_atom = Generate_a_squeezed_state_by_QND(2, I, T_sq, s, alpha, dt)
+ini_Rho_atom, Rho_atomi = Generate_a_squeezed_state_by_QND(3, I, T_sq, s, alpha, dt)
 
 
-if N == 3:
-    Rho_atom3 = np.zeros(2 * (a + b + 1))
-    # --------------------------------Define the initial state-----------------------------------#
-    theta = np.pi / 2
-    phi = 0
-    a_theta = spin_Jx(a) * np.sin(theta) * np.cos(phi) + spin_Jy(a) * np.sin(theta) * np.sin(phi) + spin_Jz(a) * np.cos(
-        theta)
-    b_theta = spin_Jx(b) * np.sin(theta) * np.cos(phi) + spin_Jy(b) * np.sin(theta) * np.sin(phi) + spin_Jz(b) * np.cos(
-        theta)
-    qa, va = np.linalg.eig(np.array(a_theta.full()))
-    qb, vb = np.linalg.eig(np.array(b_theta.full()))
-    vs = block_diag(va, vb)
-    qs = np.hstack((qa, qb))
-    # # -----------------spin temperature state-----------------#
-    P = 0.9999999999999
-    beta = np.log((1 + P) / (1 - P))
-    for i in np.arange(0, 2 * (a + b + 1), 1):
-        Rho_atom3 =Rho_atom3 + np.exp(beta * qs[i]) * vs[:, [i]] * vs[:, [i]].T.conjugate()
-    Rho_atom3 = Rho_atom3 / np.trace(Rho_atom3)
+# if N == 3:
+#     Rho_atom3 = np.zeros(2 * (a + b + 1))
+#     # --------------------------------Define the initial state-----------------------------------#
+#     theta = np.pi / 2
+#     phi = 0
+#     a_theta = spin_Jx(a) * np.sin(theta) * np.cos(phi) + spin_Jy(a) * np.sin(theta) * np.sin(phi) + spin_Jz(a) * np.cos(
+#         theta)
+#     b_theta = spin_Jx(b) * np.sin(theta) * np.cos(phi) + spin_Jy(b) * np.sin(theta) * np.sin(phi) + spin_Jz(b) * np.cos(
+#         theta)
+#     qa, va = np.linalg.eig(np.array(a_theta.full()))
+#     qb, vb = np.linalg.eig(np.array(b_theta.full()))
+#     vs = block_diag(va, vb)
+#     qs = np.hstack((qa, qb))
+#     # # -----------------spin temperature state-----------------#
+#     P = 0.9999999999999
+#     beta = np.log((1 + P) / (1 - P))
+#     for i in np.arange(0, 2 * (a + b + 1), 1):
+#         Rho_atom3 =Rho_atom3 + np.exp(beta * qs[i]) * vs[:, [i]] * vs[:, [i]].T.conjugate()
+#     Rho_atom3 = Rho_atom3 / np.trace(Rho_atom3)
 
-    # Rho_atom3 = np.eye(8)/8
-    Rho_atomi = np.kron(Rho_atom, Rho_atom3)
+#     # Rho_atom3 = np.eye(8)/8
+#     Rho_atomi = np.kron(Rho_atom, Rho_atom3)
 # ----------------------Evolution of the spin under magnetic field and hyperfine interaction----------------------#
 T = 50
 dt = 0.01
@@ -155,7 +155,7 @@ q, v = np.linalg.eig(H)
 evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
 mathcal_F=a1z+a2z+a3z+b1z+b2z+b3z
 mathcal_S=(a1z+a2z+a3z-b1z-b2z-b3z)/4
-mathcal_F=mathcal_S
+mathcal_F=mathcal_F
 Rho_atom = Rho_atomi
 for t in np.arange(0, n, 1):
     C_1[t] = np.trace(Rho_atom @ mathcal_F@ mathcal_F) - np.trace(Rho_atom @mathcal_F) ** 2
@@ -181,8 +181,6 @@ for t in np.arange(0, n, 1):
         Rho_atom = sec @ Rho_atom @ sec.T.conjugate()
     Rho_atom = hyperfine * Rho_atom
 
-q, v = np.linalg.eig(H)
-evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
 Rho_atom = Rho_atomi
 for t in np.arange(0, n, 1):
     C_2[t] = np.trace(Rho_atom @ mathcal_F@ mathcal_F) - np.trace(Rho_atom @mathcal_F) ** 2
@@ -206,12 +204,11 @@ for t in np.arange(0, n, 1):
 # ----------------------Magnetic field----------------------#
 omega_0 = 1.5
 # H = omega_e * (ax-bx)              #一个原子
-H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
-# H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
-
+# H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
+H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
 q, v = np.linalg.eig(H)
 evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
-Rho_atom = Rho_atomi   
+Rho_atom = Rho_atomi  
 for t in np.arange(0, n, 1):
     C_3[t] = np.trace(Rho_atom @ mathcal_F@ mathcal_F) - np.trace(Rho_atom @mathcal_F) ** 2
     # C_a1za1z[t] = np.trace(Rho_atom @ a1z @ a1z) - np.trace(Rho_atom @ a1z) * np.trace(Rho_atom @ a1z)
@@ -239,6 +236,17 @@ C_1=np.array(C_1)
 C_2=np.array(C_2)
 C_3=np.array(C_3)
 C_4=np.array(C_4)
+
+
+CSS=np.array([1,0,0,0,0,0,0,0])
+CSS3=np.kron(np.kron(CSS,CSS),CSS)
+Rho_CSS=np.outer(CSS3,CSS3)
+mathcal_S=(a1x+a2x+a3x-b1x-b2x-b3x)/4
+mathcal_F=(a1x+a2x+a3x+b1x+b2x+b3x)
+mathcal_S=mathcal_F
+Var=np.trace(Rho_CSS@mathcal_S@mathcal_S)-np.trace(Rho_CSS@mathcal_S)**2
+
+
 tt = np.arange(0, n, 1)*dt
 with plt.style.context(['science']):
     fig = plt.figure()
@@ -247,10 +255,11 @@ with plt.style.context(['science']):
     p2, = ax1.plot(tt, C_2)
     p3, = ax1.plot(tt, C_3)
     p4, = ax1.plot(tt, C_4)
-    ax1.legend([p1,p2,p3,p4],
-               ["$R_{\\text{se}}=0$ Hz,$\omega_0=30$ rad/s","$R_{\\text{se}}=30$ Hz, $\omega_0=30$ rad/s","$R_{\\text{se}}=30$ Hz, $\omega_0=1.5$ rad/s","$R_{\\text{se}}=30$ Hz, $\omega_0=0$ rad/s"],bbox_to_anchor=(0.8, -0.2),ncol=1)
+    p5, = ax1.plot(tt, np.ones(len(tt))*Var)
+    ax1.legend([p1,p2,p3,p4,p5],
+               ["$R_{\\text{se}}=0$ Hz,$\omega_0=30$ rad/s","$R_{\\text{se}}=30$ Hz, $\omega_0=30$ rad/s","$R_{\\text{se}}=30$ Hz, $\omega_0=1.5$ rad/s","$R_{\\text{se}}=30$ Hz, $\omega_0=0$ rad/s","THS"],bbox_to_anchor=(0.8, -0.2),ncol=1)
     ax1.set_xlabel('$t$ (s)')
-    ax1.set_ylabel('Var $( \mathcal S_{x})$')
+    ax1.set_ylabel('Var $( \mathcal F_{x})$')
     # plt.xlim(0, 2)
     # plt.ylim(0.1,0.55)
     plt.savefig('desqueezing.png', dpi=600)

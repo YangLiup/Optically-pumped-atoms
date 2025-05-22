@@ -28,6 +28,8 @@ def Generate_a_squeezed_state_by_QND(N, I, T, s, alpha, dt):
         ax, ay, az, bx, by, bz, Fx, Fy, Fz = spin_operators_of_2or1_alkali_metal_atoms(N, I)
     if N == 2:
         a1x, a2x, a1y, a2y, a1z, a2z, b1x, b2x, b1y, b2y, b1z, b2z, Fx, Fy, Fz = spin_operators_of_2or1_alkali_metal_atoms(N, I)
+    if N == 3:
+       a1x, a2x, a3x, a1y, a2y, a3y, a1z, a2z, a3z, b1x, b2x, b3x, b1y, b2y, b3y, b1z, b2z, b3z, Fx, Fy, Fz = spin_operators_of_2or1_alkali_metal_atoms(N, I)
 
     sx = spin_Jx(s)
     sy = spin_Jy(s)
@@ -40,6 +42,8 @@ def Generate_a_squeezed_state_by_QND(N, I, T, s, alpha, dt):
     XiF_ini = np.vstack((np.array(spin_coherent(a, np.pi / 2, 0).full()), np.array(zero_ket(2 * b + 1).full())))
     if N == 2:
         XiF_ini = np.kron(XiF_ini, XiF_ini)
+    if N == 3:
+        XiF_ini = np.kron(np.kron(XiF_ini, XiF_ini),XiF_ini)
 
     ini_Rho_atom = np.outer(XiF_ini, XiF_ini)
     Xis_ini = np.array(spin_coherent(s, np.pi / 2, 0).full())
@@ -55,7 +59,10 @@ def Generate_a_squeezed_state_by_QND(N, I, T, s, alpha, dt):
         read = np.array(tensor(qeye(2 * (a + b + 1)), vy[5] * vy[5].dag()).full())
     if N == 2:
         read = np.array(
-            tensor(tensor(qeye(2 * (a + b + 1)), qeye(2 * (a + b + 1)), vy[5] * vy[5].dag())).full())
+            tensor(tensor(qeye(2 * (a + b + 1)), qeye(2 * (a + b + 1)), vy[5] * vy[5].dag())).full())  
+    if N == 3:
+        read = np.array(
+        tensor(tensor(tensor(qeye(2 * (a + b + 1)), qeye(2 * (a + b + 1))),qeye(2 * (a + b + 1)), vy[5] * vy[5].dag())).full())
     Rho_r = read @ Rhot @ read.T.conjugate()
     Rho_r = Rho_r / Rho_r.trace()
     Rho_atom = ptr(Rho_r, 2 * s + 1, (2 * (a + b + 1)) ** N)
