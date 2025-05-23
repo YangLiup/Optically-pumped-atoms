@@ -66,23 +66,44 @@ for i in trange(0,n,1):
 
 #绘制动态图像
 # 2D
-fig = plt.figure(figsize=(3,5))
-ax1 = fig.add_subplot(211)
+fig = plt.figure(figsize=(3,9))
+ax1 = fig.add_subplot(221)
 ax1.plot(t,Pxarray)
 ax1.set_ylabel('$P_y$')
 ax1.set_xlabel('$t$', fontsize=8)
 
-ax2 = fig.add_subplot(212)
+ax2 = fig.add_subplot(222)
+ax3 = fig.add_subplot(223)
+ax4 = fig.add_subplot(224)
+
+
 for i in np.arange(0,n,200):
     # ax.plot(Pxarray[i],Pyarray[i],'bo')
-    ax2.quiver(0,0,Pxarray[i],Pyarray[i],color=(1, 0, 0, 0.3),angles='xy', scale_units='xy', scale=1,linewidths=0.5)
+    ax2.quiver(0,0,Pxarray[i],Pzarray[i],color=(1, 0, 0, 0.3),angles='xy', scale_units='xy', scale=1,linewidths=0.5)
     ax2.set_xlim([-10e-4,10e-4])
-    ax2.set_ylim([-10e-4,10e-4])
+    ax2.set_ylim([-0.1,1])
     ax2.set_xlabel('Px')
-    ax2.set_xlabel('Py')
+    ax2.set_ylabel('Pz')
     ax2.grid()
+
+    ax3.quiver(0,0,Pxarray[i],Pyarray[i],color=(1, 0, 0, 0.3),angles='xy', scale_units='xy', scale=1,linewidths=0.5)
+    ax3.set_xlim([-10e-4,10e-4])
+    ax3.set_ylim([-10e-4,10e-4])
+    ax3.set_xlabel('Px')
+    ax3.set_ylabel('Py')
+    ax3.grid()
+    
+    ax4.quiver(0,0,Pyarray[i],Pzarray[i],color=(1, 0, 0, 0.3),angles='xy', scale_units='xy', scale=1,linewidths=0.5)
+    ax4.set_xlim([-10e-4,10e-4])
+    ax4.set_ylim([-0.1,1])
+    ax4.set_xlabel('Py')
+    ax4.set_ylabel('Pz')
+    ax4.grid()
+
     plt.pause(1e-4)
     ax2.cla()
+    ax3.cla()
+    ax4.cla()
 
 
 #绘制静态图像
