@@ -1,177 +1,32 @@
-# -*- coding:utf-8 -*-
-"""
-作者：DELL
-日期：2023年12月17日
-"""
-import sys
-# sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
-sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
-
-import numpy as np
 import matplotlib.pyplot as plt
-from qutip import *
-from Generate_a_squeezed_state_by_QND import Generate_a_squeezed_state_by_QND
-from alkali_atom_uncoupled_to_coupled import alkali_atom_uncoupled_to_coupled
-from scipy.linalg import *
-from spin_operators_of_2or1_alkali_metal_atoms import spin_operators_of_2or1_alkali_metal_atoms
-from sympy.physics.quantum.spin import JzKet, JxKet
-from sympy.physics.quantum.represent import represent
-from matplotlib import rc
-import scienceplots
+import numpy as np
+from matplotlib.animation import FuncAnimation
 
-# ax, ay, az, bx, by, bz, a1x, a2x, a1y, a2y, a1z, a2z, Fx, Fy, Fz
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
 
-# ----------------------Squeezing----------------------------#
-# N is the number of atoms, T is the squeezing time, F is the spin of atom, s is the spin of light and alpha is the coupling constant
-N = 3
-I = 3 / 2
-T_sq = 2
-a = round(I + 1 / 2)
-b = round(I - 1 / 2)
-s = 5
-alpha = 0.2
-dt = 0.02
-S = 1 / 2
-U = alkali_atom_uncoupled_to_coupled(round(2 * I))
-# ----------------------spin operators----------------------#
-ax = spin_Jx(a)
-ay = spin_Jy(a)
-az = spin_Jz(a)
-bx = spin_Jx(b)
-by = spin_Jy(b)
-bz = spin_Jz(b)
-if N == 2:
-    a1x, a2x, a1y, a2y, a1z, a2z, b1x, b2x, b1y, b2y, b1z, b2z, Fx, Fy, Fz = spin_operators_of_2or1_alkali_metal_atoms(
-        2, I)
-if N == 3:
-    a1x, a2x, a3x, a1y, a2y, a3y, a1z, a2z, a3z, b1x, b2x, b3x, b1y, b2y, b3y, b1z, b2z, b3z, Fx, Fy, Fz = spin_operators_of_2or1_alkali_metal_atoms(
-        3, I)
-    Fx = a1x + a2x + a3x + b1x + b2x + b3x
-    Fz = a1z + a2z + a3z + b1z + b2z + b3z
-# ----------------------squeezing----------------------#
+x = np.linspace(0, 2 * np.pi, 5000)
+y = np.exp(-x) * np.cos(2 * np.pi * x)
+line, = ax.plot(x, y, color="cornflowerblue", lw=3)
+ax.set_ylim(-1.1, 1.1)
 
-ini_Rho_atom, Rho_atom = Generate_a_squeezed_state_by_QND(2, I, T_sq, s, alpha, dt)
+# 清空当前帧
+def init():
+    line.set_ydata([np.nan] * len(x))
+    return line,
 
-if N == 3:
-    # Rho_atom3 = np.outer(np.vstack((v[:, [2]], np.array(zero_ket(2 * b + 1)))),
-    #                      np.vstack((v[:, [2]], np.array(zero_ket(2 * b + 1)))))
+# 更新新一帧的数据
+def update(frame):
+    line.set_ydata(np.exp(-x) * np.cos(2 * np.pi * x + float(frame)/100))
+    return line,
 
-    Rho_atom3 = np.eye(8)/8
-    Rho_atomi = np.kron(Rho_atom, Rho_atom3)
-# ----------------------Evolution of the spin under magnetic field and hyperfine interaction----------------------#
+# 调用 FuncAnimation
+ani = FuncAnimation(fig
+                   ,update
+                   ,init_func=init
+                   ,frames=200
+                   ,interval=2
+                   ,blit=True
+                   )
 
-# ----------------------electron spin----------------------#
-if N == 2:
-    Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax().full()))
-    Sx = U.T.conjugate() @ Sx @ U
-    Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay().full()))
-    Sy = U.T.conjugate() @ Sy @ U
-    Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz().full()))
-    Sz = U.T.conjugate() @ Sz @ U
-
-    S1x = np.kron(Sx, np.eye(2 * (a + b + 1)))
-    S2x = np.kron(np.eye(2 * (a + b + 1)), Sx)
-    S1y = np.kron(Sy, np.eye(2 * (a + b + 1)))
-    S2y = np.kron(np.eye(2 * (a + b + 1)), Sy)
-    S1z = np.kron(Sz, np.eye(2 * (a + b + 1)))
-    S2z = np.kron(np.eye(2 * (a + b + 1)), Sz)
-
-    Ps12 = 1 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) - (S1x @ S2x + S1y @ S2y + S1z @ S2z)
-    Pt12 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S1x @ S2x + S1y @ S2y + S1z @ S2z)
-    Pe12 = Pt12 - Ps12
-if N == 3:
-    Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax().full()))
-    Sx = U.T.conjugate() @ Sx @ U
-    Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay().full()))
-    Sy = U.T.conjugate() @ Sy @ U
-    Sz = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmaz().full()))
-    Sz = U.T.conjugate() @ Sz @ U
-
-    S1x = np.kron(np.kron(Sx, np.eye(2 * (a + b + 1))), np.eye(2 * (a + b + 1)))
-    S2x = np.kron(np.kron(np.eye(2 * (a + b + 1)), Sx), np.eye(2 * (a + b + 1)))
-    S3x = np.kron(np.kron(np.eye(2 * (a + b + 1)), np.eye(2 * (a + b + 1))), Sx)
-    S1y = np.kron(np.kron(Sy, np.eye(2 * (a + b + 1))), np.eye(2 * (a + b + 1)))
-    S2y = np.kron(np.kron(np.eye(2 * (a + b + 1)), Sy), np.eye(2 * (a + b + 1)))
-    S3y = np.kron(np.kron(np.eye(2 * (a + b + 1)), np.eye(2 * (a + b + 1))), Sy)
-    S1z = np.kron(np.kron(Sz, np.eye(2 * (a + b + 1))), np.eye(2 * (a + b + 1)))
-    S2z = np.kron(np.kron(np.eye(2 * (a + b + 1)), Sz), np.eye(2 * (a + b + 1)))
-    S3z = np.kron(np.kron(np.eye(2 * (a + b + 1)), np.eye(2 * (a + b + 1))), Sz)
-
-    Ps13 = 1 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) - (S1x @ S3x + S1y @ S3y + S1z @ S3z)
-    Pt13 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S1x @ S3x + S1y @ S3y + S1z @ S3z)
-    Pe13 = Pt13 - Ps13
-
-    Ps12 = 1 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) - (S1x @ S2x + S1y @ S2y + S1z @ S2z)
-    Pt12 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S1x @ S2x + S1y @ S2y + S1z @ S2z)
-    Pe12 = Pt12 - Ps12
-
-    Ps23 = 1 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) - (S2x @ S3x + S2y @ S3y + S2z @ S3z)
-    Pt23 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S2x @ S3x + S2y @ S3y + S2z @ S3z)
-    Pe23 = Pt23 - Ps23
-
-T = 10
-dt = 0.01
-n = round(T / dt)
-te = np.arange(0, T, dt)
-C_1 = [None] * n
-C_2 = [None] * n
-C_3 = [None] * n
-C_a1za1z = [None] * n
-C_b1zb1z = [None] * n
-C_a1za2z = [None] * n
-C_a1zb2z = [None] * n
-C_b1zb2z = [None] * n
-
-C_a1za1z2 = [None] * n
-C_b1zb1z2 = [None] * n
-C_a1za2z2 = [None] * n
-C_a1zb2z2 = [None] * n
-C_b1zb2z2 = [None] * n
-# ----------------------Magnetic field----------------------#
-omega_0 = 30
-# H = omega_e * (ax-bx)              #一个原子
-# H = omega_0 * (a1x + a2x - b1x - b2x)  # 两个原子
-H = omega_0 * (a1x + a2x + a3x - b1x - b2x - b3x)  # 三个原子
-
-q, v = np.linalg.eig(H)
-evolving_B = v @ np.diag(np.exp(-1j * q * dt)) @ np.linalg.inv(v)
-
-# ----------------------Hyperfine interaction--------------------#
-hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
-if N == 2:
-    hyperfine = np.kron(hyperfine, hyperfine)  # 两个原子
-if N == 3:
-    hyperfine = np.kron(hyperfine, np.kron(hyperfine, hyperfine))  # 三个原子
-
-Rho_atom = Rho_atomi
-for t in np.arange(0, n, 1):
-    C_2[t] = np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z) @ (a1z+a2z+a3z-b1z-b2z-b3z)) - np.trace(Rho_atom @ (a1z+a2z+a3z-b1z-b2z-b3z)) ** 2
-    hh=np.random.uniform()
-    if hh<0.9:
-        r = np.random.uniform()
-        if r  < 0.33:
-            phi = np.random.normal(np.pi / 2, 2)
-            sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe12
-        elif r < 0.66:
-            phi = np.random.normal(np.pi / 2, 2)
-            sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe13
-        else:
-            phi = np.random.normal(np.pi / 2, 2)
-            sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe23
-        Rho_atom = sec @ Rho_atom @ sec.T.conjugate()
-    # C_1z2z[t] = np.trace(ini_Rho_atom @ a1z @ a2z)
-    # Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
-    Rho_atom = hyperfine * Rho_atom
-
-C_2=np.array(C_2)/16
-tt = np.arange(0, n, 1)*dt
-with plt.style.context(['science']):
-    fig = plt.figure()
-    ax1 = fig.add_subplot(1, 1, 1)
-    p2, = ax1.plot(tt, C_2)
-
-    ax1.set_xlabel('$t$ (s)')
-    ax1.set_ylabel('Var $( \mathcal S_{x})$')
-    # plt.xlim(0, 2)
-    plt.ylim(0.1,0.55)
-    plt.savefig('desqueezing.png', dpi=600)
+ani.save("animation.gif", fps=25, writer="pillow")
