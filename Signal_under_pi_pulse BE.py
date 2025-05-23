@@ -65,17 +65,17 @@ for i in trange(0,n,1):
 
 
 #绘制动态图像
+# 2D
 fig = plt.figure(figsize=(3,5))
 ax1 = fig.add_subplot(211)
 ax1.plot(t,Pxarray)
 ax1.set_ylabel('$P_y$')
 ax1.set_xlabel('$t$', fontsize=8)
 
-
 ax2 = fig.add_subplot(212)
 for i in np.arange(0,n,200):
     # ax.plot(Pxarray[i],Pyarray[i],'bo')
-    ax2.quiver(0,0,Pxarray[i],Pyarray[i],color=(1, 0, 0, 0.3),angles='xy', scale_units='xy', scale=1)
+    ax2.quiver(0,0,Pxarray[i],Pyarray[i],color=(1, 0, 0, 0.3),angles='xy', scale_units='xy', scale=1,linewidths=0.5)
     ax2.set_xlim([-10e-4,10e-4])
     ax2.set_ylim([-10e-4,10e-4])
     ax2.set_xlabel('Px')
