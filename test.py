@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import quitp
+import qutip
 
 # needs Axes3D object to activate the '3d' projection
 from mpl_toolkits.mplot3d import Axes3D
