@@ -15,7 +15,7 @@ n = len(t)
 
 # 光泵调制
 duration_op = 0.1            # ms
-amplitude_op = 1          # kHz
+amplitude_op = 10          # kHz
 frequency_op = 0.1         # kHz
 duty_op = duration_op * frequency_op
 Rop = amplitude_op * signal.square(2 * np.pi * frequency_op * t, duty=duty_op) + amplitude_op
@@ -52,7 +52,7 @@ for i in trange(n):
     Pz += (omega_0x[i]*Py - omega_0y[i]*Px - Pz*Gamma - Rop[i]*Pz + Rop[i]) * dt
 
 # ---------- 缩减轨迹点数 ----------
-skip = 500
+skip = 1000
 Pxarray = Pxarray[::skip]
 Pyarray = Pyarray[::skip]
 Pzarray = Pzarray[::skip]
