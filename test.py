@@ -4,8 +4,8 @@
 日期：2023年12月17日
 """
 import sys
-sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
-# sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
+# sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
+sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 from scipy import signal
 import numpy as np
 import matplotlib.pyplot as plt
@@ -34,9 +34,9 @@ dt = 0.02
 S = 1 / 2
 U = alkali_atom_uncoupled_to_coupled(round(2 * I))
 # ----------------------spin operators----------------------#
-omega_e=20
+omega_e= 30
 Ahf=3000
-SE=0.0002
+SE= 0.004
 if N == 2:
     """
       角动量算符
@@ -44,8 +44,6 @@ if N == 2:
     a1x, a2x, a1y, a2y, a1z, a2z, b1x, b2x, b1y, b2y, b1z, b2z, Fx, Fy, Fz = spin_operators_of_2or1_alkali_metal_atoms(
         2, I)
     mathcal_F=a1z+a2z+b1z+b2z
-    mathcal_S=(a1z+a2z-b1z-b2z)/4
-    mathcal_F=mathcal_S
     Sx = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmax().full()))
     Sx = U.T.conjugate() @ Sx @ U
     Sy = np.kron(np.eye(round(2 * I + 1)), np.array(1 / 2 * sigmay().full()))
@@ -63,6 +61,8 @@ if N == 2:
     Ps12 = 1 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) - (S1x @ S2x + S1y @ S2y + S1z @ S2z)
     Pt12 = 3 / 4 * np.eye(round((2 * (2 * I + 1)) ** N)) + (S1x @ S2x + S1y @ S2y + S1z @ S2z)
     Pe12 = Pt12 - Ps12
+    mathcal_S=(S1z+S2z)
+    mathcal_F=mathcal_S
 
     Ix = np.kron(spin_Jx(I).full(), np.eye(round(2 * S+ 1)))
     Ix = U.T.conjugate() @ Ix @ U
@@ -93,7 +93,7 @@ if N == 2:
     H_h = Ahf *( I1x@S1x+I1y@S1y+I1z@S1z+I2x@S2x+I2y@S2y+I2z@S2z) # 两个原子
 # ----------------------squeezing----------------------#
 ini_Rho_atom, Rho_atomi = Generate_a_squeezed_state_by_QND(2, I, T_sq, s, alpha, dt)
-T = 2000
+T = 200
 dt1 = 1e-5
 n1 = round(T / dt1)
 C_1 = [None] * n1
@@ -134,54 +134,31 @@ for t in trange(0, n1, 1):
 
 
 C_1=np.array(C_1)
-# def lowpass_filter(data, cutoff_freq, sample_rate, order=5):
-#     """
-#     应用Butterworth低通滤波器
-#     参数：
-#         data: 输入信号数据
-#         cutoff_freq: 截止频率（Hz）
-#         sample_rate: 采样率（Hz）
-#         order: 滤波器阶数（默认5阶）
-#     返回：
-#         滤波后的信号
-#     """
-#     # 计算归一化截止频率（Nyquist频率的倍数）
-#     nyquist = 0.5 * sample_rate
-#     normal_cutoff = cutoff_freq / nyquist
-    
-#     # 设计Butterworth滤波器
-#     b, a = signal.butter(order, normal_cutoff, btype='low', analog=False)
-    
-#     # 应用前向后向滤波（消除相位延迟）
-#     filtered_data = signal.filtfilt(b, a, data)
-#     return filtered_data
-# filtedData  =   lowpass_filter( C_1,100,round(1/dt1))   #data为要过滤的信号
-
-# C_2=np.array(C_2)
 
 
 CSS=np.array([1,0,0,0,0,0,0,0])
 CSS3=np.kron(CSS,CSS)
 Rho_CSS=np.outer(CSS3,CSS3)
-mathcal_Fx=(a1x+a2x-b1x-b2x)/4
-mathcal_Fz=(a1z+a2z-b1z-b2z)/4
+mathcal_Fx=S1x+S2x
+mathcal_Fz=S1z+S2z
 Varcss=np.trace(Rho_CSS@mathcal_Fx@mathcal_Fx)-np.trace(Rho_CSS@mathcal_Fx)**2
 Varsss=np.trace(Rho_atomi@mathcal_Fz@mathcal_Fz)-np.trace(Rho_atomi@mathcal_Fz)**2
 
 tt1 = np.arange(0, n1, 1)*dt1
 # tt2 = np.arange(0, n2, 1)*dt2
-
+C1=C_1[::100]
+tt=tt1[::100]
 with plt.style.context(['science']):
     fig = plt.figure()
     ax1 = fig.add_subplot(1, 1, 1)
-    p1, = ax1.plot(tt1, C_1 )
+    p1, = ax1.plot(tt, C1 )
     # p2, = ax1.plot(tt2, np.mean(C_2)*np.ones(len(tt2)) ) 
-    p6, = ax1.plot(tt1, np.ones(len(tt1))*Varcss)
-    p7, = ax1.plot(tt1, np.ones(len(tt1))*Varsss)
+    p6, = ax1.plot(tt, np.ones(len(tt))*Varcss)
+    p7, = ax1.plot(tt, np.ones(len(tt))*Varsss)
     ax1.legend([p1,p6,p7],
                ["$R_{\\text{se}}=30$ Hz,$\omega_0=10$ rad/s,dt=1e-4 s","CSS"],bbox_to_anchor=(0.95, -0.2),ncol=1)
     ax1.set_xlabel('$t$ (s)')
     ax1.set_ylabel('Var $( \mathcal S_{x})$')
-    # plt.xlim(280, 300)
+    # plt.xlim(0, 100)
     # plt.ylim(0.1,0.55)
     plt.savefig('desqueezing.png', dpi=600)
