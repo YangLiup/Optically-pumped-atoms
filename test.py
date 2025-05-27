@@ -4,8 +4,8 @@
 日期：2023年12月17日
 """
 import sys
-# sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
-sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
+sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
+# sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 from scipy import signal
 import numpy as np
 import matplotlib.pyplot as plt
@@ -34,9 +34,9 @@ dt = 0.02
 S = 1 / 2
 U = alkali_atom_uncoupled_to_coupled(round(2 * I))
 # ----------------------spin operators----------------------#
-omega_e= 30
-Ahf=3000
-SE= 0.004
+omega_e= 60
+Ahf=9000
+SE= 0.00006
 if N == 2:
     """
       角动量算符
@@ -86,15 +86,15 @@ if N == 2:
     """
       Hyperfine interaction
     """
-    # 等效法
+    #等效法
     # hyperfine = block_diag(np.ones((2 * a + 1, 2 * a + 1)), np.ones((2 * b + 1, 2 * b + 1)))  # 一个原子
     # hyperfine = np.kron(hyperfine, hyperfine)  # 两个原子
     # 第一性原理
     H_h = Ahf *( I1x@S1x+I1y@S1y+I1z@S1z+I2x@S2x+I2y@S2y+I2z@S2z) # 两个原子
 # ----------------------squeezing----------------------#
 ini_Rho_atom, Rho_atomi = Generate_a_squeezed_state_by_QND(2, I, T_sq, s, alpha, dt)
-T = 200
-dt1 = 1e-5
+T = 50
+dt1 = 1e-5/6
 n1 = round(T / dt1)
 C_1 = [None] * n1
 
@@ -114,7 +114,7 @@ for t in trange(0, n1, 1):
         Rho_atom = sec @ Rho_atom @ sec.T.conjugate()
     Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
     Rho_atom = evolving_h @ Rho_atom @ evolving_h.T.conjugate()
-
+    # Rho_atom = hyperfine * Rho_atom
 # dt2 = 1e-5
 # n2 = round(T / dt2)
 # C_2 = [None] * n2
@@ -146,8 +146,8 @@ Varsss=np.trace(Rho_atomi@mathcal_Fz@mathcal_Fz)-np.trace(Rho_atomi@mathcal_Fz)*
 
 tt1 = np.arange(0, n1, 1)*dt1
 # tt2 = np.arange(0, n2, 1)*dt2
-C1=C_1[::100]
-tt=tt1[::100]
+C1=C_1[::1000]
+tt=tt1[::1000]
 with plt.style.context(['science']):
     fig = plt.figure()
     ax1 = fig.add_subplot(1, 1, 1)
