@@ -4,8 +4,8 @@
 日期：2023年12月17日
 """
 import sys
-# sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
-sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
+sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
+# sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 from scipy import signal
 import numpy as np
 import matplotlib.pyplot as plt
@@ -34,9 +34,12 @@ dt = 0.02
 S = 1 / 2
 U = alkali_atom_uncoupled_to_coupled(round(2 * I))
 # ----------------------spin operators----------------------#
-omega_e= 20
-Ahf=3000
-SE= 0 # 0.06
+omega_e= 40
+Ahf=6000
+SE= 0.5
+T = 500
+dt1 = 1e-4
+dt2=1e-1
 if N == 2:
     """
       角动量算符
@@ -93,8 +96,6 @@ if N == 2:
     H_h = Ahf *( I1x@S1x+I1y@S1y+I1z@S1z+I2x@S2x+I2y@S2y+I2z@S2z) # 两个原子
 # ----------------------squeezing----------------------#
 ini_Rho_atom, Rho_atomi = Generate_a_squeezed_state_by_QND(2, I, T_sq, s, alpha, dt)
-T = 100
-dt1 = 1e-4
 n1 = round(T / dt1)
 C_1 = [None] * n1
 
@@ -115,26 +116,26 @@ for t in trange(0, n1, 1):
     Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
     Rho_atom = evolving_h @ Rho_atom @ evolving_h.T.conjugate()
     # Rho_atom = hyperfine * Rho_atom
-# dt2 = 1e-5
-# n2 = round(T / dt2)
-# C_2 = [None] * n2
-# evolving_B = vz @ np.diag(np.exp(-1j * qz * dt2)) @ np.linalg.inv(vz)
-# evolving_h = vh @ np.diag(np.exp(-1j * qh * dt2)) @ np.linalg.inv(vh)
-# #Rse=30 Hz, omega0=10 rad/s
-# Rho_atom = Rho_atomi
-# for t in trange(0, n2, 1):
-#     C_2[t] = np.trace(Rho_atom @ mathcal_F@ mathcal_F) - np.trace(Rho_atom @mathcal_F) ** 2
-#     hh=np.random.uniform()
-#     if hh<SE:
-#         phi = np.random.normal(np.pi / 2, 2)
-#         sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe12
-#         Rho_atom = sec @ Rho_atom @ sec.T.conjugate()
-#     Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
-#     Rho_atom = evolving_h @ Rho_atom @ evolving_h.T.conjugate()
+
+
+n2 = round(T / dt2)
+C_2 = [None] * n2
+evolving_B = vz @ np.diag(np.exp(-1j * qz * dt2)) @ np.linalg.inv(vz)
+evolving_h = vh @ np.diag(np.exp(-1j * qh * dt2)) @ np.linalg.inv(vh)
+Rho_atom = Rho_atomi
+for t in trange(0, n2, 1):
+    C_2[t] = np.trace(Rho_atom @ mathcal_F@ mathcal_F) - np.trace(Rho_atom @mathcal_F) ** 2
+    hh=np.random.uniform()
+    if hh<SE:
+        phi = np.random.normal(np.pi / 2, 2)
+        sec = np.cos(phi) * np.eye((2 * (a + b + 1)) ** N) - 1j * np.sin(phi) * Pe12
+        Rho_atom = sec @ Rho_atom @ sec.T.conjugate()
+    Rho_atom = evolving_B @ Rho_atom @ evolving_B.T.conjugate()
+    Rho_atom = evolving_h @ Rho_atom @ evolving_h.T.conjugate()
 
 
 C_1=np.array(C_1)
-
+C_2=np.array(C_2)
 
 CSS=np.array([1,0,0,0,0,0,0,0])
 CSS3=np.kron(CSS,CSS)
@@ -145,20 +146,26 @@ Varcss=np.trace(Rho_CSS@mathcal_Fx@mathcal_Fx)-np.trace(Rho_CSS@mathcal_Fx)**2
 Varsss=np.trace(Rho_atomi@mathcal_Fz@mathcal_Fz)-np.trace(Rho_atomi@mathcal_Fz)**2
 
 tt1 = np.arange(0, n1, 1)*dt1
-# tt2 = np.arange(0, n2, 1)*dt2
-C1=C_1[::1000]
-tt=tt1[::1000]
+tt2 = np.arange(0, n2, 1)*dt2
+
 with plt.style.context(['science']):
-    fig = plt.figure()
-    ax1 = fig.add_subplot(1, 1, 1)
-    p1, = ax1.plot(tt, C1 )
-    # p2, = ax1.plot(tt2, np.mean(C_2)*np.ones(len(tt2)) ) 
-    p6, = ax1.plot(tt, np.ones(len(tt))*Varcss)
-    p7, = ax1.plot(tt, np.ones(len(tt))*Varsss)
-    ax1.legend([p1,p6,p7],
-               ["$R_{\\text{se}}=36$ Hz,$\omega_e=60$ rad/s,dt=1e-5/6 s","CSS","SSS"],bbox_to_anchor=(0.95, -0.2),ncol=1)
+    fig = plt.figure(figsize=(3,6))
+    ax1 = fig.add_subplot(2, 1, 1)
+    ax2 = fig.add_subplot(2, 1, 2)
+    p1, = ax1.plot(tt1, C_1 )
+    p6, = ax1.plot(tt1, np.ones(len(tt1))*Varcss)
+    p7, = ax1.plot(tt1, np.ones(len(tt1))*Varsss)
+
+    p2, = ax2.plot(tt2, C_2) 
+    p6, = ax2.plot(tt2, np.ones(len(tt2))*Varcss)
+    p7, = ax2.plot(tt2, np.ones(len(tt2))*Varsss)
+    # ax1.legend([p1,p6,p7],
+    #            ["$R_{\\text{se}}=36$ Hz,$\omega_e=60$ rad/s,dt=1e-5/6 s","CSS","SSS"],ncol=1)
     ax1.set_xlabel('$t$ (s)')
     ax1.set_ylabel('Var $( \mathcal S_{x})$')
-    # plt.xlim(0, 18)
+    ax2.set_xlabel('$t$ (s)')
+    ax2.set_ylabel('Var $( \mathcal S_{x})$')
+    # ax2.set_xlim(0, 18)
+    # ax1.set_xlim(0, 18)
     # plt.ylim(0.1,0.55)
     plt.savefig('desqueezing.png', dpi=600)
