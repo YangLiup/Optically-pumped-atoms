@@ -4,8 +4,8 @@
 日期：2023年12月17日
 """
 import sys
-sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
-# sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
+# sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
+sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 from scipy import signal
 import numpy as np
 import matplotlib.pyplot as plt
@@ -34,9 +34,9 @@ dt = 0.02
 S = 1 / 2
 U = alkali_atom_uncoupled_to_coupled(round(2 * I))
 # ----------------------spin operators----------------------#
-omega_e= 60
-Ahf=9000
-SE= 0.00006
+omega_e= 20
+Ahf=3000
+SE= 0 # 0.06
 if N == 2:
     """
       角动量算符
@@ -93,8 +93,8 @@ if N == 2:
     H_h = Ahf *( I1x@S1x+I1y@S1y+I1z@S1z+I2x@S2x+I2y@S2y+I2z@S2z) # 两个原子
 # ----------------------squeezing----------------------#
 ini_Rho_atom, Rho_atomi = Generate_a_squeezed_state_by_QND(2, I, T_sq, s, alpha, dt)
-T = 50
-dt1 = 1e-5/6
+T = 100
+dt1 = 1e-4
 n1 = round(T / dt1)
 C_1 = [None] * n1
 
@@ -156,9 +156,9 @@ with plt.style.context(['science']):
     p6, = ax1.plot(tt, np.ones(len(tt))*Varcss)
     p7, = ax1.plot(tt, np.ones(len(tt))*Varsss)
     ax1.legend([p1,p6,p7],
-               ["$R_{\\text{se}}=30$ Hz,$\omega_0=10$ rad/s,dt=1e-4 s","CSS"],bbox_to_anchor=(0.95, -0.2),ncol=1)
+               ["$R_{\\text{se}}=36$ Hz,$\omega_e=60$ rad/s,dt=1e-5/6 s","CSS","SSS"],bbox_to_anchor=(0.95, -0.2),ncol=1)
     ax1.set_xlabel('$t$ (s)')
     ax1.set_ylabel('Var $( \mathcal S_{x})$')
-    # plt.xlim(0, 100)
+    # plt.xlim(0, 18)
     # plt.ylim(0.1,0.55)
     plt.savefig('desqueezing.png', dpi=600)
