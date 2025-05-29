@@ -13,30 +13,37 @@ dt = 1e-5       # ms
 t = np.arange(0, T, dt)
 n = len(t)
 
-# 光泵调制
+#-------------------光泵浦调制---------------------------#
 duration_op = 0.1            # ms
-amplitude_op = 10          # kHz
-frequency_op = 0.1         # kHz
+amplitude_op = 10            # kHz
+frequency_op = 0.1           # kHz
 duty_op = duration_op * frequency_op
 Rop = amplitude_op * signal.square(2 * np.pi * frequency_op * t, duty=duty_op) + amplitude_op
+#******************************************************#
 
-# pi 脉冲调制
-frequency_pi = 10          # kHz
-amplitude_pi = 100         # kHz
+#-------------------pi 脉冲调制---------------------------#
+frequency_pi = 10            # kHz
+amplitude_pi = 500           # kHz
 duration_pi = np.pi / (2 * amplitude_pi)  # ms
 duty_pi = duration_pi * frequency_pi
-theta_pi = np.pi / 180 * 0.
+theta_pi = np.pi / 180 * 0.  # radians
 phi_pi = 0
 pi_envelope = amplitude_pi * signal.square(2 * np.pi * frequency_pi * t, duty=duty_pi) + amplitude_pi
-
 omega_pix = pi_envelope * np.sin(theta_pi) * np.cos(phi_pi)
 omega_piy = pi_envelope * np.sin(theta_pi) * np.sin(phi_pi)
 omega_piz = pi_envelope * np.cos(theta_pi)
+#******************************************************#
+
+#-------------------偏置磁场---------------------------#
+omega_x0=0.1
+omega_y0=0.1
+omega_z0=0.5
+#******************************************************#
 
 Gamma = 0.01
-omega_0x = 1 + 0*omega_pix
-omega_0y = 1 + 0*omega_piy
-omega_0z = 1 + 0*omega_piz
+omega_x = omega_x0 + 1 * omega_pix
+omega_y = omega_y0 + 1 * omega_piy
+omega_z = omega_z0 + 1 * omega_piz
 
 Pxarray = np.zeros(n)
 Pyarray = np.zeros(n)
@@ -47,12 +54,12 @@ for i in trange(n):
     Pxarray[i] = Px
     Pyarray[i] = Py
     Pzarray[i] = Pz
-    Px += (omega_0y[i]*Pz - omega_0z[i]*Py - Px*Gamma - Rop[i]*Px) * dt
-    Py += (-omega_0x[i]*Pz + omega_0z[i]*Px - Py*Gamma - Rop[i]*Py) * dt
-    Pz += (omega_0x[i]*Py - omega_0y[i]*Px - Pz*Gamma - Rop[i]*Pz + Rop[i]) * dt
+    Px += (omega_y[i]*Pz - omega_z[i]*Py - Px*Gamma - Rop[i]*Px) * dt
+    Py += (-omega_x[i]*Pz + omega_z[i]*Px - Py*Gamma - Rop[i]*Py) * dt
+    Pz += (omega_x[i]*Py - omega_y[i]*Px - Pz*Gamma - Rop[i]*Pz + Rop[i]) * dt
 
 # ---------- 缩减轨迹点数 ----------
-skip = 1000
+skip = 400
 Pxarray = Pxarray[::skip]
 Pyarray = Pyarray[::skip]
 Pzarray = Pzarray[::skip]
@@ -73,11 +80,18 @@ def plot_bloch_animation(elev=20, azim=45):
     # 坐标轴
     arrow_len = 1
     ax.quiver(0, 0, 0, arrow_len, 0, 0, color='k', arrow_length_ratio=0.05)
-    ax.quiver(0, 0, 0, 0,arrow_len, 0, color='k', arrow_length_ratio=0.05)
+    ax.quiver(0, 0, 0, 0, arrow_len, 0, color='k', arrow_length_ratio=0.05)
     ax.quiver(0, 0, 0, 0, 0, arrow_len, color='k', arrow_length_ratio=0.05)
     ax.text(1.3, 0, 0, 'X', fontsize=12)
     ax.text(0, 1.3, 0, 'Y', fontsize=12)
     ax.text(0, 0, 1.3, 'Z', fontsize=12)
+
+    # 添加主平面
+    xx, yy = np.meshgrid(np.linspace(-1, 1, 10), np.linspace(-1, 1, 10))
+    zz = np.zeros_like(xx)
+    ax.plot_surface(xx, yy, zz, alpha=0.08, color='red')     # XY 平面（Z=0）
+    ax.plot_surface(zz, yy, xx, alpha=0.08, color='green')   # YZ 平面（X=0）
+    ax.plot_surface(xx, zz, yy, alpha=0.08, color='blue')    # XZ 平面（Y=0）
 
     ax.set_xlim([-1, 1])
     ax.set_ylim([-1, 1])
@@ -86,22 +100,29 @@ def plot_bloch_animation(elev=20, azim=45):
     ax.set_xticks([])
     ax.set_yticks([])
     ax.set_zticks([])
-    ax.set_title("Bloch Vector with Interactive View", fontsize=14)
+    ax.set_title("Bloch Vector with XY Projection and Coordinate Planes", fontsize=14)
     ax.view_init(elev=elev, azim=azim)
 
-# 初始化动画元素
-    trace, = ax.plot([], [], [], 'b', lw=2)
+    # 初始化动画元素
     vector = [ax.quiver(0, 0, 0, trajectory[0, 0], trajectory[0, 1], trajectory[0, 2],
                         color='red', linewidth=3, arrow_length_ratio=0.1)]
+    projection = [ax.quiver(0, 0, 0, trajectory[0, 0], trajectory[0, 1], 0,
+                            color='green', linewidth=2, arrow_length_ratio=0.1)]
 
     def update(i):
-        trace.set_data(trajectory[:i+1, 0], trajectory[:i+1, 1])
-        trace.set_3d_properties(trajectory[:i+1, 2])
-        vector[0].remove()
         m = trajectory[i]
+
+        # 更新 Bloch 矢量
+        vector[0].remove()
         vector[0] = ax.quiver(0, 0, 0, m[0], m[1], m[2],
-                            color='red', linewidth=3, arrow_length_ratio=0.1)
-        return trace, vector[0]
+                              color='red', linewidth=3, arrow_length_ratio=0.1)
+
+        # 更新 XY 平面投影
+        projection[0].remove()
+        projection[0] = ax.quiver(0, 0, 0, m[0], m[1], 0,
+                                  color='green', linewidth=2, arrow_length_ratio=0.1)
+
+        return vector[0], projection[0]
 
     ani = FuncAnimation(fig, update, frames=len(trajectory), interval=20, blit=False)
     plt.tight_layout()
