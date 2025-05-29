@@ -4,8 +4,8 @@
 日期：2023年12月17日
 """
 import sys
-sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
-# sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
+# sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
+sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 from scipy import signal
 import numpy as np
 import matplotlib.pyplot as plt
@@ -36,7 +36,7 @@ U = alkali_atom_uncoupled_to_coupled(round(2 * I))
 # ----------------------spin operators----------------------#
 omega_e= 40
 Ahf=6000
-SE= 0.5
+SE= 0.005
 T = 500
 dt1 = 1e-4
 dt2=1e-1
