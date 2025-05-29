@@ -82,10 +82,11 @@ def master_equation1(I,Rse,omega_0,T,dt):
         # OP = Rop * (2 * alpha @ (sx*Sx+sz*Sz) - AS)
         # Rhot =Rhot+ (H@Rhot-Rhot@H)/1j*dt # Zeeman effect
 
-        Rhot = evolving_B @ Rhot @ evolving_B.T.conjugate()  # Zeeman effect
-
+        
+        # Rhot=-1j*(H@Rhot-Rhot@H)*dt1+Rhot
         Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt + (
                 ER ) * dt + Rhot
+        Rhot = evolving_B @ Rhot @ evolving_B.T.conjugate()  # Zeeman effect
         Rhot = hyperfine * Rhot
         # -----------------Observables-----------------#
         MSx[n] = mSx
@@ -160,10 +161,12 @@ def master_equation2(I,Rse,omega_0,T,dt):
         mSS = mSx * Sx + mSy * Sy + mSz * Sz
         ER = -Rsd * AS
 
-        Rhot = evolving_B @ Rhot @ evolving_B.T.conjugate()  # Zeeman effect
+        
         Rhot = Rse * (alpha + 4 * alpha @ mSS - Rhot) * dt + (
                 ER ) * dt + Rhot
-        Rhot = evolving_h @ Rhot @ evolving_h.T.conjugate()  # hyperfine effect
+        Rhot=-1j*((HB+Hh)@Rhot-Rhot@(HB+Hh))*dt2+Rhot
+        # Rhot = evolving_h @ Rhot @ evolving_h.T.conjugate()  # hyperfine effect
+        # Rhot = evolving_B @ Rhot @ evolving_B.T.conjugate()  # Zeeman effect
 
         # -----------------Observables-----------------#
         MSx[n] = mSx
@@ -172,7 +175,7 @@ def master_equation2(I,Rse,omega_0,T,dt):
 
 T=100
 dt1=1e-2
-dt2=1e-2
+dt2=5e-6
 
 Msy1=master_equation1(3/2,1,1,T,dt1)
 Msy2=master_equation2(3/2,1,1,T,dt2)
@@ -191,7 +194,7 @@ with plt.style.context(['science']):
     ax1.set_ylabel('$\langle Sx \\rangle$')
     ax1.set_xlabel('$t $')
     ax1.legend([p1,p2], ["Effective","First principle"],ncol=1)
-    ax1.set_title('dt=1e-2, $\omega_0=1$,$R_{\\text{se}}=1$,$A_{\\text{hf}}=200$')
+    ax1.set_title('dt=5e-6, $\omega_0=1$,$R_{\\text{se}}=1$,$A_{\\text{hf}}=200$')
     ax1.set_xlim([0,50])
 plt.savefig('FID_.png', dpi=1000)
 plt.show()

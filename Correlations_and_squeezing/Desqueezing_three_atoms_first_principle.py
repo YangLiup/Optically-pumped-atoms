@@ -4,8 +4,8 @@
 日期：2023年12月17日
 """
 import sys
-sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
-# sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
+# sys.path.append(r"/Users/liyang/Documents/GitHub/Optically_polarized_atoms/my_functions")
+sys.path.append(r"D:\Optically-pumped-atoms\my_functions")
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -199,6 +199,6 @@ with plt.style.context(['science']):
     ax2.set_xlabel('$t$ (s)')
     ax2.set_ylabel('Var $( \mathcal S_{x})$')
     # ax2.set_xlim(0, 18)
-    # ax1.set_xlim(0, 18)
+    ax1.set_xlim(0, 60)
     # plt.ylim(0.1,0.55)
     plt.savefig('desqueezing.png', dpi=600)
