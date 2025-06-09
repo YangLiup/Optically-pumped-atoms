@@ -12,7 +12,7 @@ Ga,Gr=10,10
 t1,t2,t3,t4,t5=1,1.3,1.3,1.5,2
 t=np.array([0,t1,t2,t3,t4,t5])
 
-mu_r1,mu_r2,mu_r3,mu_r4,mu_r5=7000,7000,7500,10000,7500
+mu_r1,mu_r2,mu_r3,mu_r4,mu_r5=20000,20000,20000,20000,20000
 mu_r=np.array([0,mu_r1,mu_r2,mu_r3,mu_r4,mu_r5])
 
 R_avg=np.zeros(6)
