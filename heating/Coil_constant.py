@@ -8,7 +8,7 @@ def single_coil_constant(a,b,z):
     return B
 
 
-def multi_coil_constant(n,z0):
+def multi_coil_constant(n,z0,line_spacing):
     """
     n为匝数，z0为线圈距离气室中心的距离
     """
@@ -16,21 +16,23 @@ def multi_coil_constant(n,z0):
     sign=np.array([1,-1,-1,1,   -1,1,1,-1,  -1,1,1,-1,  1,-1,-1,1]) # carefully designed
     total_B=0
     for i in np.arange(0,n,1):
-        total_B=sign[i]*single_coil_constant(40e-3-i*(0.4e-3),40e-3-i*(0.4e-3),z0)+total_B
+        total_B=sign[i]*single_coil_constant(40e-3-i*line_spacing,40e-3-i*line_spacing,z0)+total_B
     return total_B
 
-def two_layers_coil_constant(n):
-    return multi_coil_constant(n,z0)-multi_coil_constant(n,z0+35e-6)
+def two_layers_coil_constant(n,layer_spacing):
+    return multi_coil_constant(n,z0,line_spacing)-multi_coil_constant(n,z0+layer_spacing,line_spacing)
 
 # a=np.arange(0,100e-3,1e-3)
 # b=a
 # plt.plot(a,single_coil_constant(a,a,20e-3))
 # plt.show()
-
+z0=20e-3
+layer_spacing=0.2e-3
+line_spacing=0.4e-3
 delta_voltage=40e-6
 R= 100
-n=2
-delta_B=delta_voltage/R*two_layers_coil_constant(n)
+n=8
+delta_B=delta_voltage/R*two_layers_coil_constant(n,layer_spacing)
 print(delta_B)
 
 # """
