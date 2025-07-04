@@ -59,7 +59,8 @@ print('Johnson电压为',delta_v)
 # """
 # 落单线的磁场大小
 # """
-l0=1e-3
+b=1e-3
+c=
 delta_Bs=delta_current*mu0/(4*np.pi*z0)*(2*l0/np.sqrt(l0**2+z0**2))-delta_current*mu0/(4*np.pi*(z0+layer_spacing))*(2*l0/np.sqrt(l0**2+(z0+layer_spacing)**2))
 
 print('落单线长度为',2*l0,'，磁噪声为',delta_Bs)
