@@ -13,7 +13,7 @@ def multi_coil_constant(n,z0,line_spacing):
     n为匝数，z0为线圈距离气室中心的距离
     """
     # sign=np.array([1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1]) # not carefully designed
-    sign=np.array([1,-1,-1,1,   -1,1,1,-1,  -1,1,1,-1,  1,-1,-1,1]) # carefully designed
+    sign=np.array([1,-1,-1,1,   -1,1,1,-1,  -1,1,1,-1,  1,-1,-1,1,  -1,1,1,-1,  1,-1,-1,1,  1,-1,-1,1,   -1,1,1,-1]) # carefully designed
     total_B=0
     for i in np.arange(0,n,1):
         total_B=sign[i]*single_coil_constant(40e-3-i*line_spacing,40e-3-i*line_spacing,z0)+total_B
@@ -26,20 +26,31 @@ def two_layers_coil_constant(n,layer_spacing):
 # b=a
 # plt.plot(a,single_coil_constant(a,a,20e-3))
 # plt.show()
+
+mu0=4*np.pi*1e-7
 z0=20e-3
 layer_spacing=0.2e-3
 line_spacing=0.4e-3
 delta_voltage=40e-6
 R= 100
-n=8
-delta_B=delta_voltage/R*two_layers_coil_constant(n,layer_spacing)
-print(delta_B)
+delta_current=delta_voltage/R
+n=32
+delta_B=delta_current*two_layers_coil_constant(n,layer_spacing)
+print('两层',n,'匝方形线圈加热膜的磁噪声为', delta_B)
+
+"""
+Johnson热电压噪声, nV量级
+"""
+T=473  # K
+kB=1.38e-23 #J/K
+R=100
+delta_v=np.sqrt(4*kB*T*R)
+print('Johnson电压为',delta_v)
 
 # """
-# Johnson热电压噪声, nV量级
+# 落单线的磁场大小
 # """
-# T=473  # K
-# kB=1.38e-23 #J/K
-# R=100
-# delta_v=np.sqrt(4*kB*T*R)
-# print(delta_v)
+l0=1e-3
+delta_Bs=delta_current*mu0/(4*np.pi*z0)*(2*l0/np.sqrt(l0**2+z0**2))-delta_current*mu0/(4*np.pi*(z0+layer_spacing))*(2*l0/np.sqrt(l0**2+(z0+layer_spacing)**2))
+
+print('落单线长度为',2*l0,'，磁噪声为',delta_Bs)
