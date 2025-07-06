@@ -15,7 +15,7 @@ def multi_coil_constant(n,z0,line_spacing):
     """
     n为匝数，z0为线圈距离气室中心的距离
     """
-    # sign=np.array([1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1]) # not carefully designed
+    # sign=np.array([1,-1,1,-1,1,1,-1,1,1,-1,1,-1,1,-1,1,-1]) # not carefully designed
     sign=np.array([1,-1,-1,1,   -1,1,1,-1,  -1,1,1,-1,  1,-1,-1,1,  -1,1,1,-1,  1,-1,-1,1,  1,-1,-1,1,   -1,1,1,-1]) # carefully designed
     total_B=0
     for i in np.arange(0,n,1):
@@ -38,12 +38,12 @@ def two_layers_coil_constant(n,layer_spacing):
 # """
 mu0=4*np.pi*1e-7
 z0=20e-3
-layer_spacing=0.2e-3
+layer_spacing=0.04e-3
 line_spacing=0.4e-3
 delta_voltage=40e-6
 R= 100
 delta_current=delta_voltage/R
-n=32
+n=8
 delta_B=delta_current*two_layers_coil_constant(n,layer_spacing)
 print('两层',n,'匝方形线圈加热膜的磁噪声为', delta_B)
 
